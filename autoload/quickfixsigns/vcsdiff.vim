@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/vimtlib/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-05-09.
-" @Revision:    90
+" @Last Change: 2010-08-30.
+" @Revision:    149
 
 if index(g:quickfixsigns_classes, 'vcsdiff') == -1
     finish
@@ -36,7 +36,7 @@ exec 'sign define QFS_VCS_CHANGE text== texthl='. g:quickfixsigns#vcsdiff#highli
 
 
 function! quickfixsigns#vcsdiff#Signs(item) "{{{3
-    return 'QFS_VCS_'. a:item.text
+    return 'QFS_VCS_'. a:item.change
 endf
 
 
@@ -64,7 +64,7 @@ function! quickfixsigns#vcsdiff#GetList() "{{{3
         " TLogVAR diff
         if !empty(diff)
             let lines = split(diff, '\n')
-            let changes = {}
+            let change_defs = {}
             let from = 0
             let to = 0
             for line in lines
@@ -80,10 +80,12 @@ function! quickfixsigns#vcsdiff#GetList() "{{{3
                 else
                     if line[0] == '-'
                         let change = 'DEL'
+                        let text = line
                         let change_lnum = from
                         let from += 1
                     elseif line[0] == '+'
                         let change = 'ADD'
+                        let text = line
                         let change_lnum = to
                         let to += 1
                     else
@@ -91,19 +93,32 @@ function! quickfixsigns#vcsdiff#GetList() "{{{3
                         let to += 1
                     endif
                     " TLogVAR change_lnum, change
-                    if has_key(changes, change_lnum)
-                        let changes[change_lnum] = 'CHANGE'
-                    else
-                        let changes[change_lnum] = change
+                    if has_key(change_defs, change_lnum)
+                        if change_defs[change_lnum].change == 'CHANGE' || change_defs[change_lnum].change != change
+                            let change = 'CHANGE'
+                        endif
+                        if has('balloon_multiline')
+                            let text = change_defs[change_lnum].text ."\n". line
+                        else
+                            let text = line
+                        endif
                     endif
+                    let change_defs[change_lnum] = {'change': change, 'text': text}
                 endif
             endfor
             let bnum = bufnr('%')
             let signs = []
-            for [lnum, change] in items(changes)
-                if change != 'DEL'
-                    call add(signs, {"bufnr": bnum, "lnum": lnum, "text": change})
+            for [lnum, change_def] in items(change_defs)
+                if change_def.change == 'DEL' && lnum < line('$') && !has_key(change_defs, lnum + 1)
+                    let lnum += 1
                 endif
+                if has('balloon_multiline')
+                    let text = change_def.change .":\n". change_def.text
+                else
+                    let text = change_def.change .": ". change_def.text
+                endif
+                call add(signs, {"bufnr": bnum, "lnum": lnum,
+                            \ "change": change_def.change, "text": text})
             endfor
             " TLogVAR signs
             return signs
