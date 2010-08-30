@@ -3,8 +3,8 @@
 " @GIT:         http://github.com/tomtom/vimtlib/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-05-08.
-" @Revision:    10
+" @Last Change: 2010-08-30.
+" @Revision:    11
 
 if index(g:quickfixsigns_classes, 'marks') == -1
     finish
@@ -18,7 +18,7 @@ if !exists('g:quickfixsigns_class_marks')
                 \ 'sign': '*quickfixsigns#marks#GetSign',
                 \ 'get': 'quickfixsigns#marks#GetList()',
                 \ 'id': 'quickfixsigns#marks#GetID',
-                \ 'event': g:quickfixsigns_events1,
+                \ 'event': g:quickfixsigns_events,
                 \ 'timeout': 2
                 \ }
 endif

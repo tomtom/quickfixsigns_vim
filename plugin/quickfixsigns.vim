@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/vimtlib/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2010-05-24.
-" @Revision:    486
+" @Last Change: 2010-08-30.
+" @Revision:    490
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -53,15 +53,15 @@ if !exists('g:quickfixsigns_classes')
 endif
 
 
-if !exists('g:quickfixsigns_events1')
+if !exists('g:quickfixsigns_events')
     " List of events for signs that should be frequently updated.
-    let g:quickfixsigns_events1 = ['BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter', 'InsertChange']   "{{{2
+    let g:quickfixsigns_events = ['BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter', 'InsertChange']   "{{{2
 endif
 
 
 if !exists('g:quickfixsigns_class_rel')
     " Signs for number of lines relative to the current line.
-    let g:quickfixsigns_class_rel = {'sign': '*s:RelSign', 'get': 's:GetRelList("rel")', 'event': g:quickfixsigns_events1, 'max': 9, 'level': 9}  "{{{2
+    let g:quickfixsigns_class_rel = {'sign': '*s:RelSign', 'get': 's:GetRelList("rel")', 'event': g:quickfixsigns_events, 'max': 9, 'level': 9}  "{{{2
 endif
 let g:quickfixsigns_class_rel2 = copy(g:quickfixsigns_class_rel)
 let g:quickfixsigns_class_rel2.get = 's:GetRelList("rel2")'
@@ -76,13 +76,13 @@ endif
 
 if !exists('g:quickfixsigns_class_loc')
     " Signs for |location| lists.
-    let g:quickfixsigns_class_loc = {'sign': 'QFS_LOC', 'get': 'getloclist(winnr())', 'event': ['BufEnter']}   "{{{2
+    let g:quickfixsigns_class_loc = {'sign': 'QFS_LOC', 'get': 'getloclist(0)', 'event': ['BufEnter']}   "{{{2
 endif
 
 
 if !exists('g:quickfixsigns_class_cursor')
     " Sign for the current cursor position
-    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events1}   "{{{2
+    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events}   "{{{2
 endif
 
 
