@@ -196,11 +196,15 @@ function! QuickfixsignsSet(event) "{{{3
                     if !empty(list) && len(list) < g:quickfixsigns_max
                         let get_id = get(def, 'id', 's:SignId')
                         call s:ClearBuffer(key, def.sign, bn, s:PlaceSign(key, def.sign, list, get_id))
-                        if has('balloon_eval') && g:quickfixsigns_balloon && !exists('b:quickfixsigns_balloon') && empty(&balloonexpr)
-                            let b:quickfixsigns_ballooneval = &ballooneval
-                            let b:quickfixsigns_balloonexpr = &balloonexpr
-                            setlocal ballooneval balloonexpr=QuickfixsignsBalloon()
-                            let b:quickfixsigns_balloon = 1
+                        if has('balloon_eval') && g:quickfixsigns_balloon
+                            if exists('g:loaded_tlib') && g:loaded_tlib >= 39
+                                call tlib#balloon#Register('QuickfixsignsBalloon()')
+                            elseif !exists('b:quickfixsigns_balloon') && empty(&balloonexpr)
+                                let b:quickfixsigns_ballooneval = &ballooneval
+                                let b:quickfixsigns_balloonexpr = &balloonexpr
+                                setlocal ballooneval balloonexpr=QuickfixsignsBalloon()
+                                let b:quickfixsigns_balloon = 1
+                            endif
                         endif
                     else
                         call s:ClearBuffer(key, def.sign, bn, [])
