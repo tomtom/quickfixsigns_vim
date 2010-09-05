@@ -19,6 +19,9 @@ to change the following signs' definition in your |vimrc| file:
 -----------------------------------------------------------------------
 
 Status:  Works for me (there may be some minor quirks)
+Dependencies:
+  tlib :: http://github.com/tomtom/tlib_vim
+      > git clone git://github.com/tomtom/tlib_vim.git
 Install: See http://github.com/tomtom/vimtlib/blob/master/INSTALL.TXT
 See http://github.com/tomtom for related plugins.
 
