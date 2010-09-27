@@ -1,7 +1,6 @@
 *quickfixsigns.txt*   Mark quickfix & location list items with signs
                       Author: Thomas Link, micathom at gmail com
 
-
 Mark items in the quickfix and location lists with signs. Other lists 
 can be configured via the |g:quickfixsigns_lists| variable. By default, 
 quickfixsigns also displays signs for the marks a-zA-Z.
@@ -52,7 +51,6 @@ Contents~
         quickfixsigns#RelNumbersOnce ......... |quickfixsigns#RelNumbersOnce()|
         g:quickfixsigns_class_vcsdiff ........ |g:quickfixsigns_class_vcsdiff|
         g:quickfixsigns#vcsdiff#highlight .... |g:quickfixsigns#vcsdiff#highlight|
-        quickfixsigns#vcsdiff#Signs .......... |quickfixsigns#vcsdiff#Signs()|
         quickfixsigns#vcsdiff#GuessType ...... |quickfixsigns#vcsdiff#GuessType()|
         quickfixsigns#vcsdiff#GetList ........ |quickfixsigns#vcsdiff#GetList()|
         g:quickfixsigns_class_marks .......... |g:quickfixsigns_class_marks|
@@ -173,9 +171,12 @@ g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs'
 
                                                     *g:quickfixsigns#vcsdiff#highlight*
 g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAdd', 'CHANGE': 'DiffChange'})
-
-                                                    *quickfixsigns#vcsdiff#Signs()*
-quickfixsigns#vcsdiff#Signs(item)
+    The highlighting of deleted lines can sometimes be confusing. In 
+    order to disable the display of signs for DEL changes, save the 
+    following line as after/autoload/quickfixsigns/vcsdiff.vim: >
+    
+      call remove(g:quickfixsigns#vcsdiff#highlight, 'DEL')
+<
 
                                                     *quickfixsigns#vcsdiff#GuessType()*
 quickfixsigns#vcsdiff#GuessType()

@@ -1,13 +1,10 @@
 " quickfixsigns.vim
-" @Author:      Thomas Link (mailto:micathom AT gmail com?subject=[vim])
-" @Website:     http://www.lithom.net
+" @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
+" @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
-" @Last Change: 2010-04-03.
-" @Revision:    0.0.26
-
-let s:save_cpo = &cpo
-set cpo&vim
+" @Last Change: 2010-09-17.
+" @Revision:    0.0.29
 
 
 function! quickfixsigns#CompleteSelect(ArgLead, CmdLine, CursorPos) "{{{3
@@ -38,8 +35,5 @@ function! quickfixsigns#RelNumbersOnce() "{{{3
 endf
 
 
-
 " redraw
 
-let &cpo = s:save_cpo
-unlet s:save_cpo

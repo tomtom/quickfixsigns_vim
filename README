@@ -1,6 +1,3 @@
-*quickfixsigns.txt*   Mark quickfix & location list items with signs
-
-
 Mark items in the quickfix and location lists with signs. Other lists 
 can be configured via the |g:quickfixsigns_lists| variable. By default, 
 quickfixsigns also displays signs for the marks a-zA-Z.

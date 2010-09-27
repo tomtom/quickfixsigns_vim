@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/vimtlib/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-08-30.
-" @Revision:    149
+" @Last Change: 2010-09-27.
+" @Revision:    154
 
 if index(g:quickfixsigns_classes, 'vcsdiff') == -1
     finish
@@ -26,6 +26,11 @@ let g:quickfixsigns#vcsdiff#cmds = {
 
 
 if !exists('g:quickfixsigns#vcsdiff#highlight')
+    " The highlighting of deleted lines can sometimes be confusing. In 
+    " order to disable the display of signs for DEL changes, save the 
+    " following line as after/autoload/quickfixsigns/vcsdiff.vim: >
+    "
+    "   call remove(g:quickfixsigns#vcsdiff#highlight, 'DEL')
     let g:quickfixsigns#vcsdiff#highlight = {'DEL': 'DiffDelete', 'ADD': 'DiffAdd', 'CHANGE': 'DiffChange'}   "{{{2
 endif
 
@@ -35,6 +40,7 @@ exec 'sign define QFS_VCS_DEL text=- texthl='. g:quickfixsigns#vcsdiff#highlight
 exec 'sign define QFS_VCS_CHANGE text== texthl='. g:quickfixsigns#vcsdiff#highlight.CHANGE
 
 
+" :nodoc:
 function! quickfixsigns#vcsdiff#Signs(item) "{{{3
     return 'QFS_VCS_'. a:item.change
 endf
@@ -109,6 +115,9 @@ function! quickfixsigns#vcsdiff#GetList() "{{{3
             let bnum = bufnr('%')
             let signs = []
             for [lnum, change_def] in items(change_defs)
+                if !has_key(g:quickfixsigns#vcsdiff#highlight, change_def.change)
+                    continue
+                endif
                 if change_def.change == 'DEL' && lnum < line('$') && !has_key(change_defs, lnum + 1)
                     let lnum += 1
                 endif
