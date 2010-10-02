@@ -47,6 +47,7 @@ Contents~
         QuickfixsignsSet ..................... |QuickfixsignsSet()|
         QuickfixsignsBalloon ................. |QuickfixsignsBalloon()|
         QuickfixsignsClear ................... |QuickfixsignsClear()|
+        g:quickfixsigns#use_relativenumber ... |g:quickfixsigns#use_relativenumber|
         quickfixsigns#CompleteSelect ......... |quickfixsigns#CompleteSelect()|
         quickfixsigns#RelNumbersOnce ......... |quickfixsigns#RelNumbersOnce()|
         g:quickfixsigns_class_vcsdiff ........ |g:quickfixsigns_class_vcsdiff|
@@ -154,6 +155,13 @@ QuickfixsignsClear(class)
 
 ========================================================================
 autoload/quickfixsigns.vim~
+
+                                                    *g:quickfixsigns#use_relativenumber*
+g:quickfixsigns#use_relativenumber (default: 1)
+    VIM 7.3 and later: If non-zero, |quickfixsigns#RelNumbersOnce()| 
+    uses 'relativenumber' instead of signs. This avoids clashes with 
+    other signs and is faster, but it could cause the visual text area 
+    to be moved to the right.
 
                                                     *quickfixsigns#CompleteSelect()*
 quickfixsigns#CompleteSelect(ArgLead, CmdLine, CursorPos)
