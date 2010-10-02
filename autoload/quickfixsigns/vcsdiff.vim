@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/vimtlib/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-09-27.
-" @Revision:    154
+" @Last Change: 2010-10-02.
+" @Revision:    156
 
 if index(g:quickfixsigns_classes, 'vcsdiff') == -1
     finish
@@ -54,7 +54,11 @@ function! quickfixsigns#vcsdiff#GuessType() "{{{3
     if exists('b:vcs_type')
         return b:vcs_type
     elseif exists('b:VCSCommandVCSType')
+        " vcscommand
         return b:VCSCommandVCSType
+    elseif exists('b:git_dir')
+        " fugitive
+        return 'git'
     endif
 endf
 
