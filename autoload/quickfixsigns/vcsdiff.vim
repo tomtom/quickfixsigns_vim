@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/vimtlib/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-10-02.
-" @Revision:    156
+" @Last Change: 2010-10-03.
+" @Revision:    172
 
 if index(g:quickfixsigns_classes, 'vcsdiff') == -1
     finish
@@ -18,10 +18,12 @@ endif
 
 " A dictionary of supported VCS names and command templates that 
 " generate a unified diff file. "%s" is replaced with the filename.
-" Currently only git is supported.
+" Supported vcs: git, hg, svn
 " :read: let g:quickfixsigns#vcsdiff#cmds = {...} {{{2
 let g:quickfixsigns#vcsdiff#cmds = {
             \ 'git': 'git diff -U0 %s',
+            \ 'hg': 'hg diff -U0 %s',
+            \ 'svn': 'svn diff -x -u %s',
             \ }
 
 
@@ -52,13 +54,20 @@ endf
 "   - b:VCSCommandVCSType
 function! quickfixsigns#vcsdiff#GuessType() "{{{3
     if exists('b:vcs_type')
-        return b:vcs_type
+        let type = b:vcs_type
     elseif exists('b:VCSCommandVCSType')
         " vcscommand
-        return b:VCSCommandVCSType
+        let type = tolower(b:VCSCommandVCSType)
     elseif exists('b:git_dir')
         " fugitive
-        return 'git'
+        let type = 'git'
+    else
+        let type = ''
+    endif
+    if has_key(g:quickfixsigns#vcsdiff#cmds, type)
+        return type
+    else
+        return ''
     endif
 endf
 
@@ -83,7 +92,7 @@ function! quickfixsigns#vcsdiff#GetList() "{{{3
                     let m = matchlist(line, '^@@ -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@')
                     " TLogVAR line, m
                     let to = m[3]
-                    " let from = m[1]
+                    " let change_lnum = m[1]
                     let from = to
                 elseif from == 0
                     continue
@@ -101,9 +110,11 @@ function! quickfixsigns#vcsdiff#GetList() "{{{3
                     else
                         let from += 1
                         let to += 1
+                        let change = ''
+                        continue
                     endif
                     " TLogVAR change_lnum, change
-                    if has_key(change_defs, change_lnum)
+                    if !empty(change) && has_key(change_defs, change_lnum)
                         if change_defs[change_lnum].change == 'CHANGE' || change_defs[change_lnum].change != change
                             let change = 'CHANGE'
                         endif
