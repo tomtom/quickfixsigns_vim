@@ -208,6 +208,7 @@ function! QuickfixsignsSet(event) "{{{3
         let bn = bufnr('%')
         let anyway = empty(a:event)
         for [key, def] in s:ListValues()
+            " TLogVAR key, def
             if anyway || index(get(def, 'event', ['BufEnter']), a:event) != -1
                 let t_d = get(def, 'timeout', 0)
                 let t_l = localtime()
@@ -217,7 +218,10 @@ function! QuickfixsignsSet(event) "{{{3
                     let s:last_run[t_s] = t_l
                     let list = eval(def.get)
                     " TLogVAR list
-                    call filter(list, 'v:val.bufnr == bn')
+                    if !get(g:quickfixsigns_class_{key}, 'all_buffers', 0)
+                        " TLogVAR key, '!all_buffers'
+                        call filter(list, 'v:val.bufnr == bn')
+                    endif
                     " TLogVAR list
                     if !empty(list) && len(list) < g:quickfixsigns_max
                         let get_id = get(def, 'id', 's:SignId')
