@@ -1,11 +1,11 @@
 " Mark quickfix & location list items with signs
 " @Author:      Tom Link (micathom AT gmail com?subject=[vim])
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
-" @GIT:         http://github.com/tomtom/vimtlib/
+" @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2010-08-30.
-" @Revision:    490
+" @Last Change: 2010-11-10.
+" @Revision:    528
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -356,10 +356,20 @@ function! s:SignId(item) "{{{3
     if bn == -1
         return -1
     else
+        let rev_id = join([bn, a:item.lnum, a:item.text], "\t")
+        let rev_idx = get(g:quickfixsigns_reverse, rev_id, -1)
+        if rev_idx != -1
+            if has_key(g:quickfixsigns_register, rev_idx)
+                return rev_idx
+            else
+                call remove(g:quickfixsigns_reverse, rev_id)
+            endif
+        endif
         let idx = g:quickfixsigns_base + bn * 427 + 1
         while has_key(g:quickfixsigns_register, idx)
             let idx += 1
         endwh
+        let g:quickfixsigns_reverse[rev_id] = idx
         return idx
     endif
 endf
