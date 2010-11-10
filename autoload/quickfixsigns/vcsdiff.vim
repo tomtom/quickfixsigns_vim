@@ -1,10 +1,10 @@
 " @Author:      Tom Link (micathom AT gmail com?subject=[vim])
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
-" @vcs:         http://vcshub.com/tomtom/vimtlib/
+" @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-10-03.
-" @Revision:    172
+" @Last Change: 2010-10-24.
+" @Revision:    173
 
 if index(g:quickfixsigns_classes, 'vcsdiff') == -1
     finish
