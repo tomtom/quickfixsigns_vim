@@ -1,9 +1,14 @@
 *quickfixsigns.txt*   Mark quickfix & location list items with signs
                       Author: Thomas Link, micathom at gmail com
 
-Mark items in the quickfix and location lists with signs. Other lists 
-can be configured via the |g:quickfixsigns_lists| variable. By default, 
-quickfixsigns also displays signs for the marks a-zA-Z.
+Mark intersting lines with signs:
+
+    - items in the quickfix and location lists (e.g. compilation errors)
+    - marks a-zA-Z
+    - relative line numbers
+    - changes (with respect to the version in the VCS)
+
+Other lists can be configured via the |g:quickfixsigns_lists| variable.
 
 The attached text ist displayed in a balloon -- it is possible though 
 that other plugins that set 'balloonexpr' disable this feature.
@@ -107,11 +112,11 @@ g:quickfixsigns_class_rel      (default: {'sign': '*s:RelSign', 'get': 's:GetRel
     Signs for number of lines relative to the current line.
 
                                                     *g:quickfixsigns_class_qfl*
-g:quickfixsigns_class_qfl      (default: {'sign': 'QFS_QFL', 'get': 'getqflist()', 'event': ['BufEnter']})
+g:quickfixsigns_class_qfl      (default: {'sign': 'QFS_QFL', 'get': 'getqflist()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'all_buffers': 1})
     Signs for |quickfix| lists.
 
                                                     *g:quickfixsigns_class_loc*
-g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 'getloclist(0)', 'event': ['BufEnter']})
+g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 'getloclist(0)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI']})
     Signs for |location| lists.
 
                                                     *g:quickfixsigns_class_cursor*

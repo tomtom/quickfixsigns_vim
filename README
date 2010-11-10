@@ -1,6 +1,11 @@
-Mark items in the quickfix and location lists with signs. Other lists 
-can be configured via the |g:quickfixsigns_lists| variable. By default, 
-quickfixsigns also displays signs for the marks a-zA-Z.
+Mark intersting lines with signs:
+
+    - items in the quickfix and location lists (e.g. compilation errors)
+    - marks a-zA-Z
+    - relative line numbers
+    - changes (with respect to the version in the VCS)
+
+Other lists can be configured via the |g:quickfixsigns_lists| variable.
 
 The attached text ist displayed in a balloon -- it is possible though 
 that other plugins that set 'balloonexpr' disable this feature.
