@@ -106,10 +106,24 @@ if !exists('g:quickfixsigns_blacklist_buffer')
 endif
 
 
+if has("gui_running") && !exists('g:quickfixsigns_icons')
+    if isdirectory('/usr/share/icons/gnome/16x16/status')
+        let g:quickfixsigns_icons = {
+                    \ 'qfl': '/usr/share/icons/gnome/16x16/status/dialog-error.png',
+                    \ 'loc': '/usr/share/icons/gnome/16x16/status/dialog-warning.png',
+                    \ 'cursor': '/usr/share/icons/gnome/16x16/actions/go-next.png'
+                    \ }
+    endif
+else
+    let g:quickfixsigns_icons = {}
+endif
+
+
 
 " ----------------------------------------------------------------------
 let g:quickfixsigns_base = 5272
 let g:quickfixsigns_register = {}
+let g:quickfixsigns_reverse = {}
 let s:cursor_last_line = 0
 let s:last_run = {}
 
@@ -122,15 +136,27 @@ call filter(g:quickfixsigns_signs, 'v:val =~ ''^sign QFS_''')
 call map(g:quickfixsigns_signs, 'matchstr(v:val, ''^sign \zsQFS_\w\+'')')
 
 if index(g:quickfixsigns_signs, 'QFS_QFL') == -1
-    sign define QFS_QFL text=* texthl=WarningMsg
+    if exists('g:quickfixsigns_icons.qfl')
+        exec 'sign define QFS_QFL text=* texthl=WarningMsg icon='. escape(g:quickfixsigns_icons.qfl, ' \')
+    else
+        sign define QFS_QFL text=* texthl=WarningMsg
+    endif
 endif
 
 if index(g:quickfixsigns_signs, 'QFS_LOC') == -1
-    sign define QFS_LOC text=> texthl=Special
+    if exists('g:quickfixsigns_icons.loc')
+        exec 'sign define QFS_LOC text=> texthl=Special icon='. escape(g:quickfixsigns_icons.loc, ' \')
+    else
+        sign define QFS_LOC text=> texthl=Special
+    endif
 endif
 
 if index(g:quickfixsigns_signs, 'QFS_CURSOR') == -1
-    sign define QFS_CURSOR text=- texthl=Question
+    if exists('g:quickfixsigns_icons.cursor')
+        exec 'sign define QFS_CURSOR text=- texthl=Question icon='. escape(g:quickfixsigns_icons.cursor, ' \')
+    else
+        sign define QFS_CURSOR text=- texthl=Question
+    endif
 endif
 
 sign define QFS_DUMMY text=. texthl=NonText
