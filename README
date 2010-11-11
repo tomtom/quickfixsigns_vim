@@ -18,6 +18,11 @@ to change the following signs' definition in your |vimrc| file:
     QFS_Mark_[a-zA-Z] ... Marks
 
 
+CREDITS:
+quickfixsigns includes some icons from the open icon library. See 
+http://openiconlibrary.sourceforge.net for details.
+
+
 -----------------------------------------------------------------------
 
 Status:  Works for me (there may be some minor quirks)

@@ -52,6 +52,7 @@ Contents~
         g:quickfixsigns_balloon .............. |g:quickfixsigns_balloon|
         g:quickfixsigns_max .................. |g:quickfixsigns_max|
         g:quickfixsigns_blacklist_buffer ..... |g:quickfixsigns_blacklist_buffer|
+        g:quickfixsigns_icons ................ |g:quickfixsigns_icons|
         QuickfixsignsSelect .................. |QuickfixsignsSelect()|
         QuickfixsignsUpdate .................. |QuickfixsignsUpdate()|
         QuickfixsignsSet ..................... |QuickfixsignsSet()|
@@ -140,6 +141,12 @@ g:quickfixsigns_max            (default: 100)
                                                     *g:quickfixsigns_blacklist_buffer*
 g:quickfixsigns_blacklist_buffer (default: '^__.*__$')
     Don't show signs in buffers matching this |regexp|.
+
+                                                    *g:quickfixsigns_icons*
+g:quickfixsigns_icons          (default: {})
+    A dictionary {TYPE => IMAGE_FILENAME} that is used to select 
+    icons that should be displayed as signs.
+    Defaults to empty on windows and non-gui versions.
 
                                                     *QuickfixsignsSelect()*
 QuickfixsignsSelect(list)
