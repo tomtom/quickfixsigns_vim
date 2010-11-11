@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2010-11-11.
-" @Revision:    14
+" @Revision:    15
 
 if index(g:quickfixsigns_classes, 'marks') == -1
     finish
@@ -20,7 +20,6 @@ if !exists('g:quickfixsigns_class_marks')
                 \ 'event': g:quickfixsigns_events,
                 \ 'timeout': 2
                 \ }
-                " \ 'id': 'quickfixsigns#marks#GetID',
 endif
 if !&lazyredraw && !empty(g:quickfixsigns_class_marks)
     let s:cmn = index(g:quickfixsigns_class_marks.event, 'CursorMoved')
@@ -71,17 +70,5 @@ endf
 function! quickfixsigns#marks#GetSign(item) "{{{3
     return 'QFS_'. a:item.text
 endf
-
-
-" function! quickfixsigns#marks#GetID(item) "{{{3
-"     let bufnr = bufnr('%')
-"     let item = filter(values(g:quickfixsigns_register), 'v:val.bufnr == bufnr && get(v:val.item, "text", "") ==# get(a:item, "text", "")')
-"     if empty(item)
-"         return g:quickfixsigns_base + a:item.bufnr * 67 + char2nr(get(a:item, "text", "")[-1 : -1]) - 65
-"     else
-"         " TLogVAR item
-"         return item[0].id
-"     endif
-" endf
 
 
