@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2010-11-11.
-" @Revision:    580
+" @Revision:    583
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -225,6 +225,9 @@ function! QuickfixsignsSet(event) "{{{3
                 let t_s = string(def)
                 " TLogVAR t_s, t_d, t_l
                 if anyway || (t_d == 0) || (t_l - get(s:last_run, t_s, 0) >= t_d)
+                    if a:event == 'BufEnter'
+                        call s:PruneRegister()
+                    endif
                     let s:last_run[t_s] = t_l
                     let list = copy(eval(def.get))
                     " TLogVAR list
@@ -354,6 +357,15 @@ function! s:ClearBuffer(class, sign, bufnr, new_ikeys) "{{{3
         " TLogVAR def
         exec 'sign unplace '. def.id .' buffer='. def.bufnr
         call remove(g:quickfixsigns_register, ikey)
+    endfor
+endf
+
+
+function! s:PruneRegister() "{{{3
+    for [ikey, item] in items(g:quickfixsigns_register)
+        if bufnr(item.bufnr) == -1
+            call remove(g:quickfixsigns_register, ikey)
+        endif
     endfor
 endf
 
