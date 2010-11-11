@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2010-11-11.
-" @Revision:    583
+" @Revision:    590
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -106,26 +106,26 @@ if !exists('g:quickfixsigns_blacklist_buffer')
 endif
 
 
-if has("gui_running") && !exists('g:quickfixsigns_icons')
-    if isdirectory('/usr/share/icons/gnome/16x16/status')
-        let g:quickfixsigns_icons = {
-                    \ 'qfl': '/usr/share/icons/gnome/16x16/status/dialog-error.png',
-                    \ 'loc': '/usr/share/icons/gnome/16x16/status/dialog-warning.png',
-                    \ 'cursor': '/usr/share/icons/gnome/16x16/actions/go-next.png'
-                    \ }
-    else
-        let s:icons_dir = expand('<sfile>:p:h:h:') .'/bitmaps/open_icon_library/'
-        if isdirectory(s:icons_dir)
-            let g:quickfixsigns_icons = {
-                        \ 'qfl': s:icons_dir .'16x16/status/dialog-error-5.png',
-                        \ 'loc': s:icons_dir .'16x16/status/dialog-warning-4.png',
-                        \ 'cursor': s:icons_dir .'16x16/actions/go-next-4.png'
-                        \ }
+if !exists('g:quickfixsigns_icons')
+    if has("gui_running")
+        if !has('win16') && !has('win32') && !has('win64')
+            let s:icons_dir = expand('<sfile>:p:h:h:') .'/bitmaps/open_icon_library/16x16/'
+            if isdirectory(s:icons_dir)
+                let g:quickfixsigns_icons = {
+                            \ 'qfl': s:icons_dir .'status/dialog-error-5.png',
+                            \ 'loc': s:icons_dir .'status/dialog-warning-4.png',
+                            \ 'cursor': s:icons_dir .'actions/go-next-4.png'
+                            \ }
+            endif
+            unlet s:icons_dir
         endif
-        unlet s:icons_dir
     endif
-else
-    let g:quickfixsigns_icons = {}
+    if !exists('g:quickfixsigns_icons')
+        " A dictionary {TYPE => IMAGE_FILENAME} that is used to select 
+        " icons that should be displayed as signs.
+        " Defaults to empty on windows and non-gui versions.
+        let g:quickfixsigns_icons = {}   "{{{2
+    endif
 endif
 
 
@@ -133,7 +133,6 @@ endif
 " ----------------------------------------------------------------------
 let s:quickfixsigns_base = 5272
 let g:quickfixsigns_register = {}
-let g:quickfixsigns_reverse = {}
 let s:cursor_last_line = 0
 let s:last_run = {}
 
