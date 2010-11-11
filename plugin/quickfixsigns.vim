@@ -5,13 +5,13 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2010-11-11.
-" @Revision:    590
+" @Revision:    592
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
     finish
 endif
-let loaded_quickfixsigns = 7
+let loaded_quickfixsigns = 10
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -349,7 +349,7 @@ endf
 " Clear all signs with name SIGN in buffer BUFNR.
 function! s:ClearBuffer(class, sign, bufnr, new_ikeys) "{{{3
     " TLogVAR a:class, a:sign, a:bufnr, a:new_ikeys
-    let old_ikeys = filter(keys(g:quickfixsigns_register), 'g:quickfixsigns_register[v:val].class ==# a:class && g:quickfixsigns_register[v:val].bufnr == a:bufnr && index(a:new_ikeys, v:val) == -1')
+    let old_ikeys = filter(keys(g:quickfixsigns_register), 'g:quickfixsigns_register[v:val].class ==# a:class && index(a:new_ikeys, v:val) == -1')
     " TLogVAR old_ikeys
     for ikey in old_ikeys
         let def = g:quickfixsigns_register[ikey]
