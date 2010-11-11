@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-10-24.
-" @Revision:    173
+" @Last Change: 2010-11-11.
+" @Revision:    174
 
 if index(g:quickfixsigns_classes, 'vcsdiff') == -1
     finish
@@ -127,7 +127,7 @@ function! quickfixsigns#vcsdiff#GetList() "{{{3
                     let change_defs[change_lnum] = {'change': change, 'text': text}
                 endif
             endfor
-            let bnum = bufnr('%')
+            let bufnr = bufnr('%')
             let signs = []
             for [lnum, change_def] in items(change_defs)
                 if !has_key(g:quickfixsigns#vcsdiff#highlight, change_def.change)
@@ -141,7 +141,7 @@ function! quickfixsigns#vcsdiff#GetList() "{{{3
                 else
                     let text = change_def.change .": ". change_def.text
                 endif
-                call add(signs, {"bufnr": bnum, "lnum": lnum,
+                call add(signs, {"bufnr": bufnr, "lnum": lnum,
                             \ "change": change_def.change, "text": text})
             endfor
             " TLogVAR signs
