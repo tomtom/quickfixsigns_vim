@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2010-11-11.
-" @Revision:    570
+" @Revision:    580
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -113,6 +113,16 @@ if has("gui_running") && !exists('g:quickfixsigns_icons')
                     \ 'loc': '/usr/share/icons/gnome/16x16/status/dialog-warning.png',
                     \ 'cursor': '/usr/share/icons/gnome/16x16/actions/go-next.png'
                     \ }
+    else
+        let s:icons_dir = expand('<sfile>:p:h:h:') .'/bitmaps/open_icon_library/'
+        if isdirectory(s:icons_dir)
+            let g:quickfixsigns_icons = {
+                        \ 'qfl': s:icons_dir .'16x16/status/dialog-error-5.png',
+                        \ 'loc': s:icons_dir .'16x16/status/dialog-warning-4.png',
+                        \ 'cursor': s:icons_dir .'16x16/actions/go-next-4.png'
+                        \ }
+        endif
+        unlet s:icons_dir
     endif
 else
     let g:quickfixsigns_icons = {}

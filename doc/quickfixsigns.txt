@@ -21,6 +21,11 @@ to change the following signs' definition in your |vimrc| file:
     QFS_Mark_[a-zA-Z] ... Marks
 
 
+CREDITS:
+quickfixsigns includes some icons from the open icon library. See 
+http://openiconlibrary.sourceforge.net for details.
+
+
 -----------------------------------------------------------------------
 Install~
 
@@ -63,7 +68,6 @@ Contents~
         g:quickfixsigns#marks#marks .......... |g:quickfixsigns#marks#marks|
         quickfixsigns#marks#GetList .......... |quickfixsigns#marks#GetList()|
         quickfixsigns#marks#GetSign .......... |quickfixsigns#marks#GetSign()|
-        quickfixsigns#marks#GetID ............ |quickfixsigns#marks#GetID()|
 
 
 ========================================================================
@@ -120,7 +124,7 @@ g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 'getloclist(
     Signs for |location| lists.
 
                                                     *g:quickfixsigns_class_cursor*
-g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events})
+g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI']})
     Sign for the current cursor position
 
                                                     *g:quickfixsigns_balloon*
@@ -221,9 +225,6 @@ quickfixsigns#marks#GetList()
 
                                                     *quickfixsigns#marks#GetSign()*
 quickfixsigns#marks#GetSign(item)
-
-                                                    *quickfixsigns#marks#GetID()*
-quickfixsigns#marks#GetID(item)
 
 
 
