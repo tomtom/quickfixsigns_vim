@@ -3,8 +3,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-11-11.
-" @Revision:    15
+" @Last Change: 2010-11-13.
+" @Revision:    25
 
 if index(g:quickfixsigns_classes, 'marks') == -1
     finish
@@ -59,8 +59,21 @@ function! quickfixsigns#marks#GetList() "{{{3
     let ignore = exists('b:quickfixsigns_ignore_marks') ? b:quickfixsigns_ignore_marks : []
     for mark in g:quickfixsigns#marks#marks
         let pos = getpos("'". mark)
-        if pos[1] != 0 && index(ignore, mark) == -1 && (mark =~# '[a-z]' || pos[0] == bufnr)
-            call add(acc, {'bufnr': bufnr, 'lnum': pos[1], 'col': pos[2], 'text': 'Mark_'. mark})
+        if mark =~# '^\u'
+            let scope = 'vim'
+        else
+            let scope = 'buffer'
+        endif
+        if pos[1] != 0 && index(ignore, mark) == -1 && (scope == 'vim' || pos[0] == 0 || pos[0] == bufnr)
+            let item = {
+                        \ 'bufnr': pos[0] == 0 ? bufnr : pos[0],
+                        \ 'lnum': pos[1],
+                        \ 'col': pos[2],
+                        \ 'text': 'Mark_'. mark,
+                        \ 'scope': scope
+                        \ }
+            " TLogVAR mark, item.scope
+            call add(acc, item)
         endif
     endfor
     return acc

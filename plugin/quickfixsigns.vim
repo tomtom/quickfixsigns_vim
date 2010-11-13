@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2010-11-11.
-" @Revision:    592
+" @Last Change: 2010-11-13.
+" @Revision:    672
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -70,7 +70,7 @@ let g:quickfixsigns_class_rel2.max = 99
 
 if !exists('g:quickfixsigns_class_qfl')
     " Signs for |quickfix| lists.
-    let g:quickfixsigns_class_qfl = {'sign': 'QFS_QFL', 'get': 'getqflist()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'all_buffers': 1}   "{{{2
+    let g:quickfixsigns_class_qfl = {'sign': 'QFS_QFL', 'get': 'getqflist()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'scope': 'vim'}   "{{{2
 endif
 
 
@@ -187,7 +187,9 @@ function! QuickfixsignsSelect(list) "{{{3
 	" FIXME: unset first
     let g:quickfixsigns_lists = {}
 	for what in a:list
-		let g:quickfixsigns_lists[what] = g:quickfixsigns_class_{what}
+        if what != '-'
+            let g:quickfixsigns_lists[what] = g:quickfixsigns_class_{what}
+        endif
 	endfor
 endf
 
@@ -230,10 +232,8 @@ function! QuickfixsignsSet(event) "{{{3
                     let s:last_run[t_s] = t_l
                     let list = copy(eval(def.get))
                     " TLogVAR list
-                    if !get(g:quickfixsigns_class_{key}, 'all_buffers', 0)
-                        " TLogVAR key, '!all_buffers'
-                        call filter(list, 'v:val.bufnr == bufnr')
-                    endif
+                    " TLogVAR key, 'scope == buffer'
+                    call filter(list, 's:Scope(key, v:val) == "vim" || v:val.bufnr == bufnr')
                     " TLogVAR list
                     if !empty(list) && len(list) < g:quickfixsigns_max
                         let new_ids = s:PlaceSign(key, def.sign, list)
@@ -349,11 +349,12 @@ endf
 " Clear all signs with name SIGN in buffer BUFNR.
 function! s:ClearBuffer(class, sign, bufnr, new_ikeys) "{{{3
     " TLogVAR a:class, a:sign, a:bufnr, a:new_ikeys
-    let old_ikeys = filter(keys(g:quickfixsigns_register), 'g:quickfixsigns_register[v:val].class ==# a:class && index(a:new_ikeys, v:val) == -1')
+    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), 'v:val.class ==# a:class && index(a:new_ikeys, v:key) == -1 && (s:Scope(a:class, v:val) == "vim" || v:val.bufnr == a:bufnr)'))
     " TLogVAR old_ikeys
     for ikey in old_ikeys
         let def = g:quickfixsigns_register[ikey]
         " TLogVAR def
+        echom 'DBG sign unplace '. def.id .' buffer='. def.bufnr
         exec 'sign unplace '. def.id .' buffer='. def.bufnr
         call remove(g:quickfixsigns_register, ikey)
     endfor
@@ -369,19 +370,40 @@ function! s:PruneRegister() "{{{3
 endf
 
 
-function! s:SignId(item) "{{{3
+function! s:Scope(class, item) "{{{3
+    if has_key(a:item, 'scope')
+        let rv = a:item.scope
+    else
+        let rv = get(g:quickfixsigns_class_{a:class}, 'scope', 'buffer')
+    endif
+    " TLogVAR rv, a:class, a:item
+    return rv
+endf
+
+
+function! s:SetItemId(item) "{{{3
     " TLogVAR a:item
     let bufnr = get(a:item, 'bufnr', -1)
     if bufnr == -1
         return -1
     else
-        let ikey = join([bufnr, a:item.lnum, a:item.class, a:item.text], "\t")
+        let scope = s:Scope(a:item.class, a:item)
+        let sign = s:GetSign(g:quickfixsigns_class_{a:item.class}.sign, a:item)
+        if scope == 'buffer'
+            let ikey = join([a:item.lnum, a:item.class, sign, bufnr], "\t")
+        elseif scope == 'vim'
+            let ikey = join([a:item.lnum, a:item.class, sign], "\t")
+        else
+            echoerr 'QuickFixSigns: Internal error: Unknown scope:' scope string(a:item)
+        endif
         if has_key(g:quickfixsigns_register, ikey)
-            let item = extend(g:quickfixsigns_register[ikey], a:item)
+            let item = extend(copy(g:quickfixsigns_register[ikey]), a:item)
+            let item.new = 0
         else
             let item = a:item
+            let item.new = 1
         endif
-        if !has_key(item, 'id')
+        if !has_key(item, 'id') " || item.id == 0
             let item.id = s:quickfixsigns_base
             let s:quickfixsigns_base += 1
         endif
@@ -389,6 +411,17 @@ function! s:SignId(item) "{{{3
         let g:quickfixsigns_register[ikey] = item
         return item
     endif
+endf
+
+
+function! s:GetSign(sign, item) "{{{3
+    if a:sign[0] == '*'
+        let sign = call(a:sign[1 : -1], [a:item])
+        " TLogVAR sign
+    else
+        let sign = a:sign
+    endif
+    return sign
 endf
 
 
@@ -404,24 +437,21 @@ function! s:PlaceSign(class, sign, list) "{{{3
     " TLogVAR a:sign, a:list
     let new_ikeys = []
     for item in a:list
-        " TLogVAR item
-        if a:sign[0] == '*'
-            let sign = call(a:sign[1 : -1], [item])
-            " TLogVAR sign
-        else
-            let sign = a:sign
-        endif
+        let sign = s:GetSign(a:sign, item)
         let item = extend(item, {'class': a:class, 'sign': a:sign}, 'keep')
-        let item = s:SignId(item)
+        " TLogVAR item
+        let item = s:SetItemId(item)
         let ikey = item.ikey
         " TLogVAR ikey, item
         call add(new_ikeys, ikey)
-        let lnum = get(item, 'lnum', 0)
-        if lnum > 0
-            let id = item.id
-            " TLogVAR item
-            " TLogDBG ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
-            exec ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
+        if item.new
+            let lnum = get(item, 'lnum', 0)
+            if lnum > 0
+                let id = item.id
+                " TLogVAR item
+                " TLogDBG ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
+                exec ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
+            endif
         endif
     endfor
     return new_ikeys
