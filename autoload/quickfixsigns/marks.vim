@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2010-11-13.
-" @Revision:    25
+" @Revision:    26
 
 if index(g:quickfixsigns_classes, 'marks') == -1
     finish
@@ -64,7 +64,7 @@ function! quickfixsigns#marks#GetList() "{{{3
         else
             let scope = 'buffer'
         endif
-        if pos[1] != 0 && index(ignore, mark) == -1 && (scope == 'vim' || pos[0] == 0 || pos[0] == bufnr)
+        if pos[1] != 0 && index(ignore, mark) == -1 && (pos[0] == (scope == 'vim' ? bufnr : 0))
             let item = {
                         \ 'bufnr': pos[0] == 0 ? bufnr : pos[0],
                         \ 'lnum': pos[1],
