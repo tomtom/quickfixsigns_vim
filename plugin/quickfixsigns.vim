@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2010-11-13.
-" @Revision:    679
+" @Revision:    681
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -96,7 +96,7 @@ endif
 
 if !exists('g:quickfixsigns_max')
     " Don't display signs if the list is longer than n items.
-    let g:quickfixsigns_max = 100   "{{{2
+    let g:quickfixsigns_max = 500   "{{{2
 endif
 
 
