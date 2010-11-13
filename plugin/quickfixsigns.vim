@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2010-11-13.
-" @Revision:    672
+" @Revision:    679
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -354,7 +354,7 @@ function! s:ClearBuffer(class, sign, bufnr, new_ikeys) "{{{3
     for ikey in old_ikeys
         let def = g:quickfixsigns_register[ikey]
         " TLogVAR def
-        echom 'DBG sign unplace '. def.id .' buffer='. def.bufnr
+        " echom "DBG sign unplace ". def.id .' buffer='. def.bufnr
         exec 'sign unplace '. def.id .' buffer='. def.bufnr
         call remove(g:quickfixsigns_register, ikey)
     endfor
@@ -389,12 +389,10 @@ function! s:SetItemId(item) "{{{3
     else
         let scope = s:Scope(a:item.class, a:item)
         let sign = s:GetSign(g:quickfixsigns_class_{a:item.class}.sign, a:item)
-        if scope == 'buffer'
-            let ikey = join([a:item.lnum, a:item.class, sign, bufnr], "\t")
-        elseif scope == 'vim'
-            let ikey = join([a:item.lnum, a:item.class, sign], "\t")
+        if has_key(a:item, 'ikey') && !empty(a:ikey.ikey)
+            let ikey = a:item.ikey
         else
-            echoerr 'QuickFixSigns: Internal error: Unknown scope:' scope string(a:item)
+            let ikey = join([a:item.lnum, a:item.class, sign, bufnr], "\t")
         endif
         if has_key(g:quickfixsigns_register, ikey)
             let item = extend(copy(g:quickfixsigns_register[ikey]), a:item)
