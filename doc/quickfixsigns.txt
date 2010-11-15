@@ -115,9 +115,12 @@ g:quickfixsigns_events         (default: ['BufEnter', 'CursorHold', 'CursorHoldI
                                                     *g:quickfixsigns_class_rel*
 g:quickfixsigns_class_rel      (default: {'sign': '*s:RelSign', 'get': 's:GetRelList("rel")', 'event': g:quickfixsigns_events, 'max': 9, 'level': 9})
     Signs for number of lines relative to the current line.
+    Since 7.3, vim provides the 'relativenumber' option that provides 
+    a similar functionality.
+    See also |quickfixsigns#RelNumbersOnce()|.
 
                                                     *g:quickfixsigns_class_qfl*
-g:quickfixsigns_class_qfl      (default: {'sign': 'QFS_QFL', 'get': 'getqflist()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'all_buffers': 1})
+g:quickfixsigns_class_qfl      (default: {'sign': 'QFS_QFL', 'get': 'getqflist()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'scope': 'vim'})
     Signs for |quickfix| lists.
 
                                                     *g:quickfixsigns_class_loc*
@@ -125,8 +128,10 @@ g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 'getloclist(
     Signs for |location| lists.
 
                                                     *g:quickfixsigns_class_cursor*
-g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI']})
-    Sign for the current cursor position
+g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events})
+    Sign for the current cursor position. The cursor position is 
+    lazily updated. If you want something more precise, consider 
+    setting 'cursorline'.
 
                                                     *g:quickfixsigns_balloon*
 g:quickfixsigns_balloon        (default: 1)
@@ -135,7 +140,7 @@ g:quickfixsigns_balloon        (default: 1)
     buffer-local or global
 
                                                     *g:quickfixsigns_max*
-g:quickfixsigns_max            (default: 100)
+g:quickfixsigns_max            (default: 500)
     Don't display signs if the list is longer than n items.
 
                                                     *g:quickfixsigns_blacklist_buffer*
@@ -185,6 +190,7 @@ quickfixsigns#CompleteSelect(ArgLead, CmdLine, CursorPos)
                                                     *quickfixsigns#RelNumbersOnce()*
 quickfixsigns#RelNumbersOnce()
     Display relative line numbers. Remove the signs when the cursor moves.
+    From vim 7.3 on, this uses the 'relativenumber' option.
 
 
 ========================================================================

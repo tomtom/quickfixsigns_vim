@@ -4,14 +4,14 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2010-11-13.
-" @Revision:    681
+" @Last Change: 2010-11-15.
+" @Revision:    686
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
     finish
 endif
-let loaded_quickfixsigns = 10
+let loaded_quickfixsigns = 11
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -61,6 +61,9 @@ endif
 
 if !exists('g:quickfixsigns_class_rel')
     " Signs for number of lines relative to the current line.
+    " Since 7.3, vim provides the 'relativenumber' option that provides 
+    " a similar functionality.
+    " See also |quickfixsigns#RelNumbersOnce()|.
     let g:quickfixsigns_class_rel = {'sign': '*s:RelSign', 'get': 's:GetRelList("rel")', 'event': g:quickfixsigns_events, 'max': 9, 'level': 9}  "{{{2
 endif
 let g:quickfixsigns_class_rel2 = copy(g:quickfixsigns_class_rel)
@@ -81,8 +84,10 @@ endif
 
 
 if !exists('g:quickfixsigns_class_cursor')
-    " Sign for the current cursor position
-    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI']}   "{{{2
+    " Sign for the current cursor position. The cursor position is 
+    " lazily updated. If you want something more precise, consider 
+    " setting 'cursorline'.
+    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events}   "{{{2
 endif
 
 
