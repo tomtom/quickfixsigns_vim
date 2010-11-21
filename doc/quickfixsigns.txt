@@ -107,6 +107,7 @@ g:quickfixsigns_classes        (default: ['cursor', 'qfl', 'loc', 'marks', 'vcsd
              compatible with |getqflist()|.
       event: The event on which signs of this type should be set. 
              Possible values: BufEnter, any
+      test:  Update the sign only if the expression is true.
 
                                                     *g:quickfixsigns_events*
 g:quickfixsigns_events         (default: ['BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter', 'InsertChange'])
@@ -128,7 +129,7 @@ g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 'getloclist(
     Signs for |location| lists.
 
                                                     *g:quickfixsigns_class_cursor*
-g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events})
+g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': ['BufEnter', 'CursorMoved', 'CursorMovedI'], 'test': 'line(".") != s:cursor_last_line'})
     Sign for the current cursor position. The cursor position is 
     lazily updated. If you want something more precise, consider 
     setting 'cursorline'.

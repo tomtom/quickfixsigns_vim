@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2010-11-15.
-" @Revision:    686
+" @Last Change: 2010-11-21.
+" @Revision:    694
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -48,6 +48,7 @@ if !exists('g:quickfixsigns_classes')
     "          compatible with |getqflist()|.
     "   event: The event on which signs of this type should be set. 
     "          Possible values: BufEnter, any
+    "   test:  Update the sign only if the expression is true.
     let g:quickfixsigns_classes = ['cursor', 'qfl', 'loc', 'marks', 'vcsdiff']   "{{{2
     " let g:quickfixsigns_classes = ['rel', 'qfl', 'loc', 'marks']   "{{{2
 endif
@@ -87,7 +88,8 @@ if !exists('g:quickfixsigns_class_cursor')
     " Sign for the current cursor position. The cursor position is 
     " lazily updated. If you want something more precise, consider 
     " setting 'cursorline'.
-    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events}   "{{{2
+    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events, 'test': 'line(".") != s:cursor_last_line'}   "{{{2
+    " let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': ['BufEnter', 'CursorMoved', 'CursorMovedI'], 'test': 'line(".") != s:cursor_last_line'}   "{{{2
 endif
 
 
@@ -225,7 +227,14 @@ function! QuickfixsignsSet(event) "{{{3
         let anyway = empty(a:event)
         for [key, def] in s:ListValues()
             " TLogVAR key, def
-            if anyway || index(get(def, 'event', ['BufEnter']), a:event) != -1
+            if anyway
+                let set = 1
+            elseif index(get(def, 'event', ['BufEnter']), a:event) != -1
+                let set = !has_key(def, 'test') || eval(def.test)
+            else
+                let set = 0
+            endif
+            if set
                 let t_d = get(def, 'timeout', 0)
                 let t_l = localtime()
                 let t_s = string(def)
