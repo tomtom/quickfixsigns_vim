@@ -3,8 +3,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-11-13.
-" @Revision:    26
+" @Last Change: 2010-11-26.
+" @Revision:    27
 
 if index(g:quickfixsigns_classes, 'marks') == -1
     finish
