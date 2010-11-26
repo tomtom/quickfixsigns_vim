@@ -49,7 +49,7 @@ if !exists('g:quickfixsigns_classes')
     "   event: The event on which signs of this type should be set. 
     "          Possible values: BufEnter, any
     "   test:  Update the sign only if the expression is true.
-    let g:quickfixsigns_classes = ['cursor', 'qfl', 'loc', 'marks', 'vcsdiff']   "{{{2
+    let g:quickfixsigns_classes = ['cursor', 'qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints']   "{{{2
     " let g:quickfixsigns_classes = ['rel', 'qfl', 'loc', 'marks']   "{{{2
 endif
 
@@ -121,7 +121,8 @@ if !exists('g:quickfixsigns_icons')
                 let g:quickfixsigns_icons = {
                             \ 'qfl': s:icons_dir .'status/dialog-error-5.png',
                             \ 'loc': s:icons_dir .'status/dialog-warning-4.png',
-                            \ 'cursor': s:icons_dir .'actions/go-next-4.png'
+                            \ 'cursor': s:icons_dir .'actions/go-next-4.png',
+                            \ 'breakpoint': s:icons_dir .'actions/media-playback-pause-3.png'
                             \ }
             endif
             unlet s:icons_dir
