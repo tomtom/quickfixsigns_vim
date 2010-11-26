@@ -3,8 +3,14 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-11-11.
-" @Revision:    174
+" @Last Change: 2010-11-22.
+" @Revision:    176
+
+if exists('g:quickfixsigns#vcsdiff#loaded')
+    finish
+endif
+let g:quickfixsigns#vcsdiff#loaded = 1
+
 
 if index(g:quickfixsigns_classes, 'vcsdiff') == -1
     finish
