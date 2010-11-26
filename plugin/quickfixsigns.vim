@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2010-11-26.
-" @Revision:    699
+" @Revision:    716
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -210,11 +210,12 @@ function! QuickfixsignsUpdate(...) "{{{3
 endf
 
 
+" :display: QuickfixsignsSet(event, ?classes=[])
 " (Re-)Set the signs that should be updated at a certain event. If event 
 " is empty, update all signs.
 "
 " Normally, the end-user doesn't need to call this function.
-function! QuickfixsignsSet(event) "{{{3
+function! QuickfixsignsSet(event, ...) "{{{3
     if exists("b:noquickfixsigns") && b:noquickfixsigns
         return
     endif
@@ -226,6 +227,7 @@ function! QuickfixsignsSet(event) "{{{3
     " try
         let bufnr = bufnr('%')
         let anyway = empty(a:event)
+        " TLogVAR anyway, a:event
         for [key, def] in s:ListValues()
             " TLogVAR key, def
             if anyway
@@ -235,7 +237,12 @@ function! QuickfixsignsSet(event) "{{{3
             else
                 let set = 0
             endif
-            if set
+            if a:0 >= 1 && !empty(a:1)
+                let select = index(a:1, key) != -1
+            else
+                let select = 1
+            endif
+            if set && select
                 let t_d = get(def, 'timeout', 0)
                 let t_l = localtime()
                 let t_s = string(def)
