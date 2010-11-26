@@ -3,7 +3,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-11-26.
 " @Last Change: 2010-11-26.
-" @Revision:    20
+" @Revision:    25
 
 
 if exists('g:quickfixsigns#breakpoints#loaded')
@@ -17,12 +17,21 @@ if index(g:quickfixsigns_classes, 'breakpoints') == -1
 endif
 
 
+if !exists('g:quickfixsigns#breakpoints#filetypes')
+    " :read: let g:quickfixsigns#breakpoints#filetypes = {...}   "{{{2
+    let g:quickfixsigns#breakpoints#filetypes = {
+                \ 'vim': 'quickfixsigns#breakpoints#Vim'
+                \ }
+endif
+
+
 if !exists('g:quickfixsigns_class_breakpoints')
     " :display: let g:quickfixsigns_class_breakpoints = {...}   "{{{2
     let g:quickfixsigns_class_breakpoints = {
                 \ 'sign': 'QFS_BREAKPOINT',
                 \ 'get': 'quickfixsigns#breakpoints#GetList()',
                 \ 'event': g:quickfixsigns_events,
+                \ 'test': 'has_key(g:quickfixsigns#breakpoints#filetypes, &ft)',
                 \ 'timeout': 5
                 \ }
                 " \ 'event': ['BufEnter,BufWritePost']
@@ -38,15 +47,8 @@ if g:quickfixsigns_class_breakpoints.sign == 'QFS_BREAKPOINT'
 endif
 
 
-if !exists('g:quickfixsigns#breakpoints#filetypes')
-    " :read: let g:quickfixsigns#breakpoints#filetypes = {...}   "{{{2
-    let g:quickfixsigns#breakpoints#filetypes = {
-                \ 'vim': 'quickfixsigns#breakpoints#Vim'
-                \ }
-endif
-
-
 function! quickfixsigns#breakpoints#GetList() "{{{3
+    " TLogVAR &filetype
     if has_key(g:quickfixsigns#breakpoints#filetypes, &filetype)
         return call(g:quickfixsigns#breakpoints#filetypes[&filetype], [])
     else
