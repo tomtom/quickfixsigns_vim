@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2010-11-26.
-" @Revision:    716
+" @Last Change: 2010-11-28.
+" @Revision:    723
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -140,7 +140,6 @@ endif
 " ----------------------------------------------------------------------
 let s:quickfixsigns_base = 5272
 let g:quickfixsigns_register = {}
-let s:cursor_last_line = 0
 let s:last_run = {}
 
 
@@ -221,6 +220,9 @@ function! QuickfixsignsSet(event, ...) "{{{3
     if bufname('%') =~ g:quickfixsigns_blacklist_buffer
         return
     endif
+    if !exists('b:quickfixsigns_last_line')
+        let b:quickfixsigns_last_line = 0
+    endif
     " let lz = &lazyredraw
     " set lz
     " try
@@ -280,6 +282,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     "         let &lz = lz
     "     endif
     " endtry
+    let b:quickfixsigns_last_line = line('.')
 endf
 
 
@@ -309,7 +312,6 @@ endf
 
 function! s:GetCursor() "{{{3
     let pos = getpos('.')
-    let s:cursor_last_line = pos[1]
     return [{'bufnr': bufnr('%'), 'lnum': pos[1], 'col': pos[2], 'text': 'Current line'}]
 endf
 
