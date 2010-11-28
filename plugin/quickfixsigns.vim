@@ -49,7 +49,7 @@ if !exists('g:quickfixsigns_classes')
     "   event: The event on which signs of this type should be set. 
     "          Possible values: BufEnter, any
     "   test:  Update the sign only if the expression is true.
-    let g:quickfixsigns_classes = ['cursor', 'qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints']   "{{{2
+    let g:quickfixsigns_classes = ['qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints']   "{{{2
     " let g:quickfixsigns_classes = ['rel', 'qfl', 'loc', 'marks']   "{{{2
 endif
 
@@ -89,7 +89,6 @@ if !exists('g:quickfixsigns_class_cursor')
     " lazily updated. If you want something more precise, consider 
     " setting 'cursorline'.
     let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events}   "{{{2
-    " let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': ['BufEnter', 'CursorMoved', 'CursorMovedI'], 'test': 'line(".") != s:cursor_last_line'}   "{{{2
 endif
 
 
