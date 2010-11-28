@@ -41,34 +41,38 @@ please make sure, you have the current version of vimball
 ========================================================================
 Contents~
 
-        :QuickfixsignsSet .................... |:QuickfixsignsSet|
-        :QuickfixsignsSelect ................. |:QuickfixsignsSelect|
-        g:quickfixsigns_classes .............. |g:quickfixsigns_classes|
-        g:quickfixsigns_events ............... |g:quickfixsigns_events|
-        g:quickfixsigns_class_rel ............ |g:quickfixsigns_class_rel|
-        g:quickfixsigns_class_qfl ............ |g:quickfixsigns_class_qfl|
-        g:quickfixsigns_class_loc ............ |g:quickfixsigns_class_loc|
-        g:quickfixsigns_class_cursor ......... |g:quickfixsigns_class_cursor|
-        g:quickfixsigns_balloon .............. |g:quickfixsigns_balloon|
-        g:quickfixsigns_max .................. |g:quickfixsigns_max|
-        g:quickfixsigns_blacklist_buffer ..... |g:quickfixsigns_blacklist_buffer|
-        g:quickfixsigns_icons ................ |g:quickfixsigns_icons|
-        QuickfixsignsSelect .................. |QuickfixsignsSelect()|
-        QuickfixsignsUpdate .................. |QuickfixsignsUpdate()|
-        QuickfixsignsSet ..................... |QuickfixsignsSet()|
-        QuickfixsignsBalloon ................. |QuickfixsignsBalloon()|
-        QuickfixsignsClear ................... |QuickfixsignsClear()|
-        g:quickfixsigns#use_relativenumber ... |g:quickfixsigns#use_relativenumber|
-        quickfixsigns#CompleteSelect ......... |quickfixsigns#CompleteSelect()|
-        quickfixsigns#RelNumbersOnce ......... |quickfixsigns#RelNumbersOnce()|
-        g:quickfixsigns_class_vcsdiff ........ |g:quickfixsigns_class_vcsdiff|
-        g:quickfixsigns#vcsdiff#highlight .... |g:quickfixsigns#vcsdiff#highlight|
-        quickfixsigns#vcsdiff#GuessType ...... |quickfixsigns#vcsdiff#GuessType()|
-        quickfixsigns#vcsdiff#GetList ........ |quickfixsigns#vcsdiff#GetList()|
-        g:quickfixsigns_class_marks .......... |g:quickfixsigns_class_marks|
-        g:quickfixsigns#marks#marks .......... |g:quickfixsigns#marks#marks|
-        quickfixsigns#marks#GetList .......... |quickfixsigns#marks#GetList()|
-        quickfixsigns#marks#GetSign .......... |quickfixsigns#marks#GetSign()|
+        :QuickfixsignsSet ........................ |:QuickfixsignsSet|
+        :QuickfixsignsSelect ..................... |:QuickfixsignsSelect|
+        g:quickfixsigns_classes .................. |g:quickfixsigns_classes|
+        g:quickfixsigns_events ................... |g:quickfixsigns_events|
+        g:quickfixsigns_class_rel ................ |g:quickfixsigns_class_rel|
+        g:quickfixsigns_class_qfl ................ |g:quickfixsigns_class_qfl|
+        g:quickfixsigns_class_loc ................ |g:quickfixsigns_class_loc|
+        g:quickfixsigns_class_cursor ............. |g:quickfixsigns_class_cursor|
+        g:quickfixsigns_balloon .................. |g:quickfixsigns_balloon|
+        g:quickfixsigns_max ...................... |g:quickfixsigns_max|
+        g:quickfixsigns_blacklist_buffer ......... |g:quickfixsigns_blacklist_buffer|
+        g:quickfixsigns_icons .................... |g:quickfixsigns_icons|
+        QuickfixsignsSelect ...................... |QuickfixsignsSelect()|
+        QuickfixsignsUpdate ...................... |QuickfixsignsUpdate()|
+        QuickfixsignsSet ......................... |QuickfixsignsSet()|
+        QuickfixsignsBalloon ..................... |QuickfixsignsBalloon()|
+        QuickfixsignsClear ....................... |QuickfixsignsClear()|
+        g:quickfixsigns#use_relativenumber ....... |g:quickfixsigns#use_relativenumber|
+        quickfixsigns#CompleteSelect ............. |quickfixsigns#CompleteSelect()|
+        quickfixsigns#RelNumbersOnce ............. |quickfixsigns#RelNumbersOnce()|
+        g:quickfixsigns_class_vcsdiff ............ |g:quickfixsigns_class_vcsdiff|
+        g:quickfixsigns#vcsdiff#highlight ........ |g:quickfixsigns#vcsdiff#highlight|
+        quickfixsigns#vcsdiff#GuessType .......... |quickfixsigns#vcsdiff#GuessType()|
+        quickfixsigns#vcsdiff#GetList ............ |quickfixsigns#vcsdiff#GetList()|
+        g:quickfixsigns_class_marks .............. |g:quickfixsigns_class_marks|
+        g:quickfixsigns#marks#marks .............. |g:quickfixsigns#marks#marks|
+        quickfixsigns#marks#GetList .............. |quickfixsigns#marks#GetList()|
+        quickfixsigns#marks#GetSign .............. |quickfixsigns#marks#GetSign()|
+        g:quickfixsigns#breakpoints#filetypes .... |g:quickfixsigns#breakpoints#filetypes|
+        g:quickfixsigns_class_breakpoints ........ |g:quickfixsigns_class_breakpoints|
+        quickfixsigns#breakpoints#GetList ........ |quickfixsigns#breakpoints#GetList()|
+        quickfixsigns#breakpoints#Vim ............ |quickfixsigns#breakpoints#Vim()|
 
 
 ========================================================================
@@ -84,7 +88,7 @@ plugin/quickfixsigns.vim~
     in the current buffer.
 
                                                     *g:quickfixsigns_classes*
-g:quickfixsigns_classes        (default: ['cursor', 'qfl', 'loc', 'marks', 'vcsdiff'])
+g:quickfixsigns_classes        (default: ['qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints'])
     A list of sign classes that should be displayed.
     Can be one of:
     
@@ -129,7 +133,7 @@ g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 'getloclist(
     Signs for |location| lists.
 
                                                     *g:quickfixsigns_class_cursor*
-g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': ['BufEnter', 'CursorMoved', 'CursorMovedI'], 'test': 'line(".") != s:cursor_last_line'})
+g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events})
     Sign for the current cursor position. The cursor position is 
     lazily updated. If you want something more precise, consider 
     setting 'cursorline'.
@@ -161,7 +165,7 @@ QuickfixsignsSelect(list)
 QuickfixsignsUpdate(?class="")
 
                                                     *QuickfixsignsSet()*
-QuickfixsignsSet(event)
+QuickfixsignsSet(event, ?classes=[])
     (Re-)Set the signs that should be updated at a certain event. If event 
     is empty, update all signs.
     
@@ -239,6 +243,22 @@ quickfixsigns#marks#GetList()
 
                                                     *quickfixsigns#marks#GetSign()*
 quickfixsigns#marks#GetSign(item)
+
+
+========================================================================
+autoload/quickfixsigns/breakpoints.vim~
+
+                                                    *g:quickfixsigns#breakpoints#filetypes*
+g:quickfixsigns#breakpoints#filetypes (default: {...})
+
+                                                    *g:quickfixsigns_class_breakpoints*
+g:quickfixsigns_class_breakpoints (default: {...})
+
+                                                    *quickfixsigns#breakpoints#GetList()*
+quickfixsigns#breakpoints#GetList()
+
+                                                    *quickfixsigns#breakpoints#Vim()*
+quickfixsigns#breakpoints#Vim()
 
 
 
