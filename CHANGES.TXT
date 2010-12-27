@@ -1,0 +1,22 @@
+version: "0.10"
+  - quickfixsigns#vcsdiff#GuessType(): use b:git_dir if set (by fugitive)
+  - vcsdiff: Support for hg, svn
+  - run qfl/loc checks more also on CursorHold & QuickfixCommandPost events
+  - Experimental support for icons (currently assumes that gnome icons 16x16 are ok)
+  - Support for sign classes that affect all buffers (all_buffers != 0)
+  - Avoid unnecessary updates
+  - Simplify handling of ids (construct a global id based on the sign definition)
+  - Include icons from the open icon library
+  - marks: Don't use own ID generator
+  - s:PruneRegister()
+  - Don't display icons on windows
+  MD5 checksum: 2ba95f98307ea61db8de28d6e60fb61b
+
+version: "0.11"
+  - Don't check the buffer number in s:ClearBuffer()
+  - Improved handling of scopes (vim, buffer)
+  - Always include the bufnr in the ID
+  - FIX: upper case marks
+  - Increase g:quickfixsigns_max = 500
+  MD5 checksum: 6fa3a5dd60e62af094f7f7fe41d8695f
+

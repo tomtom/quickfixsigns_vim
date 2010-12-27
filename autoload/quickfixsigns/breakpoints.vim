@@ -2,8 +2,8 @@
 " @Author:      Tom Link (mailto:micathom AT gmail com?subject=[vim])
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-11-26.
-" @Last Change: 2010-11-26.
-" @Revision:    25
+" @Last Change: 2010-11-28.
+" @Revision:    26
 
 
 if exists('g:quickfixsigns#breakpoints#loaded')
@@ -26,7 +26,7 @@ endif
 
 
 if !exists('g:quickfixsigns_class_breakpoints')
-    " :display: let g:quickfixsigns_class_breakpoints = {...}   "{{{2
+    " :read: let g:quickfixsigns_class_breakpoints = {...}   "{{{2
     let g:quickfixsigns_class_breakpoints = {
                 \ 'sign': 'QFS_BREAKPOINT',
                 \ 'get': 'quickfixsigns#breakpoints#GetList()',
