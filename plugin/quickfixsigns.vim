@@ -4,14 +4,14 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2010-11-28.
-" @Revision:    723
+" @Last Change: 2010-12-28.
+" @Revision:    725
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
     finish
 endif
-let loaded_quickfixsigns = 11
+let loaded_quickfixsigns = 12
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -506,48 +506,3 @@ augroup END
 
 let &cpo = s:save_cpo
 unlet s:save_cpo
-finish
-
-CHANGES:
-0.1
-- Initial release
-
-0.2
-- exists('b:quickfixsigns_balloonexpr')
-
-0.3
-- Old signs weren't always removed
-- Avoid "flicker" etc.
-- g:quickfixsigns_max: Don't display signs if the list is longer than n items.
-Incompatible changes:
-- Removed g:quickfixsigns_show_marks variable
-- g:quickfixsigns_marks: Marks that should be used for signs
-- g:quickfixsigns_lists: event field is a list
-- g:quickfixsigns_lists: timeout field: don't re-display this list more often than n seconds
-
-0.4
-- FIX: Error when g:quickfixsigns_marks = [] (thanks Ingo Karkat)
-- s:ClearBuffer: removed old code
-- QuickfixsignsMarks(state): Switch the display of marks on/off.
-
-0.5
-- Set balloonexpr only if empty (don't try to be smart)
-- Disable CursorMoved(I) events, when &lazyredraw isn't set.
-
-0.6
-- Don't require qfl.item.text to be set
-
-0.7
-- b:noquickfixsigns: If true, disable quickfixsigns for the current 
-buffer (patch by Sergey Khorev; must be set before entering a buffer)
-- b:quickfixsigns_ignore_marks: A list of ignored marks (per buffer)
-
-0.8
-- Support for relative line numbers
-- QuickfixsignsSet command
-- quickfixsigns#RelNumbersOnce()
-
-0.9
-- Support for vcs diff (this requires either b:vcs_type or 
-b:VCSCommandVCSType to be set to a supported vcs, e.g. git)
-
