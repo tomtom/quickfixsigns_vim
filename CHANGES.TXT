@@ -62,3 +62,14 @@ version: "0.11"
   - Increase g:quickfixsigns_max = 500
   MD5 checksum: 6fa3a5dd60e62af094f7f7fe41d8695f
 
+version: "0.12"
+  - 'test' field; additional test if a sign should be updated (e.g. update _cursor only if lnum has changed)
+  - breakpoints (currently vim only)
+  - set g:quickfixsigns#vcsdiff#loaded
+  - g:quickfixsigns_class_cursor: remove test (interferes with put & delete-like commands)
+  - breakpoints: test for a known filetype
+  - QuickfixsignsSet(event, ?classes=[])
+  - Disable the 'cursor' class by default.
+  - Set b:quickfixsigns_last_line
+  MD5 checksum: 936abcfd67be7efe52fb0f85481c8665
+
