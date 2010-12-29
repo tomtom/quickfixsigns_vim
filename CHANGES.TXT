@@ -95,3 +95,7 @@ version: "0.12"
   - Set b:quickfixsigns_last_line
   MD5 checksum: 936abcfd67be7efe52fb0f85481c8665
 
+version: "0.13"
+  - QuickfixsignsSelect(): check if g:quickfixsigns_class_{what} exists
+  MD5 checksum: 833e1a48f7a3d7460ae29795fb328be4
+
