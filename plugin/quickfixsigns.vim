@@ -65,22 +65,22 @@ if !exists('g:quickfixsigns_class_rel')
     " Since 7.3, vim provides the 'relativenumber' option that provides 
     " a similar functionality.
     " See also |quickfixsigns#RelNumbersOnce()|.
-    let g:quickfixsigns_class_rel = {'sign': '*s:RelSign', 'get': 's:GetRelList("rel")', 'event': g:quickfixsigns_events, 'max': 9, 'level': 9}  "{{{2
+    let g:quickfixsigns_class_rel = {'sign': '*s:RelSign', 'get': 's:GetRelList(%s, "rel")', 'event': g:quickfixsigns_events, 'max': 9, 'level': 9}  "{{{2
 endif
 let g:quickfixsigns_class_rel2 = copy(g:quickfixsigns_class_rel)
-let g:quickfixsigns_class_rel2.get = 's:GetRelList("rel2")'
+let g:quickfixsigns_class_rel2.get = 's:GetRelList(%s, "rel2")'
 let g:quickfixsigns_class_rel2.max = 99
 
 
 if !exists('g:quickfixsigns_class_qfl')
     " Signs for |quickfix| lists.
-    let g:quickfixsigns_class_qfl = {'sign': 'QFS_QFL', 'get': 'getqflist()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'scope': 'vim'}   "{{{2
+    let g:quickfixsigns_class_qfl = {'sign': 'QFS_QFL', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'scope': 'vim'}   "{{{2
 endif
 
 
 if !exists('g:quickfixsigns_class_loc')
     " Signs for |location| lists.
-    let g:quickfixsigns_class_loc = {'sign': 'QFS_LOC', 'get': 'getloclist(0)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI']}   "{{{2
+    let g:quickfixsigns_class_loc = {'sign': 'QFS_LOC', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI']}   "{{{2
 endif
 
 
@@ -88,7 +88,7 @@ if !exists('g:quickfixsigns_class_cursor')
     " Sign for the current cursor position. The cursor position is 
     " lazily updated. If you want something more precise, consider 
     " setting 'cursorline'.
-    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events}   "{{{2
+    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': g:quickfixsigns_events}   "{{{2
 endif
 
 
@@ -217,7 +217,9 @@ function! QuickfixsignsSet(event, ...) "{{{3
     if exists("b:noquickfixsigns") && b:noquickfixsigns
         return
     endif
-    if bufname('%') =~ g:quickfixsigns_blacklist_buffer
+    let filename = a:0 >= 2 ? a:2 : bufname('%')
+    " TLogVAR a:event, filename, bufname('%')
+    if filename =~ g:quickfixsigns_blacklist_buffer
         return
     endif
     if !exists('b:quickfixsigns_last_line')
@@ -226,7 +228,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     " let lz = &lazyredraw
     " set lz
     " try
-        let bufnr = bufnr('%')
+        let bufnr = bufnr(filename)
         let anyway = empty(a:event)
         " TLogVAR anyway, a:event
         for [key, def] in s:ListValues()
@@ -255,6 +257,9 @@ function! QuickfixsignsSet(event, ...) "{{{3
                     let s:last_run[t_s] = t_l
                     let list = copy(eval(def.get))
                     " TLogVAR list
+                    let getter = printf(def.get, string(filename))
+                    let list = copy(eval(getter))
+                    " TLogVAR getter, len(list)
                     " TLogVAR key, 'scope == buffer'
                     call filter(list, 's:Scope(key, v:val) == "vim" || v:val.bufnr == bufnr')
                     " TLogVAR list
@@ -310,7 +315,7 @@ function! QuickfixsignsBalloon() "{{{3
 endf
 
 
-function! s:GetCursor() "{{{3
+function! s:GetCursor(bufname) "{{{3
     let pos = getpos('.')
     return [{'bufnr': bufnr('%'), 'lnum': pos[1], 'col': pos[2], 'text': 'Current line'}]
 endf
@@ -333,7 +338,7 @@ function! s:RelSign(item) "{{{3
 endf
 
 
-function! s:GetRelList(class) "{{{3
+function! s:GetRelList(bufname, class) "{{{3
 	let lnum = line('.')
 	let col = col('.')
 	let bufnr = bufnr('%')
@@ -479,6 +484,16 @@ function! s:PlaceSign(class, sign, list) "{{{3
 endf
 
 
+function! s:GetQFList(bufname) "{{{3
+    return getqflist()
+endf
+
+
+function! s:GetLocList(bufname) "{{{3
+    return getloclist(0)
+endf
+
+
 runtime! autoload/quickfixsigns/*.vim
 call QuickfixsignsSelect(g:quickfixsigns_classes)
 unlet s:signss
@@ -490,7 +505,7 @@ augroup QuickFixSigns
     for [s:key, s:def] in s:ListValues()
         for s:ev in get(s:def, 'event', ['BufEnter'])
             if index(s:ev_set, s:ev) == -1
-                exec 'autocmd '. s:ev .' * call QuickfixsignsSet("'. s:ev .'")'
+                exec 'autocmd '. s:ev .' * call QuickfixsignsSet("'. s:ev .'", [], expand("<afile>"))'
                 call add(s:ev_set, s:ev)
             endif
         endfor

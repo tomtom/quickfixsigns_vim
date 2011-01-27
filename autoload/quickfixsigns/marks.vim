@@ -3,8 +3,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-11-26.
-" @Revision:    27
+" @Last Change: 2011-01-27.
+" @Revision:    28
 
 if index(g:quickfixsigns_classes, 'marks') == -1
     finish
@@ -16,7 +16,7 @@ if !exists('g:quickfixsigns_class_marks')
     " :read: let g:quickfixsigns_class_marks = {...} "{{{2
     let g:quickfixsigns_class_marks = {
                 \ 'sign': '*quickfixsigns#marks#GetSign',
-                \ 'get': 'quickfixsigns#marks#GetList()',
+                \ 'get': 'quickfixsigns#marks#GetList(%s)',
                 \ 'event': g:quickfixsigns_events,
                 \ 'timeout': 2
                 \ }
@@ -53,9 +53,9 @@ for s:i in g:quickfixsigns#marks#marks
 endfor
 unlet s:i
 
-function! quickfixsigns#marks#GetList() "{{{3
+function! quickfixsigns#marks#GetList(filename) "{{{3
     let acc = []
-    let bufnr  = bufnr('%')
+    let bufnr  = bufnr(a:filename)
     let ignore = exists('b:quickfixsigns_ignore_marks') ? b:quickfixsigns_ignore_marks : []
     for mark in g:quickfixsigns#marks#marks
         let pos = getpos("'". mark)

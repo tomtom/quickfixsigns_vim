@@ -18,7 +18,7 @@ endif
 
 
 if !exists('g:quickfixsigns_class_vcsdiff')
-    let g:quickfixsigns_class_vcsdiff = {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList()', 'event': ['BufEnter,BufWritePost']}   "{{{2
+    let g:quickfixsigns_class_vcsdiff = {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter,BufWritePost']}   "{{{2
 endif
 
 
@@ -80,8 +80,9 @@ endf
 
 " quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
 " VCS (see |g:quickfixsigns#vcsdiff#cmds|).
-function! quickfixsigns#vcsdiff#GetList() "{{{3
+function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
     let vcs_type = quickfixsigns#vcsdiff#GuessType()
+    " TLogVAR a:filename, vcs_type
     if has_key(g:quickfixsigns#vcsdiff#cmds, vcs_type)
         let cmdt = g:quickfixsigns#vcsdiff#cmds[vcs_type]
         let cmds = printf(cmdt, shellescape(expand('%')))
