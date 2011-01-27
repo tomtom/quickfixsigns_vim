@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2010-11-22.
-" @Revision:    176
+" @Last Change: 2011-01-27.
+" @Revision:    193
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -85,8 +85,17 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
     " TLogVAR a:filename, vcs_type
     if has_key(g:quickfixsigns#vcsdiff#cmds, vcs_type)
         let cmdt = g:quickfixsigns#vcsdiff#cmds[vcs_type]
-        let cmds = printf(cmdt, shellescape(expand('%')))
-        let diff = system(cmds)
+        let dir  = fnamemodify(a:filename, ':h')
+        let file = fnamemodify(a:filename, ':t')
+        let cmds = printf(cmdt, shellescape(file))
+        " TLogVAR cmds
+        let dir0 = expand('%:p:h')
+        exec 'cd' fnameescape(dir)
+        try
+            let diff = system(cmds)
+        finally
+            exec 'cd' fnameescape(dir0)
+        endtry
         " TLogVAR diff
         if !empty(diff)
             let lines = split(diff, '\n')
