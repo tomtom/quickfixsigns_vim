@@ -4,14 +4,14 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2010-12-29.
-" @Revision:    727
+" @Last Change: 2011-01-27.
+" @Revision:    757
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
     finish
 endif
-let loaded_quickfixsigns = 12
+let loaded_quickfixsigns = 13
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -140,7 +140,6 @@ endif
 " ----------------------------------------------------------------------
 let s:quickfixsigns_base = 5272
 let g:quickfixsigns_register = {}
-let s:last_run = {}
 
 
 redir => s:signss
@@ -246,17 +245,19 @@ function! QuickfixsignsSet(event, ...) "{{{3
                 let select = 1
             endif
             if set && select
+                " TLogVAR key, set, select
                 let t_d = get(def, 'timeout', 0)
                 let t_l = localtime()
                 let t_s = string(def)
+                if !exists('b:quickfixsigns_last_run')
+                    let b:quickfixsigns_last_run = {}
+                endif
                 " TLogVAR t_s, t_d, t_l
-                if anyway || (t_d == 0) || (t_l - get(s:last_run, t_s, 0) >= t_d)
+                if anyway || (t_d == 0) || (t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d)
                     if a:event == 'BufEnter'
                         call s:PruneRegister()
                     endif
-                    let s:last_run[t_s] = t_l
-                    let list = copy(eval(def.get))
-                    " TLogVAR list
+                    let b:quickfixsigns_last_run[t_s] = t_l
                     let getter = printf(def.get, string(filename))
                     let list = copy(eval(getter))
                     " TLogVAR getter, len(list)
