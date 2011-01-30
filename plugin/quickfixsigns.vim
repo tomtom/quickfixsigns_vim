@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-01-27.
-" @Revision:    757
+" @Last Change: 2011-01-30.
+" @Revision:    762
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -258,9 +258,8 @@ function! QuickfixsignsSet(event, ...) "{{{3
                         call s:PruneRegister()
                     endif
                     let b:quickfixsigns_last_run[t_s] = t_l
-                    let getter = printf(def.get, string(filename))
-                    let list = copy(eval(getter))
-                    " TLogVAR getter, len(list)
+                    let list = s:GetList(def, filename)
+                    " TLogVAR len(list)
                     " TLogVAR key, 'scope == buffer'
                     call filter(list, 's:Scope(key, v:val) == "vim" || v:val.bufnr == bufnr')
                     " TLogVAR list
@@ -292,14 +291,22 @@ function! QuickfixsignsSet(event, ...) "{{{3
 endf
 
 
+function! s:GetList(def, filename) "{{{3
+    let getter = printf(a:def.get, string(a:filename))
+    let list = copy(eval(getter))
+    return list
+endf
+
+
 function! QuickfixsignsBalloon() "{{{3
     " TLogVAR v:beval_lnum, v:beval_col
     if v:beval_col <= 1
         let lnum = v:beval_lnum
         let bufnr = bufnr('%')
+        let bufname = bufname(bufnr)
         let acc = []
         for [key, def] in s:ListValues()
-            let list = eval(def.get)
+            let list = s:GetList(def, bufname)
             call filter(list, 'v:val.bufnr == bufnr && v:val.lnum == lnum')
             if !empty(list)
                 let acc += list
