@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2011-01-27.
-" @Revision:    193
+" @Last Change: 2011-02-12.
+" @Revision:    200
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -104,10 +104,16 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
             let to = 0
             for line in lines
                 " TLogVAR from, line
-                if line =~ '^@@'
+                if line =~ '^@@\s'
                     let m = matchlist(line, '^@@ -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@')
                     " TLogVAR line, m
                     let to = m[3]
+                    " let change_lnum = m[1]
+                    let from = to
+                elseif line =~ '^@@@\s'
+                    let m = matchlist(line, '^@@@ -\(\d\+\)\(,\d\+\)\? -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@@')
+                    " TLogVAR line, m
+                    let to = m[5]
                     " let change_lnum = m[1]
                     let from = to
                 elseif from == 0
