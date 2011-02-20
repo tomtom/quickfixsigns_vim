@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2011-02-12.
-" @Revision:    200
+" @Last Change: 2011-02-20.
+" @Revision:    204
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -81,6 +81,9 @@ endf
 " quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
 " VCS (see |g:quickfixsigns#vcsdiff#cmds|).
 function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
+    if &buftype =~ '\<\(nofile\|quickfix\|help\)\>' || &previewwindow || exists('b:fugitive_type')
+        return []
+    endif
     let vcs_type = quickfixsigns#vcsdiff#GuessType()
     " TLogVAR a:filename, vcs_type
     if has_key(g:quickfixsigns#vcsdiff#cmds, vcs_type)
