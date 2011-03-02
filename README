@@ -1,4 +1,4 @@
-Mark intersting lines with signs:
+Mark interesting lines with signs:
 
     - items in the quickfix and location lists (e.g. compilation errors)
     - marks a-zA-Z
@@ -7,15 +7,20 @@ Mark intersting lines with signs:
 
 Other lists can be configured via the |g:quickfixsigns_lists| variable.
 
-The attached text ist displayed in a balloon -- it is possible though 
-that other plugins that set 'balloonexpr' disable this feature.
+The attached text is displayed in a balloon via 'balloonexpr'. This may
+conflict with the use of this feature by other plugins.
 
 If you want nicer looking images instead of the ASCII markers, you have 
-to change the following signs' definition in your |vimrc| file:
+to change the following signs' definition in your |vimrc| file (by use
+of |sign-define|):
 
     QFS_QFL ... Entries in the |quickfix| list
     QFS_LOC ... Entries in the |location-list|
     QFS_Mark_[a-zA-Z] ... Marks
+    QFS_CURSOR ... Current cursor position
+    QFS_BREAKPOINT ... Breakpoint
+    QFS_REL_x ... Relative line numbers
+    QFS_VCS_{ADD,DEL,CHANGE} ... VCS changes
 
 
 CREDITS:
