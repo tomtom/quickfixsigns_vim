@@ -10,7 +10,7 @@ Mark interesting lines with signs:
 
 Other lists can be configured via the |g:quickfixsigns_lists| variable.
 
-The attached text is displayed in a balloon via 'balloonexpr'. This may
+The attached text is displayed in a balloon via 'balloonexpr'. This may 
 conflict with the use of this feature by other plugins.
 
 If you want nicer looking images instead of the ASCII markers, you have 
@@ -25,7 +25,6 @@ of |sign-define|):
     QFS_REL_x ... Relative line numbers
     QFS_VCS_{ADD,DEL,CHANGE} ... VCS changes
 
-
 CREDITS:
 quickfixsigns includes some icons from the open icon library. See 
 http://openiconlibrary.sourceforge.net for details.
@@ -39,7 +38,7 @@ Edit the vba file and type: >
     :so %
 
 See :help vimball for details. If you have difficulties or use vim 7.0, 
-please make sure that you have the current version of vimball
+please make sure, you have the current version of vimball
 (vimscript #1502) installed or update your runtime.
 
 
@@ -123,22 +122,22 @@ g:quickfixsigns_events         (default: ['BufEnter', 'CursorHold', 'CursorHoldI
     List of events for signs that should be frequently updated.
 
                                                     *g:quickfixsigns_class_rel*
-g:quickfixsigns_class_rel      (default: {'sign': '*s:RelSign', 'get': 's:GetRelList("rel")', 'event': g:quickfixsigns_events, 'max': 9, 'level': 9})
+g:quickfixsigns_class_rel      (default: {'sign': '*s:RelSign', 'get': 's:GetRelList(%s, "rel")', 'event': g:quickfixsigns_events, 'max': 9, 'level': 9})
     Signs for number of lines relative to the current line.
     Since 7.3, vim provides the 'relativenumber' option that provides 
     a similar functionality.
     See also |quickfixsigns#RelNumbersOnce()|.
 
                                                     *g:quickfixsigns_class_qfl*
-g:quickfixsigns_class_qfl      (default: {'sign': 'QFS_QFL', 'get': 'getqflist()', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'scope': 'vim'})
+g:quickfixsigns_class_qfl      (default: {'sign': 'QFS_QFL', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'scope': 'vim'})
     Signs for |quickfix| lists.
 
                                                     *g:quickfixsigns_class_loc*
-g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 'getloclist(0)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI']})
+g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI']})
     Signs for |location| lists.
 
                                                     *g:quickfixsigns_class_cursor*
-g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor()', 'event': g:quickfixsigns_events})
+g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': g:quickfixsigns_events})
     Sign for the current cursor position. The cursor position is 
     lazily updated. If you want something more precise, consider 
     setting 'cursorline'.
@@ -155,7 +154,7 @@ g:quickfixsigns_max            (default: 500)
 
                                                     *g:quickfixsigns_blacklist_buffer*
 g:quickfixsigns_blacklist_buffer (default: '^__.*__$')
-    Don't display signs in buffers matching this |regexp|.
+    Don't show signs in buffers matching this |regexp|.
 
                                                     *g:quickfixsigns_icons*
 g:quickfixsigns_icons          (default: {})
@@ -207,7 +206,7 @@ quickfixsigns#RelNumbersOnce()
 autoload/quickfixsigns/vcsdiff.vim~
 
                                                     *g:quickfixsigns_class_vcsdiff*
-g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList()', 'event': ['BufEnter,BufWritePost']})
+g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter,BufWritePost']})
 
                                                     *g:quickfixsigns#vcsdiff#highlight*
 g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAdd', 'CHANGE': 'DiffChange'})
@@ -226,7 +225,7 @@ quickfixsigns#vcsdiff#GuessType()
       - b:VCSCommandVCSType
 
                                                     *quickfixsigns#vcsdiff#GetList()*
-quickfixsigns#vcsdiff#GetList()
+quickfixsigns#vcsdiff#GetList(filename)
     quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
     VCS (see |g:quickfixsigns#vcsdiff#cmds|).
 
@@ -244,7 +243,7 @@ g:quickfixsigns#marks#marks    (default: split('abcdefghijklmnopqrstuvwxyzABCDEF
     disable the display of marks.
 
                                                     *quickfixsigns#marks#GetList()*
-quickfixsigns#marks#GetList()
+quickfixsigns#marks#GetList(filename)
 
                                                     *quickfixsigns#marks#GetSign()*
 quickfixsigns#marks#GetSign(item)
@@ -260,7 +259,7 @@ g:quickfixsigns#breakpoints#filetypes (default: {...})
 g:quickfixsigns_class_breakpoints (default: {...})
 
                                                     *quickfixsigns#breakpoints#GetList()*
-quickfixsigns#breakpoints#GetList()
+quickfixsigns#breakpoints#GetList(filename)
 
                                                     *quickfixsigns#breakpoints#Vim()*
 quickfixsigns#breakpoints#Vim()
