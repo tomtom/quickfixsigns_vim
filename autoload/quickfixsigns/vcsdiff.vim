@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2011-02-20.
-" @Revision:    204
+" @Revision:    205
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -92,12 +92,16 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
         let file = fnamemodify(a:filename, ':t')
         let cmds = printf(cmdt, shellescape(file))
         " TLogVAR cmds
-        let dir0 = expand('%:p:h')
-        exec 'cd' fnameescape(dir)
+        let oldCwd = getcwd()
+        let cdcommand = 'cd'
+        if exists("*haslocaldir") && haslocaldir()
+          let cdcommand = 'lcd'
+        endif
+        exec cdcommand fnameescape(dir)
         try
             let diff = system(cmds)
         finally
-            exec 'cd' fnameescape(dir0)
+            exec cdcommand fnameescape(oldCwd)
         endtry
         " TLogVAR diff
         if !empty(diff)
