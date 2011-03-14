@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2011-02-20.
-" @Revision:    205
+" @Last Change: 2011-03-14.
+" @Revision:    208
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -86,7 +86,8 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
     endif
     let vcs_type = quickfixsigns#vcsdiff#GuessType()
     " TLogVAR a:filename, vcs_type
-    if has_key(g:quickfixsigns#vcsdiff#cmds, vcs_type)
+    " Ignore files that are not readable
+    if has_key(g:quickfixsigns#vcsdiff#cmds, vcs_type) && filereadable(a:filename)
         let cmdt = g:quickfixsigns#vcsdiff#cmds[vcs_type]
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
