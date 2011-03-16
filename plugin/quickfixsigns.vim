@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-02-12.
-" @Revision:    764
+" @Last Change: 2011-03-16.
+" @Revision:    765
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -487,6 +487,7 @@ function! s:PlaceSign(class, sign, list) "{{{3
                 exec ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
             endif
         endif
+        unlet item
     endfor
     return new_ikeys
 endf
