@@ -189,13 +189,13 @@ endf
 
 
 function! QuickfixsignsSelect(list) "{{{3
-	" FIXME: unset first
+    " FIXME: unset first
     let g:quickfixsigns_lists = {}
-	for what in a:list
+    for what in a:list
         if exists('g:quickfixsigns_class_'. what)
             let g:quickfixsigns_lists[what] = g:quickfixsigns_class_{what}
         endif
-	endfor
+    endfor
 endf
 
 
@@ -347,9 +347,9 @@ endf
 
 
 function! s:GetRelList(bufname, class) "{{{3
-	let lnum = line('.')
-	let col = col('.')
-	let bufnr = bufnr('%')
+    let lnum = line('.')
+    let col = col('.')
+    let bufnr = bufnr('%')
     let top = line('w0') - lnum
     let bot = line('w$') - lnum
     let max = g:quickfixsigns_class_{a:class}.max
