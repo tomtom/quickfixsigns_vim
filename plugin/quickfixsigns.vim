@@ -474,7 +474,12 @@ function! s:PlaceSign(class, sign, list) "{{{3
         let sign = s:GetSign(a:sign, item)
         let item = extend(item, {'class': a:class, 'sign': a:sign}, 'keep')
         " TLogVAR item
-        let item = s:SetItemId(item)
+        let item_with_id = s:SetItemId(item)
+        if type(item_with_id) != type({})
+            " this might happen when opening a directory on startup (via NERDtree)
+            continue
+        endif
+        let item = item_with_id
         let ikey = item.ikey
         " TLogVAR ikey, item
         call add(new_ikeys, ikey)
@@ -487,7 +492,6 @@ function! s:PlaceSign(class, sign, list) "{{{3
                 exec ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
             endif
         endif
-        unlet item
     endfor
     return new_ikeys
 endf
