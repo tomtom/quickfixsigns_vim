@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-03-16.
-" @Revision:    765
+" @Last Change: 2011-04-02.
+" @Revision:    767
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -421,7 +421,7 @@ function! s:SetItemId(item) "{{{3
     " TLogVAR a:item
     let bufnr = get(a:item, 'bufnr', -1)
     if bufnr == -1
-        return -1
+        return  {}
     else
         let scope = s:Scope(a:item.class, a:item)
         let sign = s:GetSign(g:quickfixsigns_class_{a:item.class}.sign, a:item)
@@ -475,19 +475,20 @@ function! s:PlaceSign(class, sign, list) "{{{3
         let item = extend(item, {'class': a:class, 'sign': a:sign}, 'keep')
         " TLogVAR item
         let item = s:SetItemId(item)
-        let ikey = item.ikey
-        " TLogVAR ikey, item
-        call add(new_ikeys, ikey)
-        if item.new
-            let lnum = get(item, 'lnum', 0)
-            if lnum > 0
-                let id = item.id
-                " TLogVAR item
-                " TLogDBG ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
-                exec ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
+        if !empty(item)
+            let ikey = item.ikey
+            " TLogVAR ikey, item
+            call add(new_ikeys, ikey)
+            if item.new
+                let lnum = get(item, 'lnum', 0)
+                if lnum > 0
+                    let id = item.id
+                    " TLogVAR item
+                    " TLogDBG ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
+                    exec ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
+                endif
             endif
         endif
-        unlet item
     endfor
     return new_ikeys
 endf
