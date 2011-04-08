@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-04-02.
-" @Revision:    767
+" @Last Change: 2011-04-08.
+" @Revision:    769
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -391,7 +391,9 @@ function! s:ClearBuffer(class, sign, bufnr, new_ikeys) "{{{3
         let def = g:quickfixsigns_register[ikey]
         " TLogVAR def
         " echom "DBG sign unplace ". def.id .' buffer='. def.bufnr
-        exec 'sign unplace '. def.id .' buffer='. def.bufnr
+        if bufnr(def.bufnr) != -1
+            exec 'sign unplace '. def.id .' buffer='. def.bufnr
+        endif
         call remove(g:quickfixsigns_register, ikey)
     endfor
 endf
