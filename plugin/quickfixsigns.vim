@@ -371,14 +371,7 @@ function! QuickfixsignsClear(class) "{{{3
         call filter(ikeys, 'g:quickfixsigns_register[v:val].class ==# a:class')
     endif
     " TLogVAR ikeys
-    for ikey in ikeys
-        let def = g:quickfixsigns_register[ikey]
-        let bufnr = def.bufnr
-        if bufnr(bufnr) != -1
-            exec 'sign unplace '. def.id .' buffer='. bufnr
-        endif
-        call remove(g:quickfixsigns_register, ikey)
-    endfor
+    call s:ClearSigns(ikeys)
 endf
 
 
@@ -387,12 +380,17 @@ function! s:ClearBuffer(class, sign, bufnr, new_ikeys) "{{{3
     " TLogVAR a:class, a:sign, a:bufnr, a:new_ikeys
     let old_ikeys = keys(filter(copy(g:quickfixsigns_register), 'v:val.class ==# a:class && index(a:new_ikeys, v:key) == -1 && (s:Scope(a:class, v:val) == "vim" || v:val.bufnr == a:bufnr)'))
     " TLogVAR old_ikeys
-    for ikey in old_ikeys
+    call s:ClearSigns(old_ikeys)
+endf
+
+
+function! s:ClearSigns(ikeys) "{{{3
+    for ikey in a:ikeys
         let def = g:quickfixsigns_register[ikey]
-        " TLogVAR def
-        " echom "DBG sign unplace ". def.id .' buffer='. def.bufnr
-        if bufnr(def.bufnr) != -1
-            exec 'sign unplace '. def.id .' buffer='. def.bufnr
+        let bufnr = def.bufnr
+        if bufnr(bufnr) != -1
+            " TLogVAR ikey
+            exec 'sign unplace '. def.id .' buffer='. bufnr
         endif
         call remove(g:quickfixsigns_register, ikey)
     endfor
