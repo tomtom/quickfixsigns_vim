@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-04-08.
-" @Revision:    769
+" @Last Change: 2011-05-18.
+" @Revision:    783
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -428,9 +428,9 @@ function! s:SetItemId(item) "{{{3
         if has_key(a:item, 'ikey') && !empty(a:ikey.ikey)
             let ikey = a:item.ikey
         else
-            let ikey = join([a:item.lnum, a:item.class, sign, bufnr], "\t")
+            let ikey = printf("c:%s\ts:%s\tb:%d\tl:%d", a:item.class, sign, bufnr, a:item.lnum)
         endif
-        if has_key(g:quickfixsigns_register, ikey)
+        if has_key(g:quickfixsigns_register, ikey) && !get(g:quickfixsigns_class_{a:item.class}, 'always_new', 0)
             let item = extend(copy(g:quickfixsigns_register[ikey]), a:item)
             let item.new = 0
         else
