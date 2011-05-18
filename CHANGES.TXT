@@ -99,3 +99,27 @@ version: "0.13"
   - QuickfixsignsSelect(): check if g:quickfixsigns_class_{what} exists
   MD5 checksum: 833e1a48f7a3d7460ae29795fb328be4
 
+version: "0.14"
+  - Take more care to run autocommands on the right buffer
+  - vcsdiff: always run the vcs command in the buffer's directory
+  - make last_run buffer-local
+  - make last_run buffer-local
+  - QuickfixsignsBalloon: Error after recent change
+  - .gitignore
+  - Merge branch 'master' of github.com:tomtom/quickfixsigns_vim
+  - Support for git combined diff format
+  - Don't run vcsdiff#GetList() in special buffers (reported by rememberthemer)
+  - Doc review
+  - Do not change directory to current buffer's.
+  - Included the doc fixes by blueyed into the doc template.
+  - Merge git://github.com/blueyed/quickfixsigns_vim
+  - quickfixsigns#vcsdiff#GetList(): Ignore files that are not readable
+  - s:PlaceSign(): E706: Variable type mismatch for: item https://github.com/tomtom/quickfixsigns_vim/issues/#issue/7
+  - s:SetItemId() returns {} if item.bufnr == -1 (fix issue #7?)
+  - quickfixsigns#RelNumbersOnce(): temporarily enable &cul and &cuc
+  - s:ClearBuffer(): Check bufnr(def.bufnr) != -1 (issue #9)
+  - quickfixsigns#RelNumbersOnce(): Remove highlighting also on TabLeave and WinLeave events
+  - Clear*(): duplicate code
+  - always_new: avoid wrong optimizations for certain sign classes (e.g. vcsdiff), fixes #10
+  MD5 checksum: 542b6deeb5a0505f5bd6cfcaaeca9c57
+
