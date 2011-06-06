@@ -206,7 +206,7 @@ quickfixsigns#RelNumbersOnce()
 autoload/quickfixsigns/vcsdiff.vim~
 
                                                     *g:quickfixsigns_class_vcsdiff*
-g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter,BufWritePost']})
+g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter,BufWritePost'], 'always_new': 1})
 
                                                     *g:quickfixsigns#vcsdiff#highlight*
 g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAdd', 'CHANGE': 'DiffChange'})
