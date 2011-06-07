@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
-" @Last Change: 2011-04-20.
-" @Revision:    0.0.48
+" @Last Change: 2011-06-07.
+" @Revision:    0.0.55
 
 
 if !exists('g:quickfixsigns#use_relativenumber')
@@ -62,5 +62,21 @@ function! quickfixsigns#RelNumbersOnce() "{{{3
 endf
 
 
-" redraw
+function! quickfixsigns#AssertUniqueSigns(bufnr, bufsigns) "{{{3
+    let dict = {}
+    echohl WarningMsg
+    try
+        for bsign in a:bufsigns
+            let bsign1 = substitute(bsign, '\<id=\d\+\s', '', '')
+            if has_key(dict, bsign1)
+                echom "QuickFixSigns AssertUniqueSigns: duplicate:" bsign
+            else
+                let dict[bsign1] = 1
+            endif
+        endfor
+    finally
+        echohl NONE
+    endtry
+endf
+
 

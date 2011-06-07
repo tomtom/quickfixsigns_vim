@@ -25,6 +25,11 @@ command! QuickfixsignsSet call QuickfixsignsSet("")
 command! -nargs=+ -complete=customlist,quickfixsigns#CompleteSelect QuickfixsignsSelect call QuickfixsignsSelect([<f-args>]) | call QuickfixsignsUpdate()
 
 
+if !exists('g:quickfixsigns_debug')
+    let g:quickfixsigns_debug = 0
+endif
+
+
 if !exists('g:quickfixsigns_classes')
     " A list of sign classes that should be displayed.
     " Can be one of:
@@ -266,6 +271,9 @@ function! QuickfixsignsSet(event, ...) "{{{3
                     if !empty(list) && len(list) < g:quickfixsigns_max
                         let new_ids = s:PlaceSign(key, def.sign, list)
                         call s:ClearBuffer(key, def.sign, bufnr, new_ids)
+                        if g:quickfixsigns_debug
+                            call quickfixsigns#AssertUniqueSigns(bufnr, s:BufferSigns(bufnr))
+                        endif
                         if has('balloon_eval') && g:quickfixsigns_balloon
                             if exists('g:loaded_tlib') && g:loaded_tlib >= 39
                                 call tlib#balloon#Register('QuickfixsignsBalloon()')
