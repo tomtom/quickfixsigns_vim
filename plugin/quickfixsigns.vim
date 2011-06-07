@@ -4,14 +4,14 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-05-18.
-" @Revision:    783
+" @Last Change: 2011-06-07.
+" @Revision:    830
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
     finish
 endif
-let loaded_quickfixsigns = 13
+let loaded_quickfixsigns = 14
 
 let s:save_cpo = &cpo
 set cpo&vim
@@ -221,6 +221,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     if exists("b:noquickfixsigns") && b:noquickfixsigns
         return
     endif
+    " TLogVAR a:event, a:000
     let filename = a:0 >= 2 ? a:2 : bufname('%')
     " TLogVAR a:event, filename, bufname('%')
     if filename =~ g:quickfixsigns_blacklist_buffer
@@ -394,10 +395,10 @@ endf
 
 function! s:ClearSigns(ikeys) "{{{3
     for ikey in a:ikeys
-        let def = g:quickfixsigns_register[ikey]
+        let def   = g:quickfixsigns_register[ikey]
         let bufnr = def.bufnr
+        " TLogVAR ikey, bufnr
         if bufnr(bufnr) != -1
-            " TLogVAR ikey
             exec 'sign unplace '. def.id .' buffer='. bufnr
         endif
         call remove(g:quickfixsigns_register, ikey)
@@ -438,7 +439,8 @@ function! s:SetItemId(item) "{{{3
         else
             let ikey = printf("c:%s\ts:%s\tb:%d\tl:%d", a:item.class, sign, bufnr, a:item.lnum)
         endif
-        if has_key(g:quickfixsigns_register, ikey) && !get(g:quickfixsigns_class_{a:item.class}, 'always_new', 0)
+        " TLogVAR ikey
+        if has_key(g:quickfixsigns_register, ikey) && (get(g:quickfixsigns_class_{a:item.class}, 'always_new', 0) || s:SignExistsAt(bufnr, a:item.lnum, sign))
             let item = extend(copy(g:quickfixsigns_register[ikey]), a:item)
             let item.new = 0
         else
@@ -453,6 +455,48 @@ function! s:SetItemId(item) "{{{3
         let g:quickfixsigns_register[ikey] = item
         return item
     endif
+endf
+
+
+function! s:CreateBufferSignsCache() "{{{3
+    if exists('s:buffer_signs')
+        return 0
+    else
+        let s:buffer_signs = {}
+        return 1
+    endif
+endf
+
+
+function! s:RemoveBufferSignsCache(cbs) "{{{3
+    if a:cbs
+        unlet s:buffer_signs
+    endif
+endf
+
+
+function! s:SignExistsAt(bufnr, lnum, sign) "{{{3
+    " TLogVAR a:bufnr, a:lnum, a:sign
+    if !has_key(s:buffer_signs, a:bufnr)
+        let s:buffer_signs[a:bufnr] = s:BufferSigns(a:bufnr)
+    endif
+    let bsigns = copy(s:buffer_signs[a:bufnr])
+    let rx = printf('\V\^\s\*\w\+=%d\s\+\w\+=\d\+\s\+\w\+=%s', a:lnum, escape(a:sign, '\'))
+    call filter(bsigns, 'v:val =~ rx')
+    " TLogVAR rx, len(bsigns)
+    return len(bsigns) > 0
+endf
+
+
+function! s:BufferSigns(bufnr) "{{{3
+    redir => signss
+    exec 'silent sign place buffer='. a:bufnr
+    redir END
+    let signs = split(signss, '\n')
+    if len(signs) > 2
+        call remove(signs, 0, 1)
+    endif
+    return signs
 endf
 
 
@@ -478,26 +522,31 @@ function! s:PlaceSign(class, sign, list) "{{{3
     " TAssertType a:list, 'list'
     " TLogVAR a:sign, a:list
     let new_ikeys = []
-    for item in a:list
-        let sign = s:GetSign(a:sign, item)
-        let item = extend(item, {'class': a:class, 'sign': a:sign}, 'keep')
-        " TLogVAR item
-        let item = s:SetItemId(item)
-        if !empty(item)
-            let ikey = item.ikey
-            " TLogVAR ikey, item
-            call add(new_ikeys, ikey)
-            if item.new
-                let lnum = get(item, 'lnum', 0)
-                if lnum > 0
-                    let id = item.id
-                    " TLogVAR item
-                    " TLogDBG ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
-                    exec ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
+    let cbs = s:CreateBufferSignsCache()
+    try
+        for item in a:list
+            let sign = s:GetSign(a:sign, item)
+            let item = extend(item, {'class': a:class, 'sign': a:sign}, 'keep')
+            " TLogVAR item
+            let item = s:SetItemId(item)
+            if !empty(item)
+                let ikey = item.ikey
+                " TLogVAR ikey, item
+                call add(new_ikeys, ikey)
+                if item.new
+                    let lnum = get(item, 'lnum', 0)
+                    if lnum > 0
+                        let id = item.id
+                        " TLogVAR item
+                        " TLogDBG ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
+                        exec ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
+                    endif
                 endif
             endif
-        endif
-    endfor
+        endfor
+    finally
+        call s:RemoveBufferSignsCache(cbs)
+    endtry
     return new_ikeys
 endf
 
