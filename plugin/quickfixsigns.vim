@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-06-07.
-" @Revision:    830
+" @Last Change: 2011-06-16.
+" @Revision:    849
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -483,18 +483,30 @@ function! s:SignExistsAt(bufnr, lnum, sign) "{{{3
     let bsigns = copy(s:buffer_signs[a:bufnr])
     let rx = printf('\V\^\s\*\w\+=%d\s\+\w\+=\d\+\s\+\w\+=%s', a:lnum, escape(a:sign, '\'))
     call filter(bsigns, 'v:val =~ rx')
-    " TLogVAR rx, len(bsigns)
+    " if a:sign =~ '[.^]$' " DBG
+        " TLogVAR rx, len(bsigns)
+    " endif " DBG
     return len(bsigns) > 0
 endf
 
 
 function! s:BufferSigns(bufnr) "{{{3
-    redir => signss
+    if a:bufnr == -1
+        return []
+    endif
+    redir => l:signss
     exec 'silent sign place buffer='. a:bufnr
     redir END
-    let signs = split(signss, '\n')
-    if len(signs) > 2
-        call remove(signs, 0, 1)
+    if exists('l:signss')
+        let signs = split(l:signss, '\n')
+        if len(signs) > 2
+            call remove(signs, 0, 1)
+        endif
+    else
+        echohl WarningMsg
+        echom "DEBUG quickfixsigns: BufferSigns:" a:bufnr
+        echohl NONE
+        let signs = []
     endif
     return signs
 endf
@@ -563,7 +575,7 @@ endf
 
 runtime! autoload/quickfixsigns/*.vim
 call QuickfixsignsSelect(g:quickfixsigns_classes)
-unlet s:signss
+unlet! s:signss
 
 
 augroup QuickFixSigns
