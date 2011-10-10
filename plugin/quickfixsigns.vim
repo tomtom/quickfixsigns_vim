@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-06-16.
-" @Revision:    849
+" @Last Change: 2011-08-14.
+" @Revision:    851
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -234,72 +234,64 @@ function! QuickfixsignsSet(event, ...) "{{{3
     if !exists('b:quickfixsigns_last_line')
         let b:quickfixsigns_last_line = 0
     endif
-    " let lz = &lazyredraw
-    " set lz
-    " try
-        let bufnr = bufnr(filename)
-        let anyway = empty(a:event)
-        " TLogVAR anyway, a:event
-        for [key, def] in s:ListValues()
-            " TLogVAR key, def
-            if anyway
-                let set = 1
-            elseif index(get(def, 'event', ['BufEnter']), a:event) != -1
-                let set = !has_key(def, 'test') || eval(def.test)
-            else
-                let set = 0
+    let bufnr = bufnr(filename)
+    let anyway = empty(a:event)
+    " TLogVAR anyway, a:event
+    for [key, def] in s:ListValues()
+        " TLogVAR key, def
+        if anyway
+            let set = 1
+        elseif index(get(def, 'event', ['BufEnter']), a:event) != -1
+            let set = !has_key(def, 'test') || eval(def.test)
+        else
+            let set = 0
+        endif
+        if a:0 >= 1 && !empty(a:1)
+            let select = index(a:1, key) != -1
+        else
+            let select = 1
+        endif
+        if set && select
+            " TLogVAR key, set, select
+            let t_d = get(def, 'timeout', 0)
+            let t_l = localtime()
+            let t_s = string(def)
+            if !exists('b:quickfixsigns_last_run')
+                let b:quickfixsigns_last_run = {}
             endif
-            if a:0 >= 1 && !empty(a:1)
-                let select = index(a:1, key) != -1
-            else
-                let select = 1
-            endif
-            if set && select
-                " TLogVAR key, set, select
-                let t_d = get(def, 'timeout', 0)
-                let t_l = localtime()
-                let t_s = string(def)
-                if !exists('b:quickfixsigns_last_run')
-                    let b:quickfixsigns_last_run = {}
+            " TLogVAR t_s, t_d, t_l
+            if anyway || (t_d == 0) || (t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d)
+                if a:event == 'BufEnter'
+                    call s:PruneRegister()
                 endif
-                " TLogVAR t_s, t_d, t_l
-                if anyway || (t_d == 0) || (t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d)
-                    if a:event == 'BufEnter'
-                        call s:PruneRegister()
+                let b:quickfixsigns_last_run[t_s] = t_l
+                let list = s:GetList(def, filename)
+                " TLogVAR len(list)
+                " TLogVAR key, 'scope == buffer'
+                call filter(list, 's:Scope(key, v:val) == "vim" || v:val.bufnr == bufnr')
+                " TLogVAR list
+                if !empty(list) && len(list) < g:quickfixsigns_max
+                    let new_ids = s:PlaceSign(key, def.sign, list)
+                    call s:ClearBuffer(key, def.sign, bufnr, new_ids)
+                    if g:quickfixsigns_debug
+                        call quickfixsigns#AssertUniqueSigns(bufnr, s:BufferSigns(bufnr))
                     endif
-                    let b:quickfixsigns_last_run[t_s] = t_l
-                    let list = s:GetList(def, filename)
-                    " TLogVAR len(list)
-                    " TLogVAR key, 'scope == buffer'
-                    call filter(list, 's:Scope(key, v:val) == "vim" || v:val.bufnr == bufnr')
-                    " TLogVAR list
-                    if !empty(list) && len(list) < g:quickfixsigns_max
-                        let new_ids = s:PlaceSign(key, def.sign, list)
-                        call s:ClearBuffer(key, def.sign, bufnr, new_ids)
-                        if g:quickfixsigns_debug
-                            call quickfixsigns#AssertUniqueSigns(bufnr, s:BufferSigns(bufnr))
+                    if has('balloon_eval') && g:quickfixsigns_balloon
+                        if exists('g:loaded_tlib') && g:loaded_tlib >= 39
+                            call tlib#balloon#Register('QuickfixsignsBalloon()')
+                        elseif !exists('b:quickfixsigns_balloon') && empty(&balloonexpr)
+                            let b:quickfixsigns_ballooneval = &ballooneval
+                            let b:quickfixsigns_balloonexpr = &balloonexpr
+                            setlocal ballooneval balloonexpr=QuickfixsignsBalloon()
+                            let b:quickfixsigns_balloon = 1
                         endif
-                        if has('balloon_eval') && g:quickfixsigns_balloon
-                            if exists('g:loaded_tlib') && g:loaded_tlib >= 39
-                                call tlib#balloon#Register('QuickfixsignsBalloon()')
-                            elseif !exists('b:quickfixsigns_balloon') && empty(&balloonexpr)
-                                let b:quickfixsigns_ballooneval = &ballooneval
-                                let b:quickfixsigns_balloonexpr = &balloonexpr
-                                setlocal ballooneval balloonexpr=QuickfixsignsBalloon()
-                                let b:quickfixsigns_balloon = 1
-                            endif
-                        endif
-                    else
-                        call s:ClearBuffer(key, def.sign, bufnr, [])
                     endif
+                else
+                    call s:ClearBuffer(key, def.sign, bufnr, [])
                 endif
             endif
-        endfor
-    " finally
-    "     if &lz != lz
-    "         let &lz = lz
-    "     endif
-    " endtry
+        endif
+    endfor
     let b:quickfixsigns_last_line = line('.')
 endf
 
