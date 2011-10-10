@@ -72,9 +72,13 @@ if !exists('g:quickfixsigns_class_rel')
     " See also |quickfixsigns#RelNumbersOnce()|.
     let g:quickfixsigns_class_rel = {'sign': '*s:RelSign', 'get': 's:GetRelList(%s, "rel")', 'event': g:quickfixsigns_events, 'max': 9, 'level': 9}  "{{{2
 endif
-let g:quickfixsigns_class_rel2 = copy(g:quickfixsigns_class_rel)
-let g:quickfixsigns_class_rel2.get = 's:GetRelList(%s, "rel2")'
-let g:quickfixsigns_class_rel2.max = 99
+
+
+if !exists('g:quickfixsigns_class_rel2')
+    let g:quickfixsigns_class_rel2 = copy(g:quickfixsigns_class_rel)
+    let g:quickfixsigns_class_rel2.get = 's:GetRelList(%s, "rel2")'
+    let g:quickfixsigns_class_rel2.max = 99
+endif
 
 
 if !exists('g:quickfixsigns_class_qfl')
