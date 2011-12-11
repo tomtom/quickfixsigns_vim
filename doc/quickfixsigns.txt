@@ -46,6 +46,8 @@ please make sure, you have the current version of vimball
 Contents~
 
         :QuickfixsignsSet ........................ |:QuickfixsignsSet|
+        :QuickfixsignsDisable .................... |:QuickfixsignsDisable|
+        :QuickfixsignsEnable ..................... |:QuickfixsignsEnable|
         :QuickfixsignsSelect ..................... |:QuickfixsignsSelect|
         g:quickfixsigns_classes .................. |g:quickfixsigns_classes|
         g:quickfixsigns_events ................... |g:quickfixsigns_events|
@@ -65,6 +67,7 @@ Contents~
         g:quickfixsigns#use_relativenumber ....... |g:quickfixsigns#use_relativenumber|
         quickfixsigns#CompleteSelect ............. |quickfixsigns#CompleteSelect()|
         quickfixsigns#RelNumbersOnce ............. |quickfixsigns#RelNumbersOnce()|
+        quickfixsigns#AssertUniqueSigns .......... |quickfixsigns#AssertUniqueSigns()|
         g:quickfixsigns_class_vcsdiff ............ |g:quickfixsigns_class_vcsdiff|
         g:quickfixsigns#vcsdiff#highlight ........ |g:quickfixsigns#vcsdiff#highlight|
         quickfixsigns#vcsdiff#GuessType .......... |quickfixsigns#vcsdiff#GuessType()|
@@ -85,6 +88,14 @@ plugin/quickfixsigns.vim~
                                                     *:QuickfixsignsSet*
 :QuickfixsignsSet
     Reset the signs in the current buffer.
+
+                                                    *:QuickfixsignsDisable*
+:QuickfixsignsDisable
+    Disable quickfixsign.
+
+                                                    *:QuickfixsignsEnable*
+:QuickfixsignsEnable
+    Enable quickfixsign.
 
                                                     *:QuickfixsignsSelect*
 :QuickfixsignsSelect
@@ -200,6 +211,9 @@ quickfixsigns#CompleteSelect(ArgLead, CmdLine, CursorPos)
 quickfixsigns#RelNumbersOnce()
     Display relative line numbers. Remove the signs when the cursor moves.
     From vim 7.3 on, this uses the 'relativenumber' option.
+
+                                                    *quickfixsigns#AssertUniqueSigns()*
+quickfixsigns#AssertUniqueSigns(bufnr, bufsigns)
 
 
 ========================================================================

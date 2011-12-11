@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-08-14.
-" @Revision:    851
+" @Last Change: 2011-12-11.
+" @Revision:    857
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -16,9 +16,14 @@ let loaded_quickfixsigns = 14
 let s:save_cpo = &cpo
 set cpo&vim
 
-
 " Reset the signs in the current buffer.
 command! QuickfixsignsSet call QuickfixsignsSet("")
+
+" Disable quickfixsign.
+command! QuickfixsignsDisable call s:ClearSigns(keys(g:quickfixsigns_register)) | call QuickfixsignsSelect([])
+
+" Enable quickfixsign.
+command! QuickfixsignsEnable call QuickfixsignsSelect(g:quickfixsigns_classes) | QuickfixsignsSet
 
 " Select the sign classes that should be displayed and reset the signs 
 " in the current buffer.
@@ -570,7 +575,7 @@ endf
 
 
 runtime! autoload/quickfixsigns/*.vim
-call QuickfixsignsSelect(g:quickfixsigns_classes)
+QuickfixsignsEnable
 unlet! s:signss
 
 
