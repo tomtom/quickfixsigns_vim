@@ -272,6 +272,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
                 let b:quickfixsigns_last_run[t_s] = t_l
                 let list = s:GetList(def, filename)
                 " TLogVAR len(list)
+                " TLogVAR list
                 " TLogVAR key, 'scope == buffer'
                 call filter(list, 's:Scope(key, v:val) == "vim" || v:val.bufnr == bufnr')
                 " TLogVAR list
@@ -302,7 +303,9 @@ endf
 
 
 function! s:GetList(def, filename) "{{{3
+    " TLogVAR a:def, a:filename
     let getter = printf(a:def.get, string(a:filename))
+    " TLogVAR getter
     let list = copy(eval(getter))
     return list
 endf
@@ -570,7 +573,9 @@ endf
 
 
 function! s:GetLocList(bufname) "{{{3
-    return getloclist(0)
+    let loclist = getloclist(bufwinnr(a:bufname))
+    " TLogVAR a:bufname, bufnr(a:bufname), loclist
+    return loclist
 endf
 
 
