@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-12-12.
-" @Revision:    858
+" @Last Change: 2011-12-17.
+" @Revision:    887
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -231,7 +231,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
         return
     endif
     " TLogVAR a:event, a:000
-    let filename = a:0 >= 2 ? a:2 : bufname('%')
+    let filename = a:0 >= 2 ? a:2 : expand('%:p')
     " TLogVAR a:event, filename, bufname('%')
     if filename =~ g:quickfixsigns_blacklist_buffer
         return
@@ -241,7 +241,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     endif
     let bufnr = bufnr(filename)
     let anyway = empty(a:event)
-    " TLogVAR anyway, a:event
+    " TLogVAR bufnr, anyway, a:event
     for [key, def] in s:ListValues()
         " TLogVAR key, def
         if anyway
@@ -585,7 +585,7 @@ augroup QuickFixSigns
     for [s:key, s:def] in s:ListValues()
         for s:ev in get(s:def, 'event', ['BufEnter'])
             if index(s:ev_set, s:ev) == -1
-                exec 'autocmd '. s:ev .' * call QuickfixsignsSet("'. s:ev .'", [], expand("<afile>"))'
+                exec 'autocmd '. s:ev .' * call QuickfixsignsSet("'. s:ev .'", [], expand("<afile>:p"))'
                 call add(s:ev_set, s:ev)
             endif
         endfor
