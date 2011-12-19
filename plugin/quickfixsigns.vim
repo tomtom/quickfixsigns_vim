@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-12-17.
-" @Revision:    887
+" @Last Change: 2011-12-19.
+" @Revision:    897
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -274,7 +274,10 @@ function! QuickfixsignsSet(event, ...) "{{{3
                 " TLogVAR len(list)
                 " TLogVAR list
                 " TLogVAR key, 'scope == buffer'
-                call filter(list, 's:Scope(key, v:val) == "vim" || v:val.bufnr == bufnr')
+                let scope_test = s:GetScopeTest(key, bufnr, '')
+                if !empty(scope_test)
+                    call filter(list, scope_test)
+                endif
                 " TLogVAR list
                 if !empty(list) && len(list) < g:quickfixsigns_max
                     let new_ids = s:PlaceSign(key, def.sign, list)
@@ -391,7 +394,7 @@ endf
 " Clear all signs with name SIGN in buffer BUFNR.
 function! s:ClearBuffer(class, sign, bufnr, new_ikeys) "{{{3
     " TLogVAR a:class, a:sign, a:bufnr, a:new_ikeys
-    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), 'v:val.class ==# a:class && index(a:new_ikeys, v:key) == -1 && (s:Scope(a:class, v:val) == "vim" || v:val.bufnr == a:bufnr)'))
+    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest(a:class, a:bufnr, 'v:val.class ==# a:class && index(a:new_ikeys, v:key) == -1')))
     " TLogVAR old_ikeys
     call s:ClearSigns(old_ikeys)
 endf
@@ -404,6 +407,8 @@ function! s:ClearSigns(ikeys) "{{{3
         " TLogVAR ikey, bufnr
         if bufnr(bufnr) != -1
             exec 'sign unplace '. def.id .' buffer='. bufnr
+        elseif g:quickfixsigns_debug
+            echom "DBG Quickfixsigns:" ikey string(a:def)
         endif
         call remove(g:quickfixsigns_register, ikey)
     endfor
@@ -413,20 +418,27 @@ endf
 function! s:PruneRegister() "{{{3
     for [ikey, item] in items(g:quickfixsigns_register)
         if bufnr(item.bufnr) == -1
-            call remove(g:quickfixsigns_register, ikey)
+            let item = remove(g:quickfixsigns_register, ikey)
+            if g:quickfixsigns_debug
+                echom "Quickfixsigns PruneRegister:" ikey string(item)
+            endif
         endif
     endfor
 endf
 
 
-function! s:Scope(class, item) "{{{3
-    if has_key(a:item, 'scope')
-        let rv = a:item.scope
+function! s:GetScopeTest(class, bufnr, tests) "{{{3
+    let scope = empty(a:class) ? 'buffer' : get(g:quickfixsigns_class_{a:class}, 'scope', 'buffer')
+    if scope == "vim"
+        return a:tests
     else
-        let rv = get(g:quickfixsigns_class_{a:class}, 'scope', 'buffer')
+        let test = '(get(v:val, "scope", "buffer") == "vim" || v:val.bufnr == '. a:bufnr .')'
+        if empty(a:tests)
+            return test
+        else
+            return a:tests .' && '. test
+        endif
     endif
-    " TLogVAR rv, a:class, a:item
-    return rv
 endf
 
 
@@ -436,7 +448,6 @@ function! s:SetItemId(item) "{{{3
     if bufnr == -1
         return  {}
     else
-        let scope = s:Scope(a:item.class, a:item)
         let sign = s:GetSign(g:quickfixsigns_class_{a:item.class}.sign, a:item)
         if has_key(a:item, 'ikey') && !empty(a:ikey.ikey)
             let ikey = a:item.ikey
