@@ -391,6 +391,14 @@ function! QuickfixsignsClear(class) "{{{3
 endf
 
 
+function! QuickfixsignsRemoveBuffer(bufname) "{{{3
+    let bufnr = bufnr(a:bufname)
+    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest('', bufnr, '')))
+    " TLogVAR old_ikeys
+    call s:ClearSigns(old_ikeys)
+endf
+
+
 " Clear all signs with name SIGN in buffer BUFNR.
 function! s:ClearBuffer(class, sign, bufnr, new_ikeys) "{{{3
     " TLogVAR a:class, a:sign, a:bufnr, a:new_ikeys
@@ -610,6 +618,7 @@ augroup QuickFixSigns
     if exists('s:key')
         unlet s:ev s:key s:def
     endif
+    autocmd BufDelete call QuickfixsignsRemoveBuffer(expand("<afile>:p"))
     " autocmd BufRead,BufNewFile * exec 'sign place '. (s:quickfixsigns_base - 1) .' name=QFS_DUMMY line=1 buffer='. bufnr('%')
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
 augroup END
