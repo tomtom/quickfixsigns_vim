@@ -48,10 +48,15 @@ endif
 
 for s:i in g:quickfixsigns#marks#marks
 	if index(g:quickfixsigns_signs, 'QFS_Mark_'. s:i) == -1
-		exec 'sign define QFS_Mark_'. s:i .' text='. s:i .' texthl=Identifier'
+        let s:highlight = 'Identifier'
+        if exists('g:quickfixsigns#marks#highlight')
+            let s:highlight = g:quickfixsigns#marks#highlight
+        endif
+		exec 'sign define QFS_Mark_'. s:i .' text='. s:i .' texthl='.s:highlight
 	endif
 endfor
 unlet s:i
+unlet s:highlight
 
 function! quickfixsigns#marks#GetList(filename) "{{{3
     let acc = []
