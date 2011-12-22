@@ -27,7 +27,7 @@ endif
 " Supported vcs: git, hg, svn
 " :read: let g:quickfixsigns#vcsdiff#cmds = {...} {{{2
 let g:quickfixsigns#vcsdiff#cmds = {
-            \ 'git': 'git diff -U0 %s',
+            \ 'git': 'git diff --no-ext-diff -U0 %s',
             \ 'hg': 'hg diff -U0 %s',
             \ 'svn': 'svn diff -x -u %s',
             \ }
