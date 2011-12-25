@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2011-12-25.
-" @Revision:    931
+" @Revision:    937
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -48,7 +48,7 @@ if !exists('g:quickfixsigns_classes')
     "
     " The sign classes are defined in g:quickfixsigns_class_{NAME}.
     "
-    " A list definition is a |Dictionary| with the following fields:
+    " A sign class definition is a |Dictionary| with the following fields:
     "
     "   sign:  The name of the sign, which has to be defined. If the 
     "          value begins with "*", the value is interpreted as 
@@ -56,8 +56,10 @@ if !exists('g:quickfixsigns_classes')
     "          single argument.
     "   get:   A vim script expression as string that returns a list 
     "          compatible with |getqflist()|.
-    "   event: The event on which signs of this type should be set. 
-    "          Possible values: BufEnter, any
+    "   event: A list of events on which signs of this type should be set
+    "   level: Precedence of signs (if there are more signs at a line, 
+    "          the one with the higher level will be displayed)
+    "   timeout: Update the sign at most every X seconds
     "   test:  Update the sign only if the expression is true.
     let g:quickfixsigns_classes = ['qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints']   "{{{2
     " let g:quickfixsigns_classes = ['rel', 'qfl', 'loc', 'marks']   "{{{2
