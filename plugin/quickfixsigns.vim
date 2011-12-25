@@ -268,8 +268,6 @@ function! QuickfixsignsSet(event, ...) "{{{3
             endif
             " TLogVAR t_s, t_d, t_l
             if anyway || (t_d == 0) || (t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d)
-                if a:event == 'BufEnter'
-                    call s:PruneRegister()
                 endif
                 let b:quickfixsigns_last_run[t_s] = t_l
                 let list = s:GetList(def, filename)
@@ -421,18 +419,6 @@ function! s:ClearSigns(ikeys) "{{{3
             echom "Quickfixsigns DEBUG: bufnr=-1:" ikey string(a:def)
         endif
         call remove(g:quickfixsigns_register, ikey)
-    endfor
-endf
-
-
-function! s:PruneRegister() "{{{3
-    for [ikey, item] in items(g:quickfixsigns_register)
-        if bufnr(item.bufnr) == -1
-            let item = remove(g:quickfixsigns_register, ikey)
-            if g:quickfixsigns_debug
-                echom "Quickfixsigns PruneRegister:" ikey string(item)
-            endif
-        endif
     endfor
 endf
 
