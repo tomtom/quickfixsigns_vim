@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
 " @Last Change: 2011-12-25.
-" @Revision:    0.0.60
+" @Revision:    0.0.65
 
 
 if !exists('g:quickfixsigns#use_relativenumber')
@@ -79,4 +79,16 @@ function! quickfixsigns#AssertUniqueSigns(bufnr, bufsigns) "{{{3
     endtry
 endf
 
+
+function! quickfixsigns#CheckBuffers() "{{{3
+    let buffers = {}
+    for val in values(g:quickfixsigns_register)
+        if !bufloaded(val.bufnr)
+            let buffers[val.bufnr] = 1
+        endif
+    endfor
+    if !empty(buffers)
+        echom "QuickFixSigns: Marks for obsolete buffers:" join(sort(keys(buffers)), ', ')
+    endif
+endf
 
