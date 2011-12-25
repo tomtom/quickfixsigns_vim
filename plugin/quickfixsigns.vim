@@ -416,7 +416,7 @@ function! s:ClearSigns(ikeys) "{{{3
         if bufnr(bufnr) != -1
             exec 'sign unplace '. def.id .' buffer='. bufnr
         elseif g:quickfixsigns_debug
-            echom "DBG Quickfixsigns:" ikey string(a:def)
+            echom "Quickfixsigns DEBUG: bufnr=-1:" ikey string(a:def)
         endif
         call remove(g:quickfixsigns_register, ikey)
     endfor
