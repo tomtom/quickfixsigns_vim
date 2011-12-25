@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2011-12-25.
-" @Revision:    911
+" @Revision:    923
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -518,9 +518,10 @@ function! s:PlaceSign(class, sign, list) "{{{3
     let cbs = s:CreateBufferSignsCache()
     try
         for item in a:list
+            " TLogVAR item
             if item.lnum > 0
                 let sign = s:GetSign(a:sign, item)
-                let item = extend(item, {'class': a:class, 'sign': a:sign}, 'keep')
+                let item = extend(item, {'class': a:class, 'sign': sign})
                 let item = s:SetItemId(item)
                 " TLogVAR item
                 if !empty(item)
