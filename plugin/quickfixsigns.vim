@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2011-12-25.
-" @Revision:    937
+" @Revision:    954
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -394,6 +394,7 @@ endf
 
 
 function! QuickfixsignsRemoveBuffer(bufname) "{{{3
+    " TLogVAR a:bufname
     let bufnr = bufnr(a:bufname)
     let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest('', bufnr, '')))
     " TLogVAR old_ikeys
@@ -514,7 +515,7 @@ function! s:PlaceSign(class, sign, list) "{{{3
                 let item = extend(item, {'class': a:class, 'sign': sign})
                 let item = s:SetItemId(item)
                 " TLogVAR item
-                if !empty(item)
+                if !empty(item) && bufloaded(item.bufnr)
                     let ikey = item.ikey
                     " TLogVAR ikey, item
                     call add(keep_ikeys, ikey)
