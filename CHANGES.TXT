@@ -73,28 +73,6 @@ version: "0.12"
   - Set b:quickfixsigns_last_line
   MD5 checksum: 936abcfd67be7efe52fb0f85481c8665
 
-version: "0.12"
-  - 'test' field; additional test if a sign should be updated (e.g. update _cursor only if lnum has changed)
-  - breakpoints (currently vim only)
-  - set g:quickfixsigns#vcsdiff#loaded
-  - g:quickfixsigns_class_cursor: remove test (interferes with put & delete-like commands)
-  - breakpoints: test for a known filetype
-  - QuickfixsignsSet(event, ?classes=[])
-  - Disable the 'cursor' class by default.
-  - Set b:quickfixsigns_last_line
-  MD5 checksum: 936abcfd67be7efe52fb0f85481c8665
-
-version: "0.12"
-  - 'test' field; additional test if a sign should be updated (e.g. update _cursor only if lnum has changed)
-  - breakpoints (currently vim only)
-  - set g:quickfixsigns#vcsdiff#loaded
-  - g:quickfixsigns_class_cursor: remove test (interferes with put & delete-like commands)
-  - breakpoints: test for a known filetype
-  - QuickfixsignsSet(event, ?classes=[])
-  - Disable the 'cursor' class by default.
-  - Set b:quickfixsigns_last_line
-  MD5 checksum: 936abcfd67be7efe52fb0f85481c8665
-
 version: "0.13"
   - QuickfixsignsSelect(): check if g:quickfixsigns_class_{what} exists
   MD5 checksum: 833e1a48f7a3d7460ae29795fb328be4
@@ -102,7 +80,6 @@ version: "0.13"
 version: "0.14"
   - Take more care to run autocommands on the right buffer
   - vcsdiff: always run the vcs command in the buffer's directory
-  - make last_run buffer-local
   - make last_run buffer-local
   - QuickfixsignsBalloon: Error after recent change
   - .gitignore
