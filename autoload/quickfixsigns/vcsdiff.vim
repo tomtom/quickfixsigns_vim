@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2011-12-25.
-" @Revision:    229
+" @Revision:    265
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -96,7 +96,7 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
         let oldCwd = getcwd()
         let cdcommand = 'cd'
         if exists("*haslocaldir") && haslocaldir()
-          let cdcommand = 'lcd'
+            let cdcommand = 'lcd'
         endif
         exec cdcommand fnameescape(dir)
         try
@@ -110,6 +110,8 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
             let change_defs = {}
             let from = 0
             let to = 0
+            let last_change_lnum = 0
+            let last_del = 0
             for line in lines
                 " TLogVAR from, line
                 if line =~ '^@@\s'
@@ -148,13 +150,17 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                         if change_defs[change_lnum].change == 'CHANGE' || change_defs[change_lnum].change != change
                             let change = 'CHANGE'
                         endif
-                        if has('balloon_multiline')
-                            let text = change_defs[change_lnum].text ."\n". line
-                        else
-                            let text = line
-                        endif
+                        let text = s:BalloonJoin(change_defs[change_lnum].text, line)
                     endif
-                    let change_defs[change_lnum] = {'change': change, 'text': text}
+                    if last_change_lnum > 0 && last_del > 0 && change_lnum == last_del + 1 && change == 'DEL' && change_defs[last_change_lnum].change == 'DEL'
+                        let change_defs[last_change_lnum].text = s:BalloonJoin(change_defs[last_change_lnum].text, text)
+                    else
+                        let change_defs[change_lnum] = {'change': change, 'text': text}
+                        let last_change_lnum = change_lnum
+                    endif
+                    if change == 'DEL'
+                        let last_del = change_lnum
+                    endif
                 endif
             endfor
             let bufnr = bufnr('%')
@@ -163,14 +169,11 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                 if !has_key(g:quickfixsigns#vcsdiff#highlight, change_def.change)
                     continue
                 endif
-                if change_def.change == 'DEL' && lnum < line('$') && !has_key(change_defs, lnum + 1)
-                    let lnum += 1
-                endif
-                if has('balloon_multiline')
-                    let text = change_def.change .":\n". change_def.text
-                else
-                    let text = change_def.change .": ". change_def.text
-                endif
+                " if change_def.change == 'DEL' && lnum < line('$') && !has_key(change_defs, lnum + 1)
+                "     let lnum += 1
+                " endif
+                let text = s:BalloonJoin(change_def.change .":", change_def.text)
+                " TLogVAR bufnr, lnum, change_def.change, text
                 call add(signs, {"bufnr": bufnr, "lnum": lnum,
                             \ "change": change_def.change, "text": text})
             endfor
@@ -181,4 +184,12 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
     return []
 endf
 
+
+function! s:BalloonJoin(...) "{{{3
+    if has('balloon_multiline')
+        return join(a:000, "\n")
+    else
+        return join(a:000, " ")
+    endif
+endf
 
