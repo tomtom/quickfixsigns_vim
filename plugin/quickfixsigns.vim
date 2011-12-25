@@ -607,7 +607,7 @@ augroup QuickFixSigns
     if exists('s:key')
         unlet s:ev s:key s:def
     endif
-    autocmd BufDelete call QuickfixsignsRemoveBuffer(expand("<afile>:p"))
+    autocmd BufDelete * call QuickfixsignsRemoveBuffer(expand("<afile>:p"))
     " autocmd BufRead,BufNewFile * exec 'sign place '. (s:quickfixsigns_base - 1) .' name=QFS_DUMMY line=1 buffer='. bufnr('%')
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
 augroup END
