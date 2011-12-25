@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2011-05-20.
-" @Revision:    226
+" @Last Change: 2011-12-25.
+" @Revision:    227
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -18,7 +18,7 @@ endif
 
 
 if !exists('g:quickfixsigns_class_vcsdiff')
-    let g:quickfixsigns_class_vcsdiff = {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter,BufWritePost'], 'always_new': 1}   "{{{2
+    let g:quickfixsigns_class_vcsdiff = {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter,BufWritePost'], 'level': 6, 'always_new': 1}   "{{{2
 endif
 
 

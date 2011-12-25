@@ -88,13 +88,13 @@ endif
 
 if !exists('g:quickfixsigns_class_qfl')
     " Signs for |quickfix| lists.
-    let g:quickfixsigns_class_qfl = {'sign': 'QFS_QFL', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'scope': 'vim'}   "{{{2
+    let g:quickfixsigns_class_qfl = {'sign': 'QFS_QFL', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 7, 'scope': 'vim'}   "{{{2
 endif
 
 
 if !exists('g:quickfixsigns_class_loc')
     " Signs for |location| lists.
-    let g:quickfixsigns_class_loc = {'sign': 'QFS_LOC', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI']}   "{{{2
+    let g:quickfixsigns_class_loc = {'sign': 'QFS_LOC', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI'], 'level': 8}   "{{{2
 endif
 
 
@@ -102,7 +102,7 @@ if !exists('g:quickfixsigns_class_cursor')
     " Sign for the current cursor position. The cursor position is 
     " lazily updated. If you want something more precise, consider 
     " setting 'cursorline'.
-    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': g:quickfixsigns_events}   "{{{2
+    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': g:quickfixsigns_events, 'level': 3}   "{{{2
 endif
 
 

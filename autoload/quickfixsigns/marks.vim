@@ -3,8 +3,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2011-12-23.
-" @Revision:    36
+" @Last Change: 2011-12-25.
+" @Revision:    43
 
 if index(g:quickfixsigns_classes, 'marks') == -1
     finish
@@ -18,6 +18,7 @@ if !exists('g:quickfixsigns_class_marks')
                 \ 'sign': '*quickfixsigns#marks#GetSign',
                 \ 'get': 'quickfixsigns#marks#GetList(%s)',
                 \ 'event': g:quickfixsigns_events,
+                \ 'level': 4,
                 \ 'timeout': 2
                 \ }
 endif

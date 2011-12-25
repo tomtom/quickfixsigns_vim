@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
-" @Last Change: 2011-12-17.
-" @Revision:    0.0.59
+" @Last Change: 2011-12-25.
+" @Revision:    0.0.60
 
 
 if !exists('g:quickfixsigns#use_relativenumber')
