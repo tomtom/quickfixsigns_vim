@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-12-19.
-" @Revision:    897
+" @Last Change: 2011-12-25.
+" @Revision:    911
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -400,9 +400,9 @@ endf
 
 
 " Clear all signs with name SIGN in buffer BUFNR.
-function! s:ClearBuffer(class, sign, bufnr, new_ikeys) "{{{3
-    " TLogVAR a:class, a:sign, a:bufnr, a:new_ikeys
-    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest(a:class, a:bufnr, 'v:val.class ==# a:class && index(a:new_ikeys, v:key) == -1')))
+function! s:ClearBuffer(class, sign, bufnr, keep_ikeys) "{{{3
+    " TLogVAR a:class, a:sign, a:bufnr, a:keep_ikeys
+    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest(a:class, a:bufnr, 'v:val.class ==# a:class && index(a:keep_ikeys, v:key) == -1')))
     " TLogVAR old_ikeys
     call s:ClearSigns(old_ikeys)
 endf
@@ -446,37 +446,6 @@ function! s:GetScopeTest(class, bufnr, tests) "{{{3
         else
             return a:tests .' && '. test
         endif
-    endif
-endf
-
-
-function! s:SetItemId(item) "{{{3
-    " TLogVAR a:item
-    let bufnr = get(a:item, 'bufnr', -1)
-    if bufnr == -1
-        return  {}
-    else
-        let sign = s:GetSign(g:quickfixsigns_class_{a:item.class}.sign, a:item)
-        if has_key(a:item, 'ikey') && !empty(a:ikey.ikey)
-            let ikey = a:item.ikey
-        else
-            let ikey = printf("c:%s\ts:%s\tb:%d\tl:%d", a:item.class, sign, bufnr, a:item.lnum)
-        endif
-        " TLogVAR ikey
-        if has_key(g:quickfixsigns_register, ikey) && (get(g:quickfixsigns_class_{a:item.class}, 'always_new', 0) || s:SignExistsAt(bufnr, a:item.lnum, sign))
-            let item = extend(copy(g:quickfixsigns_register[ikey]), a:item)
-            let item.new = 0
-        else
-            let item = a:item
-            let item.new = 1
-        endif
-        if !has_key(item, 'id') " || item.id == 0
-            let item.id = s:quickfixsigns_base
-            let s:quickfixsigns_base += 1
-        endif
-        let item.ikey = ikey
-        let g:quickfixsigns_register[ikey] = item
-        return item
     endif
 endf
 
@@ -535,6 +504,49 @@ function! s:BufferSigns(bufnr) "{{{3
 endf
 
 
+" Add signs for all locations in LIST. LIST must confirm with the 
+" quickfix list format (see |getqflist()|; only the fields lnum and 
+" bufnr are required).
+"
+" list:: a quickfix or location list
+" sign:: a sign defined with |:sign-define|
+function! s:PlaceSign(class, sign, list) "{{{3
+    " TAssertType a:sign, 'string'
+    " TAssertType a:list, 'list'
+    " TLogVAR a:sign, a:list
+    let keep_ikeys = []
+    let cbs = s:CreateBufferSignsCache()
+    try
+        for item in a:list
+            if item.lnum > 0
+                let sign = s:GetSign(a:sign, item)
+                let item = extend(item, {'class': a:class, 'sign': a:sign}, 'keep')
+                let item = s:SetItemId(item)
+                " TLogVAR item
+                if !empty(item)
+                    let ikey = item.ikey
+                    " TLogVAR ikey, item
+                    call add(keep_ikeys, ikey)
+                    if item.new
+                        " TLogVAR item
+                        " TLogDBG ':sign place '. item.id .' line='. item.lnum .' name='. sign .' buffer='. item.bufnr
+                        exec ':sign place '. item.id .' line='. item.lnum .' name='. sign .' buffer='. item.bufnr
+                        let g:quickfixsigns_register[ikey] = item
+                    endif
+                endif
+            else
+                echohl WarningMsg
+                echom "Quickfixsigns PlaceSign: Invalid lnum:" string(item)
+                echohl NONE
+            endif
+        endfor
+    finally
+        call s:RemoveBufferSignsCache(cbs)
+    endtry
+    return keep_ikeys
+endf
+
+
 function! s:GetSign(sign, item) "{{{3
     if a:sign[0] == '*'
         let sign = call(a:sign[1 : -1], [a:item])
@@ -546,43 +558,29 @@ function! s:GetSign(sign, item) "{{{3
 endf
 
 
-" Add signs for all locations in LIST. LIST must confirm with the 
-" quickfix list format (see |getqflist()|; only the fields lnum and 
-" bufnr are required).
-"
-" list:: a quickfix or location list
-" sign:: a sign defined with |:sign-define|
-function! s:PlaceSign(class, sign, list) "{{{3
-    " TAssertType a:sign, 'string'
-    " TAssertType a:list, 'list'
-    " TLogVAR a:sign, a:list
-    let new_ikeys = []
-    let cbs = s:CreateBufferSignsCache()
-    try
-        for item in a:list
-            let sign = s:GetSign(a:sign, item)
-            let item = extend(item, {'class': a:class, 'sign': a:sign}, 'keep')
-            " TLogVAR item
-            let item = s:SetItemId(item)
-            if !empty(item)
-                let ikey = item.ikey
-                " TLogVAR ikey, item
-                call add(new_ikeys, ikey)
-                if item.new
-                    let lnum = get(item, 'lnum', 0)
-                    if lnum > 0
-                        let id = item.id
-                        " TLogVAR item
-                        " TLogDBG ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
-                        exec ':sign place '. id .' line='. lnum .' name='. sign .' buffer='. item.bufnr
-                    endif
-                endif
+function! s:SetItemId(item) "{{{3
+    " TLogVAR a:item
+    let bufnr = get(a:item, 'bufnr', -1)
+    if bufnr == -1
+        return  {}
+    else
+        if !has_key(a:item, 'ikey')
+            let a:item.ikey = string(a:item)
+        endif
+        let a:item.new = !has_key(g:quickfixsigns_register, a:item.ikey)
+        if a:item.new
+            let item = a:item
+            let item.id = s:quickfixsigns_base
+            let s:quickfixsigns_base += 1
+        else
+            let item = extend(copy(g:quickfixsigns_register[a:item.ikey]), a:item)
+            if !has_key(item, 'id')
+                echohl WarningMsg
+                echom "Quickfixsigns: Internal error: No ID:" string(item)
             endif
-        endfor
-    finally
-        call s:RemoveBufferSignsCache(cbs)
-    endtry
-    return new_ikeys
+        endif
+        return item
+    endif
 endf
 
 
