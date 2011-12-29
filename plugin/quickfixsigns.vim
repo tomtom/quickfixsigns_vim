@@ -269,7 +269,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
             " TLogVAR t_s, t_d, t_l
             if anyway || (t_d == 0) || (t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d)
                 if g:quickfixsigns_debug
-                    call quickfixsigns#CheckBuffers()
+                    call quickfixsigns#AssertNoObsoleteBuffers(g:quickfixsigns_register)
                 endif
                 let b:quickfixsigns_last_run[t_s] = t_l
                 let list = s:GetList(def, filename)

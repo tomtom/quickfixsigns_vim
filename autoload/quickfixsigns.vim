@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
-" @Last Change: 2011-12-25.
-" @Revision:    0.0.65
+" @Last Change: 2011-12-29.
+" @Revision:    0.0.67
 
 
 if !exists('g:quickfixsigns#use_relativenumber')
@@ -80,9 +80,9 @@ function! quickfixsigns#AssertUniqueSigns(bufnr, bufsigns) "{{{3
 endf
 
 
-function! quickfixsigns#CheckBuffers() "{{{3
+function! quickfixsigns#AssertNoObsoleteBuffers(register) "{{{3
     let buffers = {}
-    for val in values(g:quickfixsigns_register)
+    for val in values(a:register)
         if !bufloaded(val.bufnr)
             let buffers[val.bufnr] = 1
         endif
