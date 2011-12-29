@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-12-28.
-" @Revision:    955
+" @Last Change: 2011-12-29.
+" @Revision:    969
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -244,6 +244,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     let bufnr = bufnr(filename)
     let anyway = empty(a:event)
     " TLogVAR bufnr, anyway, a:event
+    call s:UpdateLineNumbers()
     for [key, def] in s:ListValues()
         " TLogVAR key, def
         if anyway
@@ -304,6 +305,34 @@ function! QuickfixsignsSet(event, ...) "{{{3
         endif
     endfor
     let b:quickfixsigns_last_line = line('.')
+endf
+
+
+function! s:UpdateLineNumbers() "{{{3
+    let buffersigns = {}
+    for [ikey, def] in items(g:quickfixsigns_register)
+        let bufnr = def.bufnr
+        let lnum = def.lnum
+        let id = def.id
+        if !has_key(buffersigns, bufnr)
+            let bsigns = s:BufferSigns(bufnr)
+            let bufnrsigns = {}
+            for sign in bsigns
+                let ml = matchlist(sign, '^\s\+\w\+=\(\d\+\)\s\+id=\(\d\+\)\s\+')
+                let bufnrsigns[ml[2]] = 0 + ml[1]
+            endfor
+            let buffersigns[bufnr] = bufnrsigns
+        else
+            let bufnrsigns = buffersigns[bufnr]
+        endif
+        if has_key(bufnrsigns, id)
+            let slnum = bufnrsigns[id]
+            if slnum != lnum
+                " TLogVAR ikey, lnum, slnum
+                let g:quickfixsigns_register[ikey].lnum = slnum
+            endif
+        endif
+    endfor
 endf
 
 
@@ -521,8 +550,9 @@ function! s:PlaceSign(class, sign, list) "{{{3
                     call add(keep_ikeys, ikey)
                     if item.new
                         " TLogVAR item
-                        " TLogDBG ':sign place '. item.id .' line='. item.lnum .' name='. sign .' buffer='. item.bufnr
-                        exec ':sign place '. item.id .' line='. item.lnum .' name='. sign .' buffer='. item.bufnr
+                        let cmd = ':sign place '. item.id .' line='. item.lnum .' name='. sign .' buffer='. item.bufnr
+                        " TLogDBG cmd
+                        exec cmd
                         let g:quickfixsigns_register[ikey] = item
                     endif
                 endif
