@@ -45,52 +45,45 @@ please make sure, you have the current version of vimball
 ========================================================================
 Contents~
 
-        :QuickfixsignsSet .................................. |:QuickfixsignsSet|
-        :QuickfixsignsDisable .............................. |:QuickfixsignsDisable|
-        :QuickfixsignsEnable ............................... |:QuickfixsignsEnable|
-        :QuickfixsignsSelect ............................... |:QuickfixsignsSelect|
-        g:quickfixsigns_classes ............................ |g:quickfixsigns_classes|
-        g:quickfixsigns_events ............................. |g:quickfixsigns_events|
-        g:quickfixsigns_class_rel .......................... |g:quickfixsigns_class_rel|
-        g:quickfixsigns_class_qfl .......................... |g:quickfixsigns_class_qfl|
-        g:quickfixsigns_class_loc .......................... |g:quickfixsigns_class_loc|
-        g:quickfixsigns_class_cursor ....................... |g:quickfixsigns_class_cursor|
-        g:quickfixsigns_balloon ............................ |g:quickfixsigns_balloon|
-        g:quickfixsigns_max ................................ |g:quickfixsigns_max|
-        g:quickfixsigns_blacklist_buffer ................... |g:quickfixsigns_blacklist_buffer|
-        g:quickfixsigns_icons .............................. |g:quickfixsigns_icons|
-        QuickfixsignsSelect ................................ |QuickfixsignsSelect()|
-        QuickfixsignsUpdate ................................ |QuickfixsignsUpdate()|
-        QuickfixsignsSet ................................... |QuickfixsignsSet()|
-        QuickfixsignsBalloon ............................... |QuickfixsignsBalloon()|
-        QuickfixsignsClear ................................. |QuickfixsignsClear()|
-        QuickfixsignsRemoveBuffer .......................... |QuickfixsignsRemoveBuffer()|
-        g:quickfixsigns#use_relativenumber ................. |g:quickfixsigns#use_relativenumber|
-        quickfixsigns#CompleteSelect ....................... |quickfixsigns#CompleteSelect()|
-        quickfixsigns#RelNumbersOnce ....................... |quickfixsigns#RelNumbersOnce()|
-        quickfixsigns#AssertUniqueSigns .................... |quickfixsigns#AssertUniqueSigns()|
-        g:quickfixsigns_class_vcsdiff ...................... |g:quickfixsigns_class_vcsdiff|
-        g:quickfixsigns#vcsdiff#highlight .................. |g:quickfixsigns#vcsdiff#highlight|
-        quickfixsigns#vcsdiff#GuessType .................... |quickfixsigns#vcsdiff#GuessType()|
-        quickfixsigns#vcsdiff#GetList ...................... |quickfixsigns#vcsdiff#GetList()|
-        g:quickfixsigns_class_vcsdiff ...................... |g:quickfixsigns_class_vcsdiff|
-        g:quickfixsigns#vcsdiff#highlight .................. |g:quickfixsigns#vcsdiff#highlight|
-        quickfixsigns#vcsdiff#GuessType .................... |quickfixsigns#vcsdiff#GuessType()|
-        quickfixsigns#vcsdiff#GetList ...................... |quickfixsigns#vcsdiff#GetList()|
-        g:quickfixsigns_class_marks ........................ |g:quickfixsigns_class_marks|
-        g:quickfixsigns#marks#buffer ....................... |g:quickfixsigns#marks#buffer|
-        g:quickfixsigns#marks#global ....................... |g:quickfixsigns#marks#global|
-        g:quickfixsigns#marks#texthl ....................... |g:quickfixsigns#marks#texthl|
-        quickfixsigns#marks#GetList ........................ |quickfixsigns#marks#GetList()|
-        quickfixsigns#marks#GetSign ........................ |quickfixsigns#marks#GetSign()|
-        g:quickfixsigns_class_vcsdiff ...................... |g:quickfixsigns_class_vcsdiff|
-        g:quickfixsigns#vcsdiff#highlight .................. |g:quickfixsigns#vcsdiff#highlight|
-        quickfixsigns#vcsdiff#GuessType .................... |quickfixsigns#vcsdiff#GuessType()|
-        quickfixsigns#vcsdiff#GetList ...................... |quickfixsigns#vcsdiff#GetList()|
-        g:quickfixsigns#breakpoints#filetypes .............. |g:quickfixsigns#breakpoints#filetypes|
-        g:quickfixsigns_class_breakpoints .................. |g:quickfixsigns_class_breakpoints|
-        quickfixsigns#breakpoints#GetList .................. |quickfixsigns#breakpoints#GetList()|
-        quickfixsigns#breakpoints#Vim ...................... |quickfixsigns#breakpoints#Vim()|
+        :QuickfixsignsSet ........................ |:QuickfixsignsSet|
+        :QuickfixsignsDisable .................... |:QuickfixsignsDisable|
+        :QuickfixsignsEnable ..................... |:QuickfixsignsEnable|
+        :QuickfixsignsSelect ..................... |:QuickfixsignsSelect|
+        g:quickfixsigns_classes .................. |g:quickfixsigns_classes|
+        g:quickfixsigns_events ................... |g:quickfixsigns_events|
+        g:quickfixsigns_class_rel ................ |g:quickfixsigns_class_rel|
+        g:quickfixsigns_class_qfl ................ |g:quickfixsigns_class_qfl|
+        g:quickfixsigns_class_loc ................ |g:quickfixsigns_class_loc|
+        g:quickfixsigns_class_cursor ............. |g:quickfixsigns_class_cursor|
+        g:quickfixsigns_balloon .................. |g:quickfixsigns_balloon|
+        g:quickfixsigns_max ...................... |g:quickfixsigns_max|
+        g:quickfixsigns_blacklist_buffer ......... |g:quickfixsigns_blacklist_buffer|
+        g:quickfixsigns_icons .................... |g:quickfixsigns_icons|
+        QuickfixsignsSelect ...................... |QuickfixsignsSelect()|
+        QuickfixsignsUpdate ...................... |QuickfixsignsUpdate()|
+        QuickfixsignsSet ......................... |QuickfixsignsSet()|
+        QuickfixsignsBalloon ..................... |QuickfixsignsBalloon()|
+        QuickfixsignsClear ....................... |QuickfixsignsClear()|
+        QuickfixsignsRemoveBuffer ................ |QuickfixsignsRemoveBuffer()|
+        g:quickfixsigns#use_relativenumber ....... |g:quickfixsigns#use_relativenumber|
+        quickfixsigns#CompleteSelect ............. |quickfixsigns#CompleteSelect()|
+        quickfixsigns#RelNumbersOnce ............. |quickfixsigns#RelNumbersOnce()|
+        quickfixsigns#AssertUniqueSigns .......... |quickfixsigns#AssertUniqueSigns()|
+        quickfixsigns#AssertNoObsoleteBuffers .... |quickfixsigns#AssertNoObsoleteBuffers()|
+        g:quickfixsigns_class_vcsdiff ............ |g:quickfixsigns_class_vcsdiff|
+        g:quickfixsigns#vcsdiff#highlight ........ |g:quickfixsigns#vcsdiff#highlight|
+        quickfixsigns#vcsdiff#GuessType .......... |quickfixsigns#vcsdiff#GuessType()|
+        quickfixsigns#vcsdiff#GetList ............ |quickfixsigns#vcsdiff#GetList()|
+        g:quickfixsigns_class_marks .............. |g:quickfixsigns_class_marks|
+        g:quickfixsigns#marks#buffer ............. |g:quickfixsigns#marks#buffer|
+        g:quickfixsigns#marks#global ............. |g:quickfixsigns#marks#global|
+        g:quickfixsigns#marks#texthl ............. |g:quickfixsigns#marks#texthl|
+        quickfixsigns#marks#GetList .............. |quickfixsigns#marks#GetList()|
+        quickfixsigns#marks#GetSign .............. |quickfixsigns#marks#GetSign()|
+        g:quickfixsigns#breakpoints#filetypes .... |g:quickfixsigns#breakpoints#filetypes|
+        g:quickfixsigns_class_breakpoints ........ |g:quickfixsigns_class_breakpoints|
+        quickfixsigns#breakpoints#GetList ........ |quickfixsigns#breakpoints#GetList()|
+        quickfixsigns#breakpoints#Vim ............ |quickfixsigns#breakpoints#Vim()|
 
 
 ========================================================================
@@ -231,33 +224,8 @@ quickfixsigns#RelNumbersOnce()
                                                     *quickfixsigns#AssertUniqueSigns()*
 quickfixsigns#AssertUniqueSigns(bufnr, bufsigns)
 
-
-========================================================================
-autoload/quickfixsigns/vcsdiff.vim.08.01.20.orig~
-
-                                                    *g:quickfixsigns_class_vcsdiff*
-g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter', 'BufWritePost'], 'level': 6})
-
-                                                    *g:quickfixsigns#vcsdiff#highlight*
-g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAdd', 'CHANGE': 'DiffChange'})
-    The highlighting of deleted lines can sometimes be confusing. In 
-    order to disable the display of signs for DEL changes, save the 
-    following line as after/autoload/quickfixsigns/vcsdiff.vim: >
-    
-      call remove(g:quickfixsigns#vcsdiff#highlight, 'DEL')
-<
-
-                                                    *quickfixsigns#vcsdiff#GuessType()*
-quickfixsigns#vcsdiff#GuessType()
-    Return the name of a VCS system based on the values of the following 
-    variables:
-      - b:vcs_type
-      - b:VCSCommandVCSType
-
-                                                    *quickfixsigns#vcsdiff#GetList()*
-quickfixsigns#vcsdiff#GetList(filename)
-    quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
-    VCS (see |g:quickfixsigns#vcsdiff#cmds|).
+                                                    *quickfixsigns#AssertNoObsoleteBuffers()*
+quickfixsigns#AssertNoObsoleteBuffers(register)
 
 
 ========================================================================
@@ -314,34 +282,6 @@ quickfixsigns#marks#GetList(filename)
 
                                                     *quickfixsigns#marks#GetSign()*
 quickfixsigns#marks#GetSign(item)
-
-
-========================================================================
-autoload/quickfixsigns/vcsdiff.vim.01.04.20.orig~
-
-                                                    *g:quickfixsigns_class_vcsdiff*
-g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter', 'BufWritePost'], 'level': 6})
-
-                                                    *g:quickfixsigns#vcsdiff#highlight*
-g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAdd', 'CHANGE': 'DiffChange'})
-    The highlighting of deleted lines can sometimes be confusing. In 
-    order to disable the display of signs for DEL changes, save the 
-    following line as after/autoload/quickfixsigns/vcsdiff.vim: >
-    
-      call remove(g:quickfixsigns#vcsdiff#highlight, 'DEL')
-<
-
-                                                    *quickfixsigns#vcsdiff#GuessType()*
-quickfixsigns#vcsdiff#GuessType()
-    Return the name of a VCS system based on the values of the following 
-    variables:
-      - b:vcs_type
-      - b:VCSCommandVCSType
-
-                                                    *quickfixsigns#vcsdiff#GetList()*
-quickfixsigns#vcsdiff#GetList(filename)
-    quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
-    VCS (see |g:quickfixsigns#vcsdiff#cmds|).
 
 
 ========================================================================
