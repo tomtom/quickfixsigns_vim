@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2011-12-29.
-" @Revision:    969
+" @Last Change: 2012-01-09.
+" @Revision:    975
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -312,24 +312,38 @@ function! s:UpdateLineNumbers() "{{{3
     let buffersigns = {}
     for [ikey, def] in items(g:quickfixsigns_register)
         let bufnr = def.bufnr
-        let lnum = def.lnum
-        let id = def.id
-        if !has_key(buffersigns, bufnr)
-            let bsigns = s:BufferSigns(bufnr)
-            let bufnrsigns = {}
-            for sign in bsigns
-                let ml = matchlist(sign, '^\s\+\w\+=\(\d\+\)\s\+id=\(\d\+\)\s\+')
-                let bufnrsigns[ml[2]] = 0 + ml[1]
-            endfor
-            let buffersigns[bufnr] = bufnrsigns
+        if bufnr(bufnr) == -1
+            if g:quickfixsigns_debug
+                echom "QuickFixSigns DEBUG UpdateLineNumbers: Invalid bufnr:" string(bufnr)
+            endif
         else
-            let bufnrsigns = buffersigns[bufnr]
-        endif
-        if has_key(bufnrsigns, id)
-            let slnum = bufnrsigns[id]
-            if slnum != lnum
-                " TLogVAR ikey, lnum, slnum
-                let g:quickfixsigns_register[ikey].lnum = slnum
+            let lnum = def.lnum
+            let id = def.id
+            if !has_key(buffersigns, bufnr)
+                let bsigns = s:BufferSigns(bufnr)
+                let bufnrsigns = {}
+                for sign in bsigns
+                    let ml = matchlist(sign, '^\s\+\w\+=\(\d\+\)\s\+id=\(\d\+\)\s\+')
+                    if empty(ml)
+                        if g:quickfixsigns_debug
+                            echohl WarningMsg
+                            echom "QuickFixSigns UpdateLineNumbers: Sign doesn't match rx:" sign
+                            echohl NONE
+                        endif
+                    else
+                        let bufnrsigns[ml[2]] = 0 + ml[1]
+                    endif
+                endfor
+                let buffersigns[bufnr] = bufnrsigns
+            else
+                let bufnrsigns = buffersigns[bufnr]
+            endif
+            if has_key(bufnrsigns, id)
+                let slnum = bufnrsigns[id]
+                if slnum != lnum
+                    " TLogVAR ikey, lnum, slnum
+                    let g:quickfixsigns_register[ikey].lnum = slnum
+                endif
             endif
         endif
     endfor
