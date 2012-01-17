@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-01-09.
-" @Revision:    975
+" @Last Change: 2012-01-17.
+" @Revision:    978
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -326,9 +326,7 @@ function! s:UpdateLineNumbers() "{{{3
                     let ml = matchlist(sign, '^\s\+\w\+=\(\d\+\)\s\+id=\(\d\+\)\s\+')
                     if empty(ml)
                         if g:quickfixsigns_debug
-                            echohl WarningMsg
-                            echom "QuickFixSigns UpdateLineNumbers: Sign doesn't match rx:" sign
-                            echohl NONE
+                            echom "QuickFixSigns DEBUG UpdateLineNumbers: Sign doesn't match rx:" sign
                         endif
                     else
                         let bufnrsigns[ml[2]] = 0 + ml[1]
