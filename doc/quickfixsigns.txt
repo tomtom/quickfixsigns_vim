@@ -207,11 +207,11 @@ QuickfixsignsRemoveBuffer(bufname)
 autoload/quickfixsigns.vim~
 
                                                     *g:quickfixsigns#use_relativenumber*
-g:quickfixsigns#use_relativenumber (default: 1)
+g:quickfixsigns#use_relativenumber (default: v:version >= 703)
     VIM 7.3 and later: If non-zero, |quickfixsigns#RelNumbersOnce()| 
     uses 'relativenumber' instead of signs. This avoids clashes with 
-    other signs and is faster, but it could cause the visual text area 
-    to be moved to the right.
+    other signs and is faster, but it could cause the visible text area 
+    to be temporarily moved to the right.
 
                                                     *quickfixsigns#CompleteSelect()*
 quickfixsigns#CompleteSelect(ArgLead, CmdLine, CursorPos)
