@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-01-19.
-" @Revision:    1014
+" @Last Change: 19-Jan-2012.
+" @Revision:    1018
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -298,11 +298,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
                 endif
                 " TLogVAR list
                 if !empty(list) && len(list) < g:quickfixsigns_max
-                    let new_ids = s:PlaceSign(key, def.sign, list)
-                    call s:ClearBuffer(key, def.sign, bufnr, new_ids)
-                    if g:quickfixsigns_debug
-                        call quickfixsigns#AssertUniqueSigns(bufnr, s:BufferSigns(bufnr))
-                    endif
+                    call s:UpdateSigns(bufnr, key, def, list)
                     if has('balloon_eval') && g:quickfixsigns_balloon
                         if exists('g:loaded_tlib') && g:loaded_tlib >= 39
                             call tlib#balloon#Register('QuickfixsignsBalloon()')
@@ -320,6 +316,15 @@ function! QuickfixsignsSet(event, ...) "{{{3
         endif
     endfor
     let b:quickfixsigns_last_line = line('.')
+endf
+
+
+function! s:UpdateSigns(bufnr, key, def, list) "{{{3
+    let new_ids = s:PlaceSign(a:key, a:def.sign, a:list)
+    call s:ClearBuffer(a:key, a:def.sign, a:bufnr, new_ids)
+    if g:quickfixsigns_debug
+        call quickfixsigns#AssertUniqueSigns(a:bufnr, s:BufferSigns(a:bufnr))
+    endif
 endf
 
 
@@ -394,7 +399,8 @@ function! QuickfixsignsBalloon() "{{{3
             let list = s:GetList(def, bufname)
             call filter(list, 'v:val.bufnr == bufnr && v:val.lnum == lnum')
             " TLogVAR list
-            if !empty(list)
+            if !empty(list) && len(list) < g:quickfixsigns_max
+                call s:UpdateSigns(bufnr, key, def, list)
                 let acc += list
             endif
         endfor
