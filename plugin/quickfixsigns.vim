@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-01-17.
-" @Revision:    978
+" @Last Change: 2012-01-19.
+" @Revision:    1004
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -340,7 +340,17 @@ function! s:UpdateLineNumbers() "{{{3
                 let slnum = bufnrsigns[id]
                 if slnum != lnum
                     " TLogVAR ikey, lnum, slnum
-                    let g:quickfixsigns_register[ikey].lnum = slnum
+                    let item = g:quickfixsigns_register[ikey]
+                    let item.lnum = slnum
+                    let item.ikey = s:GetIKey(item)
+                    if has_key(g:quickfixsigns_register, item.ikey)
+                        if g:quickfixsigns_debug >= 2
+                            echom "Quickfixsigns DEBUG UpdateLineNumbers: IKey already exists:" item.ikey "was" ikey
+                        endif
+                    else
+                        let g:quickfixsigns_register[item.ikey] = item
+                        call remove(g:quickfixsigns_register, ikey)
+                    endif
                 endif
             endif
         endif
@@ -362,11 +372,13 @@ function! QuickfixsignsBalloon() "{{{3
     if v:beval_col <= 1
         let lnum = v:beval_lnum
         let bufnr = bufnr('%')
+        " TLogVAR bufnr, lnum
         let bufname = bufname(bufnr)
         let acc = []
         for [key, def] in s:ListValues()
             let list = s:GetList(def, bufname)
             call filter(list, 'v:val.bufnr == bufnr && v:val.lnum == lnum')
+            " TLogVAR list
             if !empty(list)
                 let acc += list
             endif
@@ -599,7 +611,7 @@ function! s:SetItemId(item) "{{{3
         return  {}
     else
         if !has_key(a:item, 'ikey')
-            let a:item.ikey = string(a:item)
+            let a:item.ikey = s:GetIKey(a:item)
         endif
         let a:item.new = !has_key(g:quickfixsigns_register, a:item.ikey)
         if a:item.new
@@ -615,6 +627,12 @@ function! s:SetItemId(item) "{{{3
         endif
         return item
     endif
+endf
+
+
+function! s:GetIKey(item) "{{{3
+    let subitems = map(['lnum', 'bufnr', 'sign', 'class', 'text'], 'get(a:item, v:val, "")')
+    return join(subitems, '*')
 endf
 
 
