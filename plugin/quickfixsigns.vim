@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2012-01-19.
-" @Revision:    1012
+" @Revision:    1013
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -552,6 +552,8 @@ function! s:BufferSigns(bufnr) "{{{3
         let signs = split(l:signss, '\n')
         if len(signs) > 2
             call remove(signs, 0, 1)
+        else
+            let signs = []
         endif
     else
         echohl WarningMsg
