@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2012-01-19.
-" @Revision:    1004
+" @Revision:    1012
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -156,6 +156,21 @@ endif
 " ----------------------------------------------------------------------
 let s:quickfixsigns_base = 5272
 let g:quickfixsigns_register = {}
+
+
+function! s:PurgeRegister() "{{{3
+    let bufnums = {}
+    for [ikey, def] in items(g:quickfixsigns_register)
+        let bufnr = def.bufnr
+        if !bufloaded(bufnr)
+            if g:quickfixsigns_debug && !has_key(bufnums, bufnr)
+                echom "QuickFixSigns DEBUG PurgeRegister: Obsolete buffer:" bufnr
+                let bufnums[bufnr] = 1
+            endif
+            call remove(g:quickfixsigns_register, ikey)
+        endif
+    endfor
+endf
 
 
 redir => s:signss
@@ -669,6 +684,7 @@ augroup QuickFixSigns
         unlet s:ev s:key s:def
     endif
     autocmd BufDelete,BufUnload,BufWipeout * call QuickfixsignsRemoveBuffer(expand("<afile>:p"))
+    autocmd CursorHold,CursorHoldI * call s:PurgeRegister()
     " autocmd BufRead,BufNewFile * exec 'sign place '. (s:quickfixsigns_base - 1) .' name=QFS_DUMMY line=1 buffer='. bufnr('%')
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
 augroup END
