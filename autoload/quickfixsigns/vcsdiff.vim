@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2011-12-25.
-" @Revision:    265
+" @Last Change: 2012-01-19.
+" @Revision:    286
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -19,6 +19,17 @@ endif
 
 if !exists('g:quickfixsigns_class_vcsdiff')
     let g:quickfixsigns_class_vcsdiff = {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter', 'BufWritePost'], 'level': 6}   "{{{2
+endif
+
+
+if !exists('g:quickfixsigns#vcsdiff#cd')
+    let g:quickfixsigns#vcsdiff#cd = 'cd'   "{{{2
+endif
+
+
+if !exists('g:quickfixsigns#vcsdiff#cmd_separator')
+    " Command to join two shell commands.
+    let g:quickfixsigns#vcsdiff#cmd_separator = &sh =~ 'sh' ? '&&' : ';'  "{{{2
 endif
 
 
@@ -85,25 +96,18 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
         return []
     endif
     let vcs_type = quickfixsigns#vcsdiff#GuessType()
-    " TLogVAR a:filename, vcs_type
+    " LogVAR a:filename, vcs_type
     " Ignore files that are not readable
     if has_key(g:quickfixsigns#vcsdiff#cmds, vcs_type) && filereadable(a:filename)
         let cmdt = g:quickfixsigns#vcsdiff#cmds[vcs_type]
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
-        let cmds = printf(cmdt, shellescape(file))
+        let cmds = join([
+                    \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
+                    \ printf(cmdt, shellescape(file))
+                    \ ], g:quickfixsigns#vcsdiff#cmd_separator)
         " TLogVAR cmds
-        let oldCwd = getcwd()
-        let cdcommand = 'cd'
-        if exists("*haslocaldir") && haslocaldir()
-            let cdcommand = 'lcd'
-        endif
-        exec cdcommand fnameescape(dir)
-        try
-            let diff = system(cmds)
-        finally
-            exec cdcommand fnameescape(oldCwd)
-        endtry
+        let diff = system(cmds)
         " TLogVAR diff
         if !empty(diff)
             let lines = split(diff, '\n')
