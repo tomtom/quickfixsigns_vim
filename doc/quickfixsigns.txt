@@ -71,6 +71,9 @@ Contents~
         quickfixsigns#AssertUniqueSigns .......... |quickfixsigns#AssertUniqueSigns()|
         quickfixsigns#AssertNoObsoleteBuffers .... |quickfixsigns#AssertNoObsoleteBuffers()|
         g:quickfixsigns_class_vcsdiff ............ |g:quickfixsigns_class_vcsdiff|
+        g:quickfixsigns#vcsdiff#cd ............... |g:quickfixsigns#vcsdiff#cd|
+        g:quickfixsigns#vcsdiff#cmd_separator .... |g:quickfixsigns#vcsdiff#cmd_separator|
+        g:quickfixsigns#vcsdiff#guess_type ....... |g:quickfixsigns#vcsdiff#guess_type|
         g:quickfixsigns#vcsdiff#highlight ........ |g:quickfixsigns#vcsdiff#highlight|
         quickfixsigns#vcsdiff#GuessType .......... |quickfixsigns#vcsdiff#GuessType()|
         quickfixsigns#vcsdiff#GetList ............ |quickfixsigns#vcsdiff#GetList()|
@@ -234,6 +237,17 @@ autoload/quickfixsigns/vcsdiff.vim~
                                                     *g:quickfixsigns_class_vcsdiff*
 g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter', 'BufWritePost'], 'level': 6})
 
+                                                    *g:quickfixsigns#vcsdiff#cd*
+g:quickfixsigns#vcsdiff#cd     (default: 'cd')
+
+                                                    *g:quickfixsigns#vcsdiff#cmd_separator*
+g:quickfixsigns#vcsdiff#cmd_separator (default: &sh =~ 'sh' ? '&&' : ';')
+    Command to join two shell commands.
+
+                                                    *g:quickfixsigns#vcsdiff#guess_type*
+g:quickfixsigns#vcsdiff#guess_type (default: 1)
+    If true, guess the vcs type by searching for the repo directory.
+
                                                     *g:quickfixsigns#vcsdiff#highlight*
 g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAdd', 'CHANGE': 'DiffChange'})
     The highlighting of deleted lines can sometimes be confusing. In 
@@ -247,13 +261,17 @@ g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAd
 quickfixsigns#vcsdiff#GuessType()
     Return the name of a VCS system based on the values of the following 
     variables:
+    
+      - b:git_dir
       - b:vcs_type
       - b:VCSCommandVCSType
+    
+    If none of these variables is defined, try to guess the vcs type.
 
                                                     *quickfixsigns#vcsdiff#GetList()*
 quickfixsigns#vcsdiff#GetList(filename)
     quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
-    VCS (see |g:quickfixsigns#vcsdiff#cmds|).
+    VCS (see |g:quickfixsigns#vcsdiff#vcs|).
 
 
 ========================================================================

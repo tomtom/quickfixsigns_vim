@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2012-01-19.
-" @Revision:    286
+" @Last Change: 2012-01-20.
+" @Revision:    298
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -33,15 +33,24 @@ if !exists('g:quickfixsigns#vcsdiff#cmd_separator')
 endif
 
 
-" A dictionary of supported VCS names and command templates that 
-" generate a unified diff file. "%s" is replaced with the filename.
-" Supported vcs: git, hg, svn
-" :read: let g:quickfixsigns#vcsdiff#cmds = {...} {{{2
-let g:quickfixsigns#vcsdiff#cmds = {
-            \ 'git': 'git diff --no-ext-diff -U0 %s',
-            \ 'hg': 'hg diff -U0 %s',
-            \ 'svn': 'svn diff -x -u %s',
+" A dictionary of supported VCS names. Its values are dictionaries with 
+" the following keys:
+"     cmd ... command templates that generate a unified diff file. "%s" 
+"             is replaced with the filename.
+"     dir ... the directory name
+" Currently supported vcs: git, hg, svn
+" :read: let g:quickfixsigns#vcsdiff#vcs = {...} {{{2
+let g:quickfixsigns#vcsdiff#vcs = {
+            \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s', 'dir': '.git'},
+            \ 'hg': {'cmd': 'hg diff -U0 %s', 'dir': '.hg'},
+            \ 'svn': {'cmd': 'svn diff -x -u %s', 'dir': '.svn'},
             \ }
+
+
+if !exists('g:quickfixsigns#vcsdiff#guess_type')
+    " If true, guess the vcs type by searching for the repo directory.
+    let g:quickfixsigns#vcsdiff#guess_type = 1   "{{{2
+endif
 
 
 if !exists('g:quickfixsigns#vcsdiff#highlight')
@@ -67,8 +76,12 @@ endf
 
 " Return the name of a VCS system based on the values of the following 
 " variables:
+"
+"   - b:git_dir
 "   - b:vcs_type
 "   - b:VCSCommandVCSType
+"
+" If none of these variables is defined, try to guess the vcs type.
 function! quickfixsigns#vcsdiff#GuessType() "{{{3
     if exists('b:vcs_type')
         let type = b:vcs_type
@@ -81,7 +94,17 @@ function! quickfixsigns#vcsdiff#GuessType() "{{{3
     else
         let type = ''
     endif
-    if has_key(g:quickfixsigns#vcsdiff#cmds, type)
+    if g:quickfixsigns#vcsdiff#guess_type && empty(type)
+        let path = expand('%:p') .';'
+        for vcs in keys(g:quickfixsigns#vcsdiff#vcs)
+            let dir = g:quickfixsigns#vcsdiff#vcs[vcs].dir
+            if !empty(finddir(dir, path))
+                let type = vcs
+                break
+            endif
+        endfor
+    endif
+    if has_key(g:quickfixsigns#vcsdiff#vcs, type)
         return type
     else
         return ''
@@ -90,16 +113,16 @@ endf
 
 
 " quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
-" VCS (see |g:quickfixsigns#vcsdiff#cmds|).
+" VCS (see |g:quickfixsigns#vcsdiff#vcs|).
 function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
     if &buftype =~ '\<\(nofile\|quickfix\|help\)\>' || &previewwindow || exists('b:fugitive_type')
         return []
     endif
     let vcs_type = quickfixsigns#vcsdiff#GuessType()
-    " LogVAR a:filename, vcs_type
+    " TLogVAR a:filename, vcs_type
     " Ignore files that are not readable
-    if has_key(g:quickfixsigns#vcsdiff#cmds, vcs_type) && filereadable(a:filename)
-        let cmdt = g:quickfixsigns#vcsdiff#cmds[vcs_type]
+    if has_key(g:quickfixsigns#vcsdiff#vcs, vcs_type) && filereadable(a:filename)
+        let cmdt = g:quickfixsigns#vcsdiff#vcs[vcs_type].cmd
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
         let cmds = join([
