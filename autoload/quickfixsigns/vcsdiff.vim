@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2012-01-20.
-" @Revision:    298
+" @Last Change: 2012-01-29.
+" @Revision:    312
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -48,7 +48,10 @@ let g:quickfixsigns#vcsdiff#vcs = {
 
 
 if !exists('g:quickfixsigns#vcsdiff#guess_type')
-    " If true, guess the vcs type by searching for the repo directory.
+    " If true, guess the vcs type by searching for the repo directory on 
+    " the hard disk (i.e., this will result in disk accesses for new 
+    " buffers).
+    " Can also be buffer-local.
     let g:quickfixsigns#vcsdiff#guess_type = 1   "{{{2
 endif
 
@@ -85,24 +88,28 @@ endf
 function! quickfixsigns#vcsdiff#GuessType() "{{{3
     if exists('b:vcs_type')
         let type = b:vcs_type
-    elseif exists('b:VCSCommandVCSType')
-        " vcscommand
-        let type = tolower(b:VCSCommandVCSType)
-    elseif exists('b:git_dir')
-        " fugitive
-        let type = 'git'
     else
-        let type = ''
-    endif
-    if g:quickfixsigns#vcsdiff#guess_type && empty(type)
-        let path = expand('%:p') .';'
-        for vcs in keys(g:quickfixsigns#vcsdiff#vcs)
-            let dir = g:quickfixsigns#vcsdiff#vcs[vcs].dir
-            if !empty(finddir(dir, path))
-                let type = vcs
-                break
-            endif
-        endfor
+        if exists('b:VCSCommandVCSType')
+            " vcscommand
+            let type = tolower(b:VCSCommandVCSType)
+        elseif exists('b:git_dir')
+            " fugitive
+            let type = 'git'
+        else
+            let type = ''
+        endif
+        if (exists('b:quickfixsigns#vcsdiff#guess_type') ? b:quickfixsigns#vcsdiff#guess_type : g:quickfixsigns#vcsdiff#guess_type) && empty(type)
+            let path = escape(expand('%:p'), ',:') .';'
+            for vcs in keys(g:quickfixsigns#vcsdiff#vcs)
+                let dir = g:quickfixsigns#vcsdiff#vcs[vcs].dir
+                " TLogVAR dir
+                if !empty(finddir(dir, path))
+                    let type = vcs
+                    break
+                endif
+            endfor
+        endif
+        let b:vcs_type = type
     endif
     if has_key(g:quickfixsigns#vcsdiff#vcs, type)
         return type
