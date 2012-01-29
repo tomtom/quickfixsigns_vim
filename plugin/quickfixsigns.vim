@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-01-20.
-" @Revision:    1021
+" @Last Change: 2012-01-28.
+" @Revision:    1027
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -363,14 +363,21 @@ function! s:UpdateLineNumbers() "{{{3
                     " TLogVAR ikey, lnum, slnum
                     let item = g:quickfixsigns_register[ikey]
                     let item.lnum = slnum
-                    let item.ikey = s:GetIKey(item)
-                    if has_key(g:quickfixsigns_register, item.ikey)
-                        if g:quickfixsigns_debug >= 2
-                            echom "Quickfixsigns DEBUG UpdateLineNumbers: IKey already exists:" item.ikey "was" ikey
+                    let new_ikey = s:GetIKey(item)
+                    if new_ikey != ikey
+                        if has_key(g:quickfixsigns_register, new_ikey)
+                            if g:quickfixsigns_debug >= 2
+                                echom "Quickfixsigns DEBUG UpdateLineNumbers: IKey already exists:" new_ikey "was" ikey
+                            endif
+                        else
+                            let old_item = g:quickfixsigns_register[ikey]
+                            let will_remove = item == old_item
+                            let item.ikey = new_ikey
+                            let g:quickfixsigns_register[new_ikey] = item
+                            if will_remove
+                                call remove(g:quickfixsigns_register, ikey)
+                            endif
                         endif
-                    else
-                        let g:quickfixsigns_register[item.ikey] = item
-                        call remove(g:quickfixsigns_register, ikey)
                     endif
                 endif
             endif
