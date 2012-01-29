@@ -332,7 +332,8 @@ function! s:UpdateLineNumbers() "{{{3
     let buffersigns = {}
     for [ikey, def] in items(g:quickfixsigns_register)
         let bufnr = def.bufnr
-        if bufnr(bufnr) == -1
+        " if bufnr(bufnr) == -1
+        if !bufloaded(bufnr)
             if g:quickfixsigns_debug
                 echom "QuickFixSigns DEBUG UpdateLineNumbers: Invalid bufnr:" string(bufnr)
             endif
@@ -489,7 +490,8 @@ function! s:ClearSigns(ikeys) "{{{3
         let def   = g:quickfixsigns_register[ikey]
         let bufnr = def.bufnr
         " TLogVAR ikey, bufnr
-        if bufnr(bufnr) != -1
+        " if bufnr(bufnr) != -1
+        if bufloaded(bufnr)
             exec 'sign unplace '. def.id .' buffer='. bufnr
         elseif g:quickfixsigns_debug
             echom "Quickfixsigns DEBUG: bufnr=-1:" ikey string(a:def)
@@ -692,7 +694,7 @@ augroup QuickFixSigns
     if exists('s:key')
         unlet s:ev s:key s:def
     endif
-    autocmd BufDelete,BufUnload,BufWipeout * call QuickfixsignsRemoveBuffer(expand("<afile>:p"))
+    autocmd BufUnload * call QuickfixsignsRemoveBuffer(expand("<afile>:p"))
     autocmd CursorHold,CursorHoldI * call s:PurgeRegister()
     " autocmd BufRead,BufNewFile * exec 'sign place '. (s:quickfixsigns_base - 1) .' name=QFS_DUMMY line=1 buffer='. bufnr('%')
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
