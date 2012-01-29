@@ -192,7 +192,7 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                         let change_defs[change_lnum] = {'change': change, 'text': text}
                         let last_change_lnum = change_lnum
                     endif
-                    if change == 'DEL'
+                    if change == 'DEL' || change == 'CHANGE'
                         let last_del = change_lnum
                     endif
                 endif
