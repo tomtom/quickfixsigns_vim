@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2012-01-29.
-" @Revision:    312
+" @Last Change: 2012-02-01.
+" @Revision:    324
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -101,12 +101,18 @@ function! quickfixsigns#vcsdiff#GuessType() "{{{3
         endif
         if (exists('b:quickfixsigns#vcsdiff#guess_type') ? b:quickfixsigns#vcsdiff#guess_type : g:quickfixsigns#vcsdiff#guess_type) && empty(type)
             let path = escape(expand('%:p'), ',:') .';'
+            let depth = -1
             for vcs in keys(g:quickfixsigns#vcsdiff#vcs)
                 let dir = g:quickfixsigns#vcsdiff#vcs[vcs].dir
                 " TLogVAR dir
-                if !empty(finddir(dir, path))
-                    let type = vcs
-                    break
+                let vcsdir = finddir(dir, path)
+                if !empty(vcsdir)
+                    let vcsdir_depth = len(split(fnamemodify(vcsdir, ':p'), '\/'))
+                    if vcsdir_depth > depth
+                        let depth = vcsdir_depth
+                        let type = vcs
+                        " TLogVAR type, depth
+                    endif
                 endif
             endfor
         endif
