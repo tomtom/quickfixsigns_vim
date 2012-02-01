@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2012-02-01.
-" @Revision:    1028
+" @Revision:    1051
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -330,16 +330,16 @@ endf
 
 function! s:UpdateLineNumbers() "{{{3
     let buffersigns = {}
-    for [ikey, def] in items(g:quickfixsigns_register)
-        let bufnr = def.bufnr
+    for [ikey, item] in items(g:quickfixsigns_register)
+        let bufnr = item.bufnr
         " if bufnr(bufnr) == -1
         if !bufloaded(bufnr)
             if g:quickfixsigns_debug
                 echom "QuickFixSigns DEBUG UpdateLineNumbers: Invalid bufnr:" string(bufnr)
             endif
         else
-            let lnum = def.lnum
-            let id = def.id
+            let lnum = item.lnum
+            let id = item.id
             if !has_key(buffersigns, bufnr)
                 let bsigns = s:BufferSigns(bufnr)
                 let bufnrsigns = {}
@@ -350,7 +350,7 @@ function! s:UpdateLineNumbers() "{{{3
                             echom "QuickFixSigns DEBUG UpdateLineNumbers: Sign doesn't match rx:" sign
                         endif
                     else
-                        let bufnrsigns[ml[2]] = 0 + ml[1]
+                        let bufnrsigns[ml[2]] = char2nr(ml[1])
                     endif
                 endfor
                 let buffersigns[bufnr] = bufnrsigns
@@ -361,25 +361,19 @@ function! s:UpdateLineNumbers() "{{{3
                 let slnum = bufnrsigns[id]
                 if slnum != lnum
                     " TLogVAR ikey, lnum, slnum
-                    let item = g:quickfixsigns_register[ikey]
-                    let item.lnum = slnum
                     let new_ikey = s:GetIKey(item)
-                    if new_ikey != ikey
-                        if has_key(g:quickfixsigns_register, new_ikey)
-                            if g:quickfixsigns_debug >= 2
-                                echom "Quickfixsigns DEBUG UpdateLineNumbers: IKey already exists:" new_ikey "was" ikey
-                            endif
-                        else
-                            let old_item = g:quickfixsigns_register[ikey]
-                            let will_remove = item == old_item
-                            let item.ikey = new_ikey
-                            let g:quickfixsigns_register[new_ikey] = item
-                            if will_remove
-                                call remove(g:quickfixsigns_register, ikey)
-                            endif
-                        endif
+                    if new_ikey != ikey && has_key(g:quickfixsigns_register, new_ikey)
+                        call remove(g:quickfixsigns_register, ikey)
+                    else
+                        let old_item = copy(item)
+                        let item.lnum = slnum
+                        let item.ikey = new_ikey
+                        call remove(g:quickfixsigns_register, ikey)
+                        let g:quickfixsigns_register[new_ikey] = item
                     endif
                 endif
+            elseif g:quickfixsigns_debug
+                echom "QuickFixSigns UpdateLineNumbers: id not found:" bufnr id
             endif
         endif
     endfor
