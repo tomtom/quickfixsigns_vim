@@ -38,12 +38,13 @@ endif
 "     cmd ... command templates that generate a unified diff file. "%s" 
 "             is replaced with the filename.
 "     dir ... the directory name
-" Currently supported vcs: git, hg, svn
+" Currently supported vcs: git, hg, svn, bzr
 " :read: let g:quickfixsigns#vcsdiff#vcs = {...} {{{2
 let g:quickfixsigns#vcsdiff#vcs = {
-            \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s', 'dir': '.git'},
-            \ 'hg': {'cmd': 'hg diff -U0 %s', 'dir': '.hg'},
-            \ 'svn': {'cmd': 'svn diff -x -u %s', 'dir': '.svn'},
+            \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s', 'dir': '.git'}
+            \ , 'hg': {'cmd': 'hg diff -U0 %s', 'dir': '.hg'}
+            \ , 'svn': {'cmd': 'svn diff -x -u %s', 'dir': '.svn'}
+            \ , 'bzr': {'cmd': 'bzr diff %s', 'dir': '.bzr'}
             \ }
 
 
