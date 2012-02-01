@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-01-28.
-" @Revision:    1027
+" @Last Change: 2012-02-01.
+" @Revision:    1028
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -613,7 +613,7 @@ function! s:PlaceSign(class, sign, list) "{{{3
                         let g:quickfixsigns_register[ikey] = item
                     endif
                 endif
-            else
+            elseif g:quickfixsigns_debug
                 echohl WarningMsg
                 echom "Quickfixsigns PlaceSign: Invalid lnum:" string(item)
                 echohl NONE
