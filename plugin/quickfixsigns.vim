@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2012-02-02.
-" @Revision:    1055
+" @Revision:    1086
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -330,6 +330,7 @@ endf
 
 function! s:UpdateLineNumbers() "{{{3
     let buffersigns = {}
+    let clear_ikeys = []
     for [ikey, item] in items(g:quickfixsigns_register)
         let bufnr = item.bufnr
         " if bufnr(bufnr) == -1
@@ -350,7 +351,7 @@ function! s:UpdateLineNumbers() "{{{3
                             echom "QuickFixSigns DEBUG UpdateLineNumbers: Sign doesn't match rx:" sign
                         endif
                     else
-                        let bufnrsigns[ml[2]] = char2nr(ml[1])
+                        let bufnrsigns[ml[2]] = str2nr(ml[1])
                     endif
                 endfor
                 let buffersigns[bufnr] = bufnrsigns
@@ -361,15 +362,16 @@ function! s:UpdateLineNumbers() "{{{3
                 let slnum = bufnrsigns[id]
                 if slnum != lnum
                     " TLogVAR ikey, lnum, slnum
+                    let item.lnum = slnum
                     let new_ikey = s:GetIKey(item)
-                    if new_ikey != ikey && has_key(g:quickfixsigns_register, new_ikey)
-                        call remove(g:quickfixsigns_register, ikey)
+                    if has_key(g:quickfixsigns_register, new_ikey)
+                        " TLogVAR slnum, lnum
+                        call add(clear_ikeys, ikey)
                     else
-                        let old_item = copy(item)
-                        let item.lnum = slnum
-                        let item.ikey = new_ikey
                         call remove(g:quickfixsigns_register, ikey)
+                        let item.ikey = new_ikey
                         let g:quickfixsigns_register[new_ikey] = item
+                        " TLogVAR ikey, new_ikey
                     endif
                 endif
             elseif g:quickfixsigns_debug
@@ -377,6 +379,9 @@ function! s:UpdateLineNumbers() "{{{3
             endif
         endif
     endfor
+    if !empty(clear_ikeys)
+        call s:ClearSigns(clear_ikeys)
+    endif
 endf
 
 
@@ -490,12 +495,11 @@ function! s:ClearSigns(ikeys) "{{{3
     for ikey in a:ikeys
         let def   = g:quickfixsigns_register[ikey]
         let bufnr = def.bufnr
-        " TLogVAR ikey, bufnr
-        " if bufnr(bufnr) != -1
         if bufloaded(bufnr)
+            " TLogVAR bufnr, ikey
             exec 'sign unplace '. def.id .' buffer='. bufnr
         elseif g:quickfixsigns_debug
-            echom "Quickfixsigns DEBUG: bufnr=-1:" ikey string(a:def)
+            echom "Quickfixsigns DEBUG: bufnr not loaded:" bufnr ikey string(def)
         endif
         call remove(g:quickfixsigns_register, ikey)
     endfor
@@ -600,7 +604,7 @@ function! s:PlaceSign(class, sign, list) "{{{3
                     " TLogVAR ikey, item
                     call add(keep_ikeys, ikey)
                     if item.new
-                        " TLogVAR item
+                        " TLogVAR item.bufnr, item.ikey
                         let cmd = ':sign place '. item.id .' line='. item.lnum .' name='. sign .' buffer='. item.bufnr
                         " TLogDBG cmd
                         exec cmd
