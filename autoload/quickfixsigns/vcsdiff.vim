@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-02-02.
-" @Revision:    352
+" @Revision:    355
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -43,7 +43,7 @@ endif
 let g:quickfixsigns#vcsdiff#vcs = {
             \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s', 'dir': '.git'}
             \ , 'hg': {'cmd': 'hg diff -U0 %s', 'dir': '.hg'}
-            \ , 'svn': {'cmd': 'svn diff -x -u %s', 'dir': '.svn'}
+            \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 %s', 'dir': '.svn'}
             \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 %s', 'dir': '.bzr'}
             \ }
 
