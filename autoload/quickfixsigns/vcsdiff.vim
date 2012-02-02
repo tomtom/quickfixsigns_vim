@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2012-02-01.
-" @Revision:    324
+" @Last Change: 2012-02-02.
+" @Revision:    352
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -147,10 +147,15 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
         let diff = system(cmds)
         " TLogVAR diff
         if !empty(diff)
+            let bufnr = bufnr('%')
+            if g:quickfixsigns_debug && bufnr != bufnr(a:filename)
+                echom "QuickFixSigns DEBUG: bufnr mismatch:" a:filename bufnr bufnr(a:filename)
+            endif
+            let lastlnum = line('$')
             let lines = split(diff, '\n')
             let change_defs = {}
-            let from = 0
-            let to = 0
+            let from = -1
+            let to = -1
             let last_change_lnum = 0
             let last_del = 0
             for line in lines
@@ -158,16 +163,18 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                 if line =~ '^@@\s'
                     let m = matchlist(line, '^@@ -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@')
                     " TLogVAR line, m
-                    let to = m[3]
+                    let to = str2nr(m[3])
+                    " TLogVAR "@@", to
                     " let change_lnum = m[1]
                     let from = to
                 elseif line =~ '^@@@\s'
                     let m = matchlist(line, '^@@@ -\(\d\+\)\(,\d\+\)\? -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@@')
                     " TLogVAR line, m
-                    let to = m[5]
+                    let to = str2nr(m[5])
+                    " TLogVAR "@@@", to
                     " let change_lnum = m[1]
                     let from = to
-                elseif from == 0
+                elseif from < 0
                     continue
                 else
                     if line[0] == '-'
@@ -187,6 +194,11 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                         continue
                     endif
                     " TLogVAR change_lnum, change
+                    if change_lnum < 1
+                        let change_lnum = 1
+                    elseif change_lnum > lastlnum
+                        let change_lnum = lastlnum
+                    endif
                     if !empty(change) && has_key(change_defs, change_lnum)
                         if change_defs[change_lnum].change == 'CHANGE' || change_defs[change_lnum].change != change
                             let change = 'CHANGE'
@@ -204,7 +216,6 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                     endif
                 endif
             endfor
-            let bufnr = bufnr('%')
             let signs = []
             for [lnum, change_def] in items(change_defs)
                 if !has_key(g:quickfixsigns#vcsdiff#highlight, change_def.change)
