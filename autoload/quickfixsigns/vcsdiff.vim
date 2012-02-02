@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2012-02-02.
-" @Revision:    355
+" @Last Change: 02-Feb-2012.
+" @Revision:    363
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -14,6 +14,29 @@ let g:quickfixsigns#vcsdiff#loaded = 1
 
 if index(g:quickfixsigns_classes, 'vcsdiff') == -1
     finish
+endif
+
+
+if !exists('g:quickfixsigns#vcsdiff#vcs')
+    " Show signs for new (+), changed (=), or deleted (-) lines.
+    "
+    " The signs for deleted lines are shown on the line before the 
+    " deleted one. I.e. if line 20 was deleted, the "-" sign will be put 
+    " on line 19.
+    "
+    " A dictionary of supported VCS names. Its values are dictionaries 
+    " with the following keys:
+    "     cmd ... command templates that generate a unified diff file. 
+    "     "%s" is replaced with the filename.
+    "     dir ... the directory name
+    " Currently supported vcs: git, hg, svn, bzr
+    " :read: let g:quickfixsigns#vcsdiff#vcs = {...}  "{{{2
+    let g:quickfixsigns#vcsdiff#vcs = {
+                \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s', 'dir': '.git'}
+                \ , 'hg': {'cmd': 'hg diff -U0 %s', 'dir': '.hg'}
+                \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 %s', 'dir': '.svn'}
+                \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 %s', 'dir': '.bzr'}
+                \ }
 endif
 
 
@@ -31,21 +54,6 @@ if !exists('g:quickfixsigns#vcsdiff#cmd_separator')
     " Command to join two shell commands.
     let g:quickfixsigns#vcsdiff#cmd_separator = &sh =~ 'sh' ? '&&' : ';'  "{{{2
 endif
-
-
-" A dictionary of supported VCS names. Its values are dictionaries with 
-" the following keys:
-"     cmd ... command templates that generate a unified diff file. "%s" 
-"             is replaced with the filename.
-"     dir ... the directory name
-" Currently supported vcs: git, hg, svn, bzr
-" :read: let g:quickfixsigns#vcsdiff#vcs = {...} {{{2
-let g:quickfixsigns#vcsdiff#vcs = {
-            \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s', 'dir': '.git'}
-            \ , 'hg': {'cmd': 'hg diff -U0 %s', 'dir': '.hg'}
-            \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 %s', 'dir': '.svn'}
-            \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 %s', 'dir': '.bzr'}
-            \ }
 
 
 if !exists('g:quickfixsigns#vcsdiff#guess_type')

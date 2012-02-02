@@ -70,6 +70,7 @@ Contents~
         quickfixsigns#RelNumbersOnce ............. |quickfixsigns#RelNumbersOnce()|
         quickfixsigns#AssertUniqueSigns .......... |quickfixsigns#AssertUniqueSigns()|
         quickfixsigns#AssertNoObsoleteBuffers .... |quickfixsigns#AssertNoObsoleteBuffers()|
+        g:quickfixsigns#vcsdiff#vcs .............. |g:quickfixsigns#vcsdiff#vcs|
         g:quickfixsigns_class_vcsdiff ............ |g:quickfixsigns_class_vcsdiff|
         g:quickfixsigns#vcsdiff#cd ............... |g:quickfixsigns#vcsdiff#cd|
         g:quickfixsigns#vcsdiff#cmd_separator .... |g:quickfixsigns#vcsdiff#cmd_separator|
@@ -233,6 +234,21 @@ quickfixsigns#AssertNoObsoleteBuffers(register)
 
 ========================================================================
 autoload/quickfixsigns/vcsdiff.vim~
+
+                                                    *g:quickfixsigns#vcsdiff#vcs*
+g:quickfixsigns#vcsdiff#vcs    (default: {...})
+    Show signs for new (+), changed (=), or deleted (-) lines.
+    
+    The signs for deleted lines are shown on the line before the 
+    deleted one. I.e. if line 20 was deleted, the "-" sign will be put 
+    on line 19.
+    
+    A dictionary of supported VCS names. Its values are dictionaries 
+    with the following keys:
+        cmd ... command templates that generate a unified diff file. 
+        "%s" is replaced with the filename.
+        dir ... the directory name
+    Currently supported vcs: git, hg, svn, bzr
 
                                                     *g:quickfixsigns_class_vcsdiff*
 g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter', 'BufWritePost'], 'level': 6})
