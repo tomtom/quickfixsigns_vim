@@ -44,7 +44,7 @@ let g:quickfixsigns#vcsdiff#vcs = {
             \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s', 'dir': '.git'}
             \ , 'hg': {'cmd': 'hg diff -U0 %s', 'dir': '.hg'}
             \ , 'svn': {'cmd': 'svn diff -x -u %s', 'dir': '.svn'}
-            \ , 'bzr': {'cmd': 'bzr diff %s', 'dir': '.bzr'}
+            \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 %s', 'dir': '.bzr'}
             \ }
 
 
