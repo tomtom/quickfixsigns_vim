@@ -4,14 +4,14 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-02-01.
-" @Revision:    1051
+" @Last Change: 2012-02-02.
+" @Revision:    1055
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
     finish
 endif
-let loaded_quickfixsigns = 14
+let loaded_quickfixsigns = 100
 
 let s:save_cpo = &cpo
 set cpo&vim
