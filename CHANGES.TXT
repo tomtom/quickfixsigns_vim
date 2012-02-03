@@ -100,3 +100,58 @@ version: "0.14"
   - always_new: avoid wrong optimizations for certain sign classes (e.g. vcsdiff), fixes #10
   MD5 checksum: 542b6deeb5a0505f5bd6cfcaaeca9c57
 
+version: "1.00"
+  - g:quickfixsigns_debug, quickfixsigns#AssertUniqueSigns()
+  - Be smarter at detecting old signs that already exist: s:SignExistsAt() etc.
+  - debugging
+  - if !exists('g:quickfixsigns_class_rel2')
+  - QuickfixsignsSet: clean up
+  - QuickfixsignsDisable, QuickfixsignsEnable commands (fixes #12)
+  - Don't call QuickfixsignsSet during startup (fixes #13)
+  - Use full filenames
+  - GetLocList(): call getloclist with the window number
+  - quickfixsigns#AssertUniqueSigns: Debug message includes bufnr
+  - s:GetScopeTest(): Build query in advance if possible
+  - QuickfixsignsRemoveBuffer() on BufDelete events
+  - don't allow external diff applications for git
+  - Make the highlight group for mark sign user configurable (teranex)
+  - Distinguish between buffer-local and global marks
+  - Try 1 to fix SetItemId etc.
+  - Explicitely set the sign level for most sign classes
+  - Make sure item.sign is the actual sign (not a generator function)
+  - Events for "cursor" class: BufEnter, CursorHoldI?, CursorMovedI?
+  - Removed use of always_new
+  - vcsdiff: Changed how DEL lines are displayed
+  - Remove s:PruneRegister()
+  - Debug: quickfixsigns#CheckBuffers()
+  - autocmd BufDelete: Forgot the pattern
+  - Don't place signs for unloaded buffers
+  - call QuickfixsignsRemoveBuffer() also on BufUnload
+  - Rename quickfixsigns#CheckBuffers() -> quickfixsigns#AssertNoObsoleteBuffers(register)
+  - Update line numbers in order to avoid unnecessarily setting signs
+  - s:UpdateLineNumbers(): Debug messages on internal errors
+  - g:quickfixsigns#use_relativenumber = v:version >= 703
+  - Call cd only for diff command (don't cd vim's dir; fixes #15)
+  - Reset ikey after updating line numbers (avoid inconsistent registry entries & duplicate signs)
+  - Call QuickfixsignsRemoveBuffer() also on BufWipeout events
+  - Call s:PurgeRegister() on CursorHoldI? events
+  - s:BufferSigns(): Return empty list if :sign-place returns fewer than 2 lines
+  - BufferSigns(): Show debug message only if g:quickfixsigns_debug is true
+  - Update signs also in QuickfixsignsBalloon()
+  - Update signs also in QuickfixsignsBalloon()
+  - QuickfixsignsBalloon(): Don't update signs (undo previous change)
+  - Guess vcs type (replaced g:quickfixsigns#vcsdiff#cmds with g:quickfixsigns#vcsdiff#vcs)
+  - Search for guess vcs type only once.
+  - quickfixsigns#vcsdiff#GetList(): Set last_del also on CHANGEs
+  - Consistently use bufloaded
+  - UpdateLineNumbers(): Remove old items only when the items match
+  - Display "Invalid lnum" message only when g:quickfixsigns_debug is set (fixes #16)
+  - UpdateLineNumbers(): Avoid duplicate signs
+  - Support for bzr
+  - quickfixsigns#vcsdiff#GuessType(): Make sure to pick the lower repo directory
+  - Run brz diff with -U0
+  - Show diffs on first and last line
+  - Make svn diff use "diff -U0"
+  - UpdateLineNumbers(): Use str2nr(), not char2nr()
+  MD5 checksum: 00e4af7843f2619e55ee3cee3e614240
+
