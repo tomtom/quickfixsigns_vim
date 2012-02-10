@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2012-02-10.
-" @Revision:    1102
+" @Revision:    1104
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -707,7 +707,7 @@ augroup QuickFixSigns
         unlet s:ev s:class s:def
     endif
     autocmd BufUnload * call s:RemoveBuffer(expand("<abuf>"))
-    autocmd CursorHold,CursorHoldI * call s:PurgeRegister()
+    autocmd BufLeave * call s:PurgeRegister()
     " autocmd BufRead,BufNewFile * exec 'sign place '. (s:quickfixsigns_base - 1) .' name=QFS_DUMMY line=1 buffer='. bufnr('%')
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
 augroup END
