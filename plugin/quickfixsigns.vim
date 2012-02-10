@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-02-09.
-" @Revision:    1097
+" @Last Change: 2012-02-10.
+" @Revision:    1102
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -479,10 +479,9 @@ function! QuickfixsignsClear(class) "{{{3
 endf
 
 
-function! QuickfixsignsRemoveBuffer(bufname) "{{{3
-    " TLogVAR a:bufname
-    let bufnr = bufnr(a:bufname)
-    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest('', bufnr, '')))
+function! QuickfixsignsRemoveBuffer(bufnr) "{{{3
+    " TLogVAR a:bufnr
+    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest('', str2nr(a:bufnr), '')))
     " TLogVAR old_ikeys
     call s:ClearSigns(old_ikeys)
 endf
@@ -707,7 +706,7 @@ augroup QuickFixSigns
     if exists('s:class')
         unlet s:ev s:class s:def
     endif
-    autocmd BufUnload * call QuickfixsignsRemoveBuffer(expand("<afile>:p"))
+    autocmd BufUnload * call QuickfixsignsRemoveBuffer(expand("<abuf>"))
     autocmd CursorHold,CursorHoldI * call s:PurgeRegister()
     " autocmd BufRead,BufNewFile * exec 'sign place '. (s:quickfixsigns_base - 1) .' name=QFS_DUMMY line=1 buffer='. bufnr('%')
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
