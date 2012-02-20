@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-02-10.
-" @Revision:    1104
+" @Last Change: 2012-02-20.
+" @Revision:    1120
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -352,7 +352,7 @@ function! s:UpdateLineNumbers() "{{{3
     for [ikey, item] in items(g:quickfixsigns_register)
         let bufnr = item.bufnr
         " if bufnr(bufnr) == -1
-        if !bufloaded(bufnr)
+        if !bufloaded(bufnr) || bufnr <= 0
             if g:quickfixsigns_debug
                 echom "QuickFixSigns DEBUG UpdateLineNumbers: Invalid bufnr:" string(bufnr)
             endif
