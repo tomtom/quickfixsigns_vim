@@ -173,9 +173,21 @@ function! s:PurgeRegister() "{{{3
 endf
 
 
-redir => s:signss
-silent sign list
-redir END
+function! s:Redir(cmd) "{{{3
+    let verbose = &verbose
+    let &verbose = 0
+    try
+        redir => rv
+        exec 'silent' a:cmd
+        redir END
+        return rv
+    finally
+        let &verbose = verbose
+    endtry
+endf
+
+
+let s:signss = s:Redir('silent sign list')
 let g:quickfixsigns_signs = split(s:signss, '\n')
 call filter(g:quickfixsigns_signs, 'v:val =~ ''^sign QFS_''')
 call map(g:quickfixsigns_signs, 'matchstr(v:val, ''^sign \zsQFS_\w\+'')')
@@ -568,11 +580,9 @@ function! s:BufferSigns(bufnr) "{{{3
     if a:bufnr == -1
         return []
     endif
-    redir => l:signss
-    exec 'silent sign place buffer='. a:bufnr
-    redir END
-    if exists('l:signss')
-        let signs = split(l:signss, '\n')
+    let signss = s:Redir('sign place buffer='. a:bufnr)
+    if exists('signss')
+        let signs = split(signss, '\n')
         if len(signs) > 2
             call remove(signs, 0, 1)
         else
