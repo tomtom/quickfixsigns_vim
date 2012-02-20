@@ -67,9 +67,9 @@ Contents~
         QuickfixsignsSelect ...................... |QuickfixsignsSelect()|
         QuickfixsignsUpdate ...................... |QuickfixsignsUpdate()|
         QuickfixsignsSet ......................... |QuickfixsignsSet()|
+        QuickfixsignsUnique ...................... |QuickfixsignsUnique()|
         QuickfixsignsBalloon ..................... |QuickfixsignsBalloon()|
         QuickfixsignsClear ....................... |QuickfixsignsClear()|
-        QuickfixsignsRemoveBuffer ................ |QuickfixsignsRemoveBuffer()|
         g:quickfixsigns#use_relativenumber ....... |g:quickfixsigns#use_relativenumber|
         quickfixsigns#CompleteSelect ............. |quickfixsigns#CompleteSelect()|
         quickfixsigns#RelNumbersOnce ............. |quickfixsigns#RelNumbersOnce()|
@@ -201,15 +201,15 @@ QuickfixsignsSet(event, ?classes=[])
     
     Normally, the end-user doesn't need to call this function.
 
+                                                    *QuickfixsignsUnique()*
+QuickfixsignsUnique(list)
+
                                                     *QuickfixsignsBalloon()*
 QuickfixsignsBalloon()
 
                                                     *QuickfixsignsClear()*
 QuickfixsignsClear(class)
     Clear all signs with name SIGN.
-
-                                                    *QuickfixsignsRemoveBuffer()*
-QuickfixsignsRemoveBuffer(bufname)
 
 
 ========================================================================
