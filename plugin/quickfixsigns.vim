@@ -412,6 +412,22 @@ function! s:GetList(def, filename) "{{{3
 endf
 
 
+function! QuickfixsignsUnique(list) "{{{3
+    let items = {}
+    for item in a:list
+        let id = printf('%d*%d', get(item, 'bufnr', get(item, 'filename', '')), get(item, 'lnum', 0))
+        if has_key(items, id)
+            let oitem = items[id]
+            let oitem.text = join([get(oitem, 'text', ''), get(item, 'text', '')], "\n")
+            let items[id] = oitem
+        else
+            let items[id] = item
+        endif
+    endfor
+    return values(items)
+endf
+
+
 function! QuickfixsignsBalloon() "{{{3
     " TLogVAR v:beval_lnum, v:beval_col
     if v:beval_col <= 1
@@ -685,14 +701,14 @@ endf
 
 
 function! s:GetQFList(bufname) "{{{3
-    return getqflist()
+    return QuickfixsignsUnique(getqflist())
 endf
 
 
 function! s:GetLocList(bufname) "{{{3
     let loclist = getloclist(bufwinnr(a:bufname))
     " TLogVAR a:bufname, bufnr(a:bufname), loclist
-    return loclist
+    return QuickfixsignsUnique(loclist)
 endf
 
 
