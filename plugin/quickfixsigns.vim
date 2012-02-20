@@ -448,7 +448,11 @@ function! QuickfixsignsBalloon() "{{{3
         return join(map(acc, 'v:val.text'), "\n")
     endif
     if exists('b:quickfixsigns_balloonexpr') && !empty(b:quickfixsigns_balloonexpr)
-        return eval(b:quickfixsigns_balloonexpr)
+        let text = eval(b:quickfixsigns_balloonexpr)
+        if !has('balloon_multiline')
+            let text = substitute(text, '\n', ' ', 'g')
+        endif
+        return text
     else
         return ''
     endif
