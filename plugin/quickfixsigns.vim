@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-02-20.
-" @Revision:    1120
+" @Last Change: 2012-02-23.
+" @Revision:    1126
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -232,13 +232,20 @@ endf
 
 
 function! QuickfixsignsSelect(list) "{{{3
-	" FIXME: unset first
+    let classes = exists('g:quickfixsigns_lists') ? keys(g:quickfixsigns_lists) : []
     let g:quickfixsigns_lists = {}
 	for what in a:list
         if exists('g:quickfixsigns_class_'. what)
             let g:quickfixsigns_lists[what] = g:quickfixsigns_class_{what}
+            let iwhat = index(classes, what)
+            if iwhat != -1
+                call remove(classes, iwhat)
+            endif
         endif
 	endfor
+    for class in classes
+        call QuickfixsignsClear(class)
+    endfor
 endf
 
 
