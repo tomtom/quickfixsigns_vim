@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-02-23.
-" @Revision:    1126
+" @Last Change: 2012-02-28.
+" @Revision:    1127
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -269,7 +269,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     " TLogVAR a:event, a:000
     let filename = a:0 >= 2 ? a:2 : expand('%:p')
     " TLogVAR a:event, filename, bufname('%')
-    if filename =~ g:quickfixsigns_blacklist_buffer
+    if fnamemodify(filename, ':t') =~ g:quickfixsigns_blacklist_buffer
         return
     endif
     if !exists('b:quickfixsigns_last_line')
