@@ -25,6 +25,9 @@ command! QuickfixsignsDisable call s:ClearSigns(keys(g:quickfixsigns_register)) 
 " Enable quickfixsign.
 command! QuickfixsignsEnable call QuickfixsignsSelect(g:quickfixsigns_classes) | QuickfixsignsSet
 
+" Toggle quickfixsign.
+command! QuickfixsignsToggle call QuickfixsignsToggle()
+
 " Select the sign classes that should be displayed and reset the signs 
 " in the current buffer.
 command! -nargs=+ -complete=customlist,quickfixsigns#CompleteSelect QuickfixsignsSelect call QuickfixsignsSelect([<f-args>]) | call QuickfixsignsUpdate()
@@ -464,6 +467,15 @@ function! QuickfixsignsBalloon() "{{{3
         return ''
     endif
 endf
+
+
+function! QuickfixsignsToggle()
+    if exists('g:quickfixsigns_register') && len(g:quickfixsigns_register) > 0
+        exec 'QuickfixsignsDisable'
+    else
+        exec 'QuickfixsignsEnable'
+    end
+endfunction
 
 
 function! s:GetCursor(bufname) "{{{3
