@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-02-28.
-" @Revision:    1127
+" @Last Change: 2012-03-22.
+" @Revision:    1128
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -180,7 +180,7 @@ function! s:Redir(cmd) "{{{3
         redir => rv
         exec 'silent' a:cmd
         redir END
-        return rv
+        return exists('rv')? rv : ''
     finally
         let &verbose = verbose
     endtry
