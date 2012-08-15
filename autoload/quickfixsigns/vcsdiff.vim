@@ -3,8 +3,8 @@
 " @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2012-02-02.
-" @Revision:    387
+" @Last Change: 2012-04-10.
+" @Revision:    389
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
