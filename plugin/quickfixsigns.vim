@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-08-15.
-" @Revision:    1130
+" @Last Change: 2012-09-15.
+" @Revision:    1133
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -490,8 +490,8 @@ endf
 
 
 function! s:CompareClasses(a, b) "{{{3
-    let i1 = get(a:a[1], 'level', 5)
-    let i2 = get(a:b[1], 'level', 5)
+    let i1 = str2nr(get(a:a[1], 'level', 5))
+    let i2 = str2nr(get(a:b[1], 'level', 5))
     return i1 == i2 ? 0 : i1 < i2 ? 1 : -1
 endf
 

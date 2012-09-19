@@ -53,6 +53,7 @@ Contents~
         :QuickfixsignsSet ........................ |:QuickfixsignsSet|
         :QuickfixsignsDisable .................... |:QuickfixsignsDisable|
         :QuickfixsignsEnable ..................... |:QuickfixsignsEnable|
+        :QuickfixsignsToggle ..................... |:QuickfixsignsToggle|
         :QuickfixsignsSelect ..................... |:QuickfixsignsSelect|
         g:quickfixsigns_classes .................. |g:quickfixsigns_classes|
         g:quickfixsigns_events ................... |g:quickfixsigns_events|
@@ -69,12 +70,19 @@ Contents~
         QuickfixsignsSet ......................... |QuickfixsignsSet()|
         QuickfixsignsUnique ...................... |QuickfixsignsUnique()|
         QuickfixsignsBalloon ..................... |QuickfixsignsBalloon()|
+        QuickfixsignsToggle ...................... |QuickfixsignsToggle()|
         QuickfixsignsClear ....................... |QuickfixsignsClear()|
         g:quickfixsigns#use_relativenumber ....... |g:quickfixsigns#use_relativenumber|
         quickfixsigns#CompleteSelect ............. |quickfixsigns#CompleteSelect()|
         quickfixsigns#RelNumbersOnce ............. |quickfixsigns#RelNumbersOnce()|
         quickfixsigns#AssertUniqueSigns .......... |quickfixsigns#AssertUniqueSigns()|
         quickfixsigns#AssertNoObsoleteBuffers .... |quickfixsigns#AssertNoObsoleteBuffers()|
+        g:quickfixsigns_class_marks .............. |g:quickfixsigns_class_marks|
+        g:quickfixsigns#marks#buffer ............. |g:quickfixsigns#marks#buffer|
+        g:quickfixsigns#marks#global ............. |g:quickfixsigns#marks#global|
+        g:quickfixsigns#marks#texthl ............. |g:quickfixsigns#marks#texthl|
+        quickfixsigns#marks#GetList .............. |quickfixsigns#marks#GetList()|
+        quickfixsigns#marks#GetSign .............. |quickfixsigns#marks#GetSign()|
         g:quickfixsigns#vcsdiff#vcs .............. |g:quickfixsigns#vcsdiff#vcs|
         g:quickfixsigns_class_vcsdiff ............ |g:quickfixsigns_class_vcsdiff|
         g:quickfixsigns#vcsdiff#cd ............... |g:quickfixsigns#vcsdiff#cd|
@@ -83,12 +91,6 @@ Contents~
         g:quickfixsigns#vcsdiff#highlight ........ |g:quickfixsigns#vcsdiff#highlight|
         quickfixsigns#vcsdiff#GuessType .......... |quickfixsigns#vcsdiff#GuessType()|
         quickfixsigns#vcsdiff#GetList ............ |quickfixsigns#vcsdiff#GetList()|
-        g:quickfixsigns_class_marks .............. |g:quickfixsigns_class_marks|
-        g:quickfixsigns#marks#buffer ............. |g:quickfixsigns#marks#buffer|
-        g:quickfixsigns#marks#global ............. |g:quickfixsigns#marks#global|
-        g:quickfixsigns#marks#texthl ............. |g:quickfixsigns#marks#texthl|
-        quickfixsigns#marks#GetList .............. |quickfixsigns#marks#GetList()|
-        quickfixsigns#marks#GetSign .............. |quickfixsigns#marks#GetSign()|
         g:quickfixsigns#breakpoints#filetypes .... |g:quickfixsigns#breakpoints#filetypes|
         g:quickfixsigns_class_breakpoints ........ |g:quickfixsigns_class_breakpoints|
         quickfixsigns#breakpoints#GetList ........ |quickfixsigns#breakpoints#GetList()|
@@ -110,6 +112,10 @@ plugin/quickfixsigns.vim~
 :QuickfixsignsEnable
     Enable quickfixsign.
 
+                                                    *:QuickfixsignsToggle*
+:QuickfixsignsToggle
+    Toggle quickfixsign.
+
                                                     *:QuickfixsignsSelect*
 :QuickfixsignsSelect
     Select the sign classes that should be displayed and reset the signs 
@@ -119,18 +125,18 @@ plugin/quickfixsigns.vim~
 g:quickfixsigns_classes        (default: ['qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints'])
     A list of sign classes that should be displayed.
     Can be one of:
-    
+
       rel     ... relative line numbers
       cursor  ... current line
       qfl     ... |quickfix| list
       loc     ... |location| list
       vcsdiff ... mark changed lines (see |quickfixsigns#vcsdiff#GetList()|)
       marks   ... marks |'a|-zA-Z (see also " |g:quickfixsigns_marks|)
-    
+
     The sign classes are defined in g:quickfixsigns_class_{NAME}.
-    
+
     A sign class definition is a |Dictionary| with the following fields:
-    
+
       sign:  The name of the sign, which has to be defined. If the 
              value begins with "*", the value is interpreted as 
              function name that is called with a qfl item as its 
@@ -159,7 +165,7 @@ g:quickfixsigns_class_qfl      (default: {'sign': 'QFS_QFL', 'get': 's:GetQFList
     Signs for |quickfix| lists.
 
                                                     *g:quickfixsigns_class_loc*
-g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI'], 'level': 8})
+g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 8})
     Signs for |location| lists.
 
                                                     *g:quickfixsigns_class_cursor*
@@ -179,7 +185,7 @@ g:quickfixsigns_max            (default: 500)
     Don't display signs if the list is longer than n items.
 
                                                     *g:quickfixsigns_blacklist_buffer*
-g:quickfixsigns_blacklist_buffer (default: '^__.*__$')
+g:quickfixsigns_blacklist_buffer (default: '^\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\)$')
     Don't show signs in buffers matching this |regexp|.
 
                                                     *g:quickfixsigns_icons*
@@ -198,7 +204,7 @@ QuickfixsignsUpdate(?class="")
 QuickfixsignsSet(event, ?classes=[])
     (Re-)Set the signs that should be updated at a certain event. If event 
     is empty, update all signs.
-    
+
     Normally, the end-user doesn't need to call this function.
 
                                                     *QuickfixsignsUnique()*
@@ -206,6 +212,9 @@ QuickfixsignsUnique(list)
 
                                                     *QuickfixsignsBalloon()*
 QuickfixsignsBalloon()
+
+                                                    *QuickfixsignsToggle()*
+QuickfixsignsToggle()
 
                                                     *QuickfixsignsClear()*
 QuickfixsignsClear(class)
@@ -238,16 +247,44 @@ quickfixsigns#AssertNoObsoleteBuffers(register)
 
 
 ========================================================================
+autoload/quickfixsigns/marks.vim~
+
+                                                    *g:quickfixsigns_class_marks*
+g:quickfixsigns_class_marks    (default: {...})
+    The definition of signs for marks.
+
+                                                    *g:quickfixsigns#marks#buffer*
+g:quickfixsigns#marks#buffer   (default: split('abcdefghijklmnopqrstuvwxyz''.', '\zs'))
+    A list of buffer-local marks that should be displayed as signs. If 
+    empty, disable the display of marks.
+
+                                                    *g:quickfixsigns#marks#global*
+g:quickfixsigns#marks#global   (default: split('ABCDEFGHIJKLMNOPQRSTUVWXYZ<>^', '\zs'))
+    A list of global marks that should be displayed as signs. If 
+    empty, disable the display of marks.
+
+                                                    *g:quickfixsigns#marks#texthl*
+g:quickfixsigns#marks#texthl   (default: 'Identifier')
+    Highlight group for mark signs.
+
+                                                    *quickfixsigns#marks#GetList()*
+quickfixsigns#marks#GetList(filename)
+
+                                                    *quickfixsigns#marks#GetSign()*
+quickfixsigns#marks#GetSign(item)
+
+
+========================================================================
 autoload/quickfixsigns/vcsdiff.vim~
 
                                                     *g:quickfixsigns#vcsdiff#vcs*
 g:quickfixsigns#vcsdiff#vcs    (default: {...})
     Show signs for new (+), changed (=), or deleted (-) lines.
-    
+
     The signs for deleted lines are shown on the line before the 
     deleted one. I.e. if line 20 was deleted, the "-" sign will be put 
     on line 19.
-    
+
     A dictionary of supported VCS names. Its values are dictionaries 
     with the following keys:
         cmd ... command templates that generate a unified diff file. 
@@ -277,7 +314,7 @@ g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAd
     The highlighting of deleted lines can sometimes be confusing. In 
     order to disable the display of signs for DEL changes, save the 
     following line as after/autoload/quickfixsigns/vcsdiff.vim: >
-    
+
       call remove(g:quickfixsigns#vcsdiff#highlight, 'DEL')
 <
 
@@ -285,45 +322,17 @@ g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAd
 quickfixsigns#vcsdiff#GuessType()
     Return the name of a VCS system based on the values of the following 
     variables:
-    
+
       - b:git_dir
       - b:vcs_type
       - b:VCSCommandVCSType
-    
+
     If none of these variables is defined, try to guess the vcs type.
 
                                                     *quickfixsigns#vcsdiff#GetList()*
 quickfixsigns#vcsdiff#GetList(filename)
     quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
     VCS (see |g:quickfixsigns#vcsdiff#vcs|).
-
-
-========================================================================
-autoload/quickfixsigns/marks.vim~
-
-                                                    *g:quickfixsigns_class_marks*
-g:quickfixsigns_class_marks    (default: {...})
-    The definition of signs for marks.
-
-                                                    *g:quickfixsigns#marks#buffer*
-g:quickfixsigns#marks#buffer   (default: split('abcdefghijklmnopqrstuvwxyz''.', '\zs'))
-    A list of buffer-local marks that should be displayed as signs. If 
-    empty, disable the display of marks.
-
-                                                    *g:quickfixsigns#marks#global*
-g:quickfixsigns#marks#global   (default: split('ABCDEFGHIJKLMNOPQRSTUVWXYZ<>^', '\zs'))
-    A list of global marks that should be displayed as signs. If 
-    empty, disable the display of marks.
-
-                                                    *g:quickfixsigns#marks#texthl*
-g:quickfixsigns#marks#texthl   (default: 'Identifier')
-    Highlight group for mark signs.
-
-                                                    *quickfixsigns#marks#GetList()*
-quickfixsigns#marks#GetList(filename)
-
-                                                    *quickfixsigns#marks#GetSign()*
-quickfixsigns#marks#GetSign(item)
 
 
 ========================================================================

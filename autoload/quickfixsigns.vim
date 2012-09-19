@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
-" @Last Change: 2012-02-10.
-" @Revision:    0.0.72
+" @Last Change: 2012-08-20.
+" @Revision:    0.0.73
 
 
 if !exists('g:quickfixsigns#use_relativenumber')
@@ -69,7 +69,7 @@ function! quickfixsigns#AssertUniqueSigns(bufnr, bufsigns) "{{{3
         for bsign in a:bufsigns
             let bsign1 = substitute(bsign, '\<id=\d\+\s', '', '')
             if empty(bsign1)
-                echom "DBG AssertUniqueSigns: Empty bsign1" bsign
+                " echom "DBG AssertUniqueSigns: Empty bsign1" bsign
             elseif has_key(dict, bsign1)
                 echom ("QuickFixSigns AssertUniqueSigns: duplicate bufnr=". a:bufnr .":") bsign
             else
