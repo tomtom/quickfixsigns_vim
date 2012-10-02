@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
-" @Last Change: 2012-08-20.
-" @Revision:    0.0.73
+" @Last Change: 2012-10-02.
+" @Revision:    0.0.138
 
 
 if !exists('g:quickfixsigns#use_relativenumber')
@@ -67,13 +67,11 @@ function! quickfixsigns#AssertUniqueSigns(bufnr, bufsigns) "{{{3
     echohl WarningMsg
     try
         for bsign in a:bufsigns
-            let bsign1 = substitute(bsign, '\<id=\d\+\s', '', '')
-            if empty(bsign1)
-                " echom "DBG AssertUniqueSigns: Empty bsign1" bsign
-            elseif has_key(dict, bsign1)
+            let key = printf("%s|%s", bsign.lnum, bsign.name)
+            if has_key(dict, key)
                 echom ("QuickFixSigns AssertUniqueSigns: duplicate bufnr=". a:bufnr .":") bsign
             else
-                let dict[bsign1] = 1
+                let dict[key] = 1
             endif
         endfor
     finally
@@ -92,5 +90,76 @@ function! quickfixsigns#AssertNoObsoleteBuffers(register) "{{{3
     if !empty(buffers)
         echom "QuickFixSigns: Marks for obsolete buffers:" join(sort(keys(buffers)), ', ')
     endif
+endf
+
+
+" :display: quickfixsigns#MoveSigns(n, ?pattern="", ?blockwise=0) "{{{3
+function! quickfixsigns#MoveSigns(n, ...) "{{{3
+    let pattern = a:0 >= 1 ? a:1 : ''
+    let blockwise = a:0 >= 2 ? a:2 : 0
+    let reverse = a:n < 0
+    let unique_lnums = {}
+    let lnum = line('.')
+    " TLogVAR a:n, lnum
+    for bsign in QuickfixsignsListBufferSigns(bufnr('%'))
+        " TLogVAR bsign
+        if (reverse && bsign.lnum < lnum) || (!reverse && bsign.lnum > lnum)
+            if empty(pattern) || bsign.name =~ pattern
+                let unique_lnums[bsign.lnum] = 1
+            endif
+        endif
+    endfor
+    let lnums = keys(unique_lnums)
+    if empty(lnums)
+        let rv = lnum
+    else
+        let lnums = sort(map(lnums, 'str2nr(v:val)'), 's:NumericSort')
+        if blockwise
+            " TLogVAR blockwise, len(lnums), lnums
+            let lnums1 = []
+            let last_lnum1 = -1
+            for lnum1 in (reverse ? lnums : reverse(lnums))
+                let lnum2 = reverse ? last_lnum1 + 1 : last_lnum1 - 1
+                if lnum1 != lnum2
+                    call add(lnums1, lnum1)
+                endif
+                let last_lnum1 = lnum1
+            endfor
+            let lnums = reverse ? lnums1 : reverse(lnums1)
+            " TLogVAR len(lnums), lnums
+        endif
+        if reverse
+            if -a:n > len(lnums)
+                let rv = lnums[0]
+            else
+                let rv = lnums[a:n]
+            endif
+        else
+            if a:n >= len(lnums)
+                let rv = lnums[-1]
+            else
+                let rv = lnums[a:n - 1]
+            endif
+        endif
+    endif
+    " TLogVAR rv
+    exec rv
+endf
+
+
+function! s:NumericSort(i1, i2)
+    let i1 = str2nr(a:i1)
+    let i2 = str2nr(a:i2)
+    return i1 == i2 ? 0 : i1 > i2 ? 1 : -1
+endf
+
+
+" :nodoc:
+function! quickfixsigns#CompleteSigns(ArgLead, CmdLine, CursorPos) "{{{3
+    let unique_names = {}
+    for bsign in QuickfixsignsListBufferSigns(bufnr('%'))
+        let unique_names[bsign.name] = 1
+    endfor
+    return join(sort(keys(unique_names)), "\n")
 endf
 

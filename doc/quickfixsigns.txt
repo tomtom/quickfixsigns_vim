@@ -47,6 +47,13 @@ please make sure, you have the current version of vimball
 (vimscript #1502) installed or update your runtime.
 
 
+Optional enhancements~
+
+If tinykeymap (vimscript #4199) is installed, a map (see 
+|g:tinykeymap#map#quickfixsigns#map|, which defaults to <Leader>ms) can be used 
+to jump from sign to sign or between sign groups.
+
+
 ========================================================================
 Contents~
 
@@ -72,11 +79,13 @@ Contents~
         QuickfixsignsBalloon ..................... |QuickfixsignsBalloon()|
         QuickfixsignsToggle ...................... |QuickfixsignsToggle()|
         QuickfixsignsClear ....................... |QuickfixsignsClear()|
+        QuickfixsignsListBufferSigns ............. |QuickfixsignsListBufferSigns()|
         g:quickfixsigns#use_relativenumber ....... |g:quickfixsigns#use_relativenumber|
         quickfixsigns#CompleteSelect ............. |quickfixsigns#CompleteSelect()|
         quickfixsigns#RelNumbersOnce ............. |quickfixsigns#RelNumbersOnce()|
         quickfixsigns#AssertUniqueSigns .......... |quickfixsigns#AssertUniqueSigns()|
         quickfixsigns#AssertNoObsoleteBuffers .... |quickfixsigns#AssertNoObsoleteBuffers()|
+        quickfixsigns#MoveSigns .................. |quickfixsigns#MoveSigns()|
         g:quickfixsigns_class_marks .............. |g:quickfixsigns_class_marks|
         g:quickfixsigns#marks#buffer ............. |g:quickfixsigns#marks#buffer|
         g:quickfixsigns#marks#global ............. |g:quickfixsigns#marks#global|
@@ -220,6 +229,9 @@ QuickfixsignsToggle()
 QuickfixsignsClear(class)
     Clear all signs with name SIGN.
 
+                                                    *QuickfixsignsListBufferSigns()*
+QuickfixsignsListBufferSigns(bufnr)
+
 
 ========================================================================
 autoload/quickfixsigns.vim~
@@ -244,6 +256,9 @@ quickfixsigns#AssertUniqueSigns(bufnr, bufsigns)
 
                                                     *quickfixsigns#AssertNoObsoleteBuffers()*
 quickfixsigns#AssertNoObsoleteBuffers(register)
+
+                                                    *quickfixsigns#MoveSigns()*
+quickfixsigns#MoveSigns(n, ?pattern="", ?blockwise=0) "{{{3
 
 
 ========================================================================
@@ -299,7 +314,7 @@ g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs'
 g:quickfixsigns#vcsdiff#cd     (default: 'cd')
 
                                                     *g:quickfixsigns#vcsdiff#cmd_separator*
-g:quickfixsigns#vcsdiff#cmd_separator (default: &sh =~ 'sh' ? '&&' : ';')
+g:quickfixsigns#vcsdiff#cmd_separator (default: '&&')
     Command to join two shell commands.
 
                                                     *g:quickfixsigns#vcsdiff#guess_type*

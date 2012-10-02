@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-09-15.
-" @Revision:    1133
+" @Last Change: 2012-10-02.
+" @Revision:    1149
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -351,7 +351,7 @@ function! s:UpdateSigns(class, def, bufnr, list) "{{{3
     " endif " DBG
     call s:ClearBuffer(a:class, a:def.sign, a:bufnr, new_ikeys)
     if g:quickfixsigns_debug
-        call quickfixsigns#AssertUniqueSigns(a:bufnr, s:BufferSigns(a:bufnr))
+        call quickfixsigns#AssertUniqueSigns(a:bufnr, QuickfixsignsListBufferSigns(a:bufnr))
     endif
 endf
 
@@ -370,17 +370,10 @@ function! s:UpdateLineNumbers() "{{{3
             let lnum = item.lnum
             let id = item.id
             if !has_key(buffersigns, bufnr)
-                let bsigns = s:BufferSigns(bufnr)
+                let bsigns = QuickfixsignsListBufferSigns(bufnr)
                 let bufnrsigns = {}
                 for sign in bsigns
-                    let ml = matchlist(sign, '^\s\+\w\+=\(\d\+\)\s\+id=\(\d\+\)\s\+')
-                    if empty(ml)
-                        if g:quickfixsigns_debug
-                            echom "QuickFixSigns DEBUG UpdateLineNumbers: Sign doesn't match rx:" sign
-                        endif
-                    else
-                        let bufnrsigns[ml[2]] = str2nr(ml[1])
-                    endif
+                    let bufnrsigns[sign.id] = sign.id
                 endfor
                 let buffersigns[bufnr] = bufnrsigns
             else
@@ -603,30 +596,32 @@ endf
 function! s:SignExistsAt(bufnr, lnum, sign) "{{{3
     " TLogVAR a:bufnr, a:lnum, a:sign
     if !has_key(s:buffer_signs, a:bufnr)
-        let s:buffer_signs[a:bufnr] = s:BufferSigns(a:bufnr)
+        let s:buffer_signs[a:bufnr] = QuickfixsignsListBufferSigns(a:bufnr)
     endif
     let bsigns = copy(s:buffer_signs[a:bufnr])
-    let rx = printf('\V\^\s\*\w\+=%d\s\+\w\+=\d\+\s\+\w\+=%s', a:lnum, escape(a:sign, '\'))
-    call filter(bsigns, 'v:val =~ rx')
-    " if a:sign =~ '[.^]$' " DBG
-        " TLogVAR rx, len(bsigns)
-    " endif " DBG
+    if empty(a:sign)
+        call filter(bsigns, 'v:val.lnum == a:lnum')
+    else
+        call filter(bsigns, 'v:val.lnum == a:lnum && v:val.name == a:sign')
+    endif
     return len(bsigns) > 0
 endf
 
 
-function! s:BufferSigns(bufnr) "{{{3
+function! QuickfixsignsListBufferSigns(bufnr) "{{{3
     if a:bufnr == -1
         return []
     endif
     let signss = s:Redir('sign place buffer='. a:bufnr)
     if exists('signss')
         let signs = split(signss, '\n')
-        if len(signs) > 2
-            call remove(signs, 0, 1)
-        else
-            let signs = []
-        endif
+        let signs = map(signs, 's:ProcessSign(v:val)')
+        let signs = filter(signs, '!empty(v:val)')
+        " if len(signs) > 2
+        "     call remove(signs, 0, 1)
+        " else
+        "     let signs = []
+        " endif
     else
         if g:quickfixsigns_debug
             echohl WarningMsg
@@ -636,6 +631,22 @@ function! s:BufferSigns(bufnr) "{{{3
         let signs = []
     endif
     return signs
+endf
+
+
+function! s:ProcessSign(sign) "{{{3
+    let m = matchlist(a:sign, '^\s\+\S\+=\(\d\+\)\s\+\S\+=\(\d\+\)\s\+\S\+=\(\S\+\)\s*$')
+    " TLogVAR a:sign, m
+    if empty(m)
+        return {}
+    else
+        return {
+                    \ 'sign': a:sign,
+                    \ 'lnum': str2nr(m[1]),
+                    \ 'id': str2nr(m[2]),
+                    \ 'name': m[3],
+                    \ }
+    endif
 endf
 
 
@@ -755,8 +766,10 @@ augroup QuickFixSigns
     if exists('s:class')
         unlet s:ev s:class s:def
     endif
+    let s:will_purge_register = 1
+    autocmd VimLeavePre * let s:will_purge_register = 0
     autocmd BufUnload * call s:RemoveBuffer(expand("<abuf>"))
-    autocmd BufLeave * call s:PurgeRegister()
+    autocmd BufLeave * if s:will_purge_register | call s:PurgeRegister() | endif
     " autocmd BufRead,BufNewFile * exec 'sign place '. (s:quickfixsigns_base - 1) .' name=QFS_DUMMY line=1 buffer='. bufnr('%')
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
 augroup END
