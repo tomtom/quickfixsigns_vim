@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
 " @Last Change: 2012-10-02.
-" @Revision:    0.0.138
+" @Revision:    0.0.141
 
 
 if !exists('g:quickfixsigns#use_relativenumber')
@@ -69,7 +69,7 @@ function! quickfixsigns#AssertUniqueSigns(bufnr, bufsigns) "{{{3
         for bsign in a:bufsigns
             let key = printf("%s|%s", bsign.lnum, bsign.name)
             if has_key(dict, key)
-                echom ("QuickFixSigns AssertUniqueSigns: duplicate bufnr=". a:bufnr .":") bsign
+                echom ("QuickFixSigns AssertUniqueSigns: duplicate bufnr=". a:bufnr .":") bsign.sign
             else
                 let dict[key] = 1
             endif
