@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2012-10-02.
-" @Revision:    1149
+" @Revision:    1158
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -373,7 +373,7 @@ function! s:UpdateLineNumbers() "{{{3
                 let bsigns = QuickfixsignsListBufferSigns(bufnr)
                 let bufnrsigns = {}
                 for sign in bsigns
-                    let bufnrsigns[sign.id] = sign.id
+                    let bufnrsigns[sign.id] = sign.lnum
                 endfor
                 let buffersigns[bufnr] = bufnrsigns
             else
@@ -599,6 +599,7 @@ function! s:SignExistsAt(bufnr, lnum, sign) "{{{3
         let s:buffer_signs[a:bufnr] = QuickfixsignsListBufferSigns(a:bufnr)
     endif
     let bsigns = copy(s:buffer_signs[a:bufnr])
+    " TLogVAR bsigns
     if empty(a:sign)
         call filter(bsigns, 'v:val.lnum == a:lnum')
     else
