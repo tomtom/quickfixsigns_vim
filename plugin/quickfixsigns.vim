@@ -324,7 +324,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
                 if !empty(list) && len(list) < g:quickfixsigns_max
                     call s:UpdateSigns(class, def, bufnr, list)
                     if has('balloon_eval') && g:quickfixsigns_balloon
-                        if exists('g:loaded_tlib') && g:loaded_tlib >= 39
+                        if exists('g:loaded_tlib') && g:loaded_tlib >= 39  " ignore dependency
                             call tlib#balloon#Register('QuickfixsignsBalloon()')
                         elseif !exists('b:quickfixsigns_balloon') && empty(&balloonexpr)
                             let b:quickfixsigns_ballooneval = &ballooneval
