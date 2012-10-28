@@ -218,6 +218,10 @@ QuickfixsignsSet(event, ?classes=[])
 
     Normally, the end-user doesn't need to call this function.
 
+    If the buffer-local variable b:quickfixsigns_ignore (a list of 
+    strings) exists, sign classes in that list won't be displayed for the 
+    current buffer.
+
                                                     *QuickfixsignsUnique()*
 QuickfixsignsUnique(list)
 

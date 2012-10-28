@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2012-10-02.
-" @Revision:    1158
+" @Revision:    1160
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -265,6 +265,10 @@ endf
 " is empty, update all signs.
 "
 " Normally, the end-user doesn't need to call this function.
+"
+" If the buffer-local variable b:quickfixsigns_ignore (a list of 
+" strings) exists, sign classes in that list won't be displayed for the 
+" current buffer.
 function! QuickfixsignsSet(event, ...) "{{{3
     if exists("b:noquickfixsigns") && b:noquickfixsigns
         return
@@ -478,7 +482,11 @@ endf
 
 
 function! s:ListValues() "{{{3
-    return sort(items(g:quickfixsigns_lists), 's:CompareClasses')
+    let signs_lists = g:quickfixsigns_lists
+    if exists('b:quickfixsigns_ignore')
+        let signs_lists = filter(copy(signs_lists), 'index(b:quickfixsigns_ignore, v:key) == -1')
+    endif
+    return sort(items(signs_lists), 's:CompareClasses')
 endf
 
 
