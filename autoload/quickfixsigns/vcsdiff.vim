@@ -75,9 +75,15 @@ if !exists('g:quickfixsigns#vcsdiff#highlight')
 endif
 
 
-exec 'sign define QFS_VCS_ADD text=+ texthl='. g:quickfixsigns#vcsdiff#highlight.ADD
-exec 'sign define QFS_VCS_DEL text=- texthl='. g:quickfixsigns#vcsdiff#highlight.DEL
-exec 'sign define QFS_VCS_CHANGE text== texthl='. g:quickfixsigns#vcsdiff#highlight.CHANGE
+if index(g:quickfixsigns_signs, 'QFS_VCS_ADD') == -1
+    exec 'sign define QFS_VCS_ADD text=+ texthl='. g:quickfixsigns#vcsdiff#highlight.ADD
+endif
+if index(g:quickfixsigns_signs, 'QFS_VCS_DEL') == -1
+    exec 'sign define QFS_VCS_DEL text=- texthl='. g:quickfixsigns#vcsdiff#highlight.DEL
+endif
+if index(g:quickfixsigns_signs, 'QFS_VCS_CHANGE') == -1
+    exec 'sign define QFS_VCS_CHANGE text== texthl='. g:quickfixsigns#vcsdiff#highlight.CHANGE
+endif
 
 
 " :nodoc:
