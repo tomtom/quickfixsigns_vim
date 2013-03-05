@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2012-10-02.
-" @Revision:    1160
+" @Last Change: 2013-03-04.
+" @Revision:    1166
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -270,7 +270,13 @@ endf
 " strings) exists, sign classes in that list won't be displayed for the 
 " current buffer.
 function! QuickfixsignsSet(event, ...) "{{{3
+    " TLogVAR a:event, a:000
     if exists("b:noquickfixsigns") && b:noquickfixsigns
+        return
+    endif
+    let bufsignclasses = s:ListValues()
+    " TLogVAR bufsignclasses
+    if empty(bufsignclasses)
         return
     endif
     " TLogVAR a:event, a:000
@@ -286,7 +292,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     let anyway = empty(a:event)
     " TLogVAR bufnr, anyway, a:event
     call s:UpdateLineNumbers()
-    for [class, def] in s:ListValues()
+    for [class, def] in bufsignclasses
         " TLogVAR class, def
         if anyway
             let set = 1
