@@ -155,3 +155,30 @@ version: "1.00"
   - UpdateLineNumbers(): Use str2nr(), not char2nr()
   MD5 checksum: 00e4af7843f2619e55ee3cee3e614240
 
+version: "1.01"
+  - Debug: Removed check for invalid line numbers (e.g. fugitive's Glog uses qfl for file lists only)
+  - QuickfixsignsRemoveBuffer(): take a bufnr as argument (not a bufname)
+  - Rename QuickfixsignsRemoveBuffer() to s:RemoveBuffer()
+  - Call s:PurgeRegister() on BufLeave events (not CursorHold)
+  - quickfixsigns#AssertUniqueSigns(): Additional debug message: Empty bsign1
+  - s:Redir(): Protect against verbose != 0
+  - QuickfixsignsUnique(): Collapse multiple items at one line
+  - QuickfixsignsBalloon(): Make sure the balloon text doesn't include \n if !has('balloon_multiline')
+  - s:UpdateLineNumbers(): Don't update line numbers if bufnr <= 0
+  - g:quickfixsigns_class_loc: Update on QuickFixCmdPost events
+  - QuickfixsignsSelect(): Clear unselected signs
+  - QuickfixsignsSet(): match g:quickfixsigns_blacklist_buffer against the base filename
+  - QuickfixsignsToggle command
+  - s:Redir: Deal with :redir bug
+  - Merge branch 'toggle' of https://github.com/iNecas/quickfixsigns_vim
+  - Blacklist buffers used by nerdtree & minibufferexplorer (fixes #23).
+  - Optional enhancement: use tinykeymap (vimscript #4199) to move between signs/sign groups (closes #24)
+  - quickfixsigns#AssertUniqueSigns(): buffer sign is a dictionary now; use bsign.sign
+  - readme: don't mention tlib as dependency (fixes #25)
+  - UpdateLineNumbers(): bufnrsigns[sign.id] = sign.lnum
+  - b:quickfixsigns_ignore: Ignore sign classes per buffer
+  - addon-info
+  - allow to customize QFS_VCS_* signs
+  - Avoid irrelevant checks when no buffer signs will be displayed
+  MD5 checksum: 8dbfd054978cc99491cf9fbe150cd636
+
