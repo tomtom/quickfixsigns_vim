@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2011-12-25.
-" @Revision:    43
+" @Revision:    45
 
 if index(g:quickfixsigns_classes, 'marks') == -1
     finish
