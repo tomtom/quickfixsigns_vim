@@ -41,7 +41,7 @@ endif
 
 
 if !exists('g:quickfixsigns_class_vcsdiff')
-    let g:quickfixsigns_class_vcsdiff = {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufRead', 'BufWritePost'], 'level': 6}   "{{{2
+    let g:quickfixsigns_class_vcsdiff = {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['FocusGained', 'BufRead', 'BufWritePost'], 'level': 6}   "{{{2
 endif
 
 
