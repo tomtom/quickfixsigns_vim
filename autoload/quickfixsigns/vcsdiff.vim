@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    423
+" @Revision:    424
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -146,7 +146,7 @@ endf
 " VCS (see |g:quickfixsigns#vcsdiff#vcs|).
 function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
     if &buftype =~ '\<\(nofile\|quickfix\|help\)\>' || &previewwindow || exists('b:fugitive_type')
-        return [0, []]
+        return []
     endif
     let vcs_type = quickfixsigns#vcsdiff#GuessType()
     " TLogVAR a:filename, vcs_type
