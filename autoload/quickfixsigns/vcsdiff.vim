@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    425
+" @Revision:    431
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -62,6 +62,15 @@ if !exists('g:quickfixsigns#vcsdiff#guess_type')
     " buffers).
     " Can also be buffer-local.
     let g:quickfixsigns#vcsdiff#guess_type = 1   "{{{2
+endif
+
+
+if !exists('g:quickfixsigns#vcsdiff#list_type')
+    " Defines how changed lines are displayed. Must be one of:
+    "   0 ... QuickFixSigns's original version
+    "   1 ... An alternative version that works more like `diff -y` (see 
+    "         |quickfixsigns#vcsdiff#GetList1()|)
+    let g:quickfixsigns#vcsdiff#list_type = 0   "{{{2
 endif
 
 
@@ -142,9 +151,137 @@ function! quickfixsigns#vcsdiff#GuessType() "{{{3
 endf
 
 
+function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
+    if !(type(g:quickfixsigns#vcsdiff#list_type) == 0 && g:quickfixsigns#vcsdiff#list_type >= 0 && g:quickfixsigns#vcsdiff#list_type <= 1)
+        throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ".   g:quickfixsigns#vcsdiff#list_type
+    endif
+    return quickfixsigns#vcsdiff#GetList{g:quickfixsigns#vcsdiff#list_type}(a:filename)
+endf
+
+
 " quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
 " VCS (see |g:quickfixsigns#vcsdiff#vcs|).
-function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
+function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
+    if &buftype =~ '\<\(nofile\|quickfix\|help\)\>' || &previewwindow || exists('b:fugitive_type')
+        return []
+    endif
+    let vcs_type = quickfixsigns#vcsdiff#GuessType()
+    " TLogVAR a:filename, vcs_type
+    " Ignore files that are not readable
+    if has_key(g:quickfixsigns#vcsdiff#vcs, vcs_type) && filereadable(a:filename)
+        let cmdt = g:quickfixsigns#vcsdiff#vcs[vcs_type].cmd
+        let dir  = fnamemodify(a:filename, ':h')
+        let file = fnamemodify(a:filename, ':t')
+        let cmds = join([
+                    \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
+                    \ printf(cmdt, shellescape(file))
+                    \ ], g:quickfixsigns#vcsdiff#cmd_separator)
+        " TLogVAR cmds
+        let diff = system(cmds)
+        " TLogVAR diff
+        let bufnr = bufnr('%')
+        let bufdiff = exists('b:quickfixsigns_vcsdiff') ? b:quickfixsigns_vcsdiff : ''
+        if !empty(diff)
+            if diff != bufdiff || !exists('b:quickfixsigns_vcsdiff_signs')
+                let b:quickfixsigns_vcsdiff = diff
+                if g:quickfixsigns_debug && bufnr != bufnr(a:filename)
+                    echom "QuickFixSigns DEBUG: bufnr mismatch:" a:filename bufnr bufnr(a:filename)
+                endif
+                let lastlnum = line('$')
+                let lines = split(diff, '\n')
+                let change_defs = {}
+                let from = -1
+                let to = -1
+                let last_change_lnum = 0
+                let last_del = 0
+                for line in lines
+                    if line =~ '^@@\s'
+                        let m = matchlist(line, '^@@ -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@')
+                        " TLogVAR line, m
+                        let to = str2nr(m[3])
+                        " TLogVAR "@@", to
+                        " let change_lnum = m[1]
+                        let from = to
+                    elseif line =~ '^@@@\s'
+                        let m = matchlist(line, '^@@@ -\(\d\+\)\(,\d\+\)\? -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@@')
+                        " TLogVAR line, m
+                        let to = str2nr(m[5])
+                        " TLogVAR "@@@", to
+                        " let change_lnum = m[1]
+                        let from = to
+                    elseif from < 0
+                        continue
+                    else
+                        if line[0] == '-'
+                            let change = 'DEL'
+                            let text = line
+                            let change_lnum = from
+                            let from += 1
+                        elseif line[0] == '+'
+                            let change = 'ADD'
+                            let text = line
+                            let change_lnum = to
+                            let to += 1
+                        else
+                            let from += 1
+                            let to += 1
+                            let change = ''
+                            continue
+                        endif
+                        " TLogVAR change_lnum, change
+                        if change_lnum < 1
+                            let change_lnum = 1
+                        elseif change_lnum > lastlnum
+                            let change_lnum = lastlnum
+                        endif
+                        if !empty(change) && has_key(change_defs, change_lnum)
+                            if change_defs[change_lnum].change == 'CHANGE' || change_defs[change_lnum].change != change
+                                let change = 'CHANGE'
+                            endif
+                            let text = s:BalloonJoin(change_defs[change_lnum].text, line)
+                        endif
+                        if last_change_lnum > 0 && last_del > 0 && change_lnum == last_del + 1 && change == 'DEL' && change_defs[last_change_lnum].change == 'DEL'
+                            let change_defs[last_change_lnum].text = s:BalloonJoin(change_defs[last_change_lnum].text, text)
+                        else
+                            let change_defs[change_lnum] = {'change': change, 'text': text}
+                            let last_change_lnum = change_lnum
+                        endif
+                        if change == 'DEL' || change == 'CHANGE'
+                            let last_del = change_lnum
+                        endif
+                    endif
+                endfor
+                let signs = []
+                for [lnum, change_def] in items(change_defs)
+                    if !has_key(g:quickfixsigns#vcsdiff#highlight, change_def.change)
+                        continue
+                    endif
+                    " if change_def.change == 'DEL' && lnum < line('$') && !has_key(change_defs, lnum + 1)
+                    "     let lnum += 1
+                    " endif
+                    let text = s:BalloonJoin(change_def.change .":", change_def.text)
+                    " TLogVAR bufnr, lnum, change_def.change, text
+                    call add(signs, {"bufnr": bufnr, "lnum": lnum,
+                                \ "change": change_def.change, "text": text})
+                endfor
+                " TLogVAR signs
+                let b:quickfixsigns_vcsdiff_signs = copy(signs)
+                return signs
+            else
+                return copy(b:quickfixsigns_vcsdiff_signs)
+            endif
+        endif
+    endif
+    return []
+endf
+
+
+" quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
+" VCS (see |g:quickfixsigns#vcsdiff#vcs|).
+" This version by Chronial works more like diff -y (see 
+" https://github.com/Chronial/vim-quickfixsigns/commit/1cf739c790746157c3cb9b6234c1454333397c9e 
+" for details).
+function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
     if &buftype =~ '\<\(nofile\|quickfix\|help\)\>' || &previewwindow || exists('b:fugitive_type')
         return []
     endif
@@ -218,11 +355,12 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                         elseif change_lnum > lastlnum
                             let change_lnum = lastlnum
                         endif
-
                         if change == 'DEL'
                             let change_defs[block_start] = {'change': change, 'text': block_text}
+                            " TLogVAR block_start, change_defs[block_start]
                         else
                             let change_defs[change_lnum] = {'change': change, 'text': block_text}
+                            " TLogVAR change_lnum, change_defs[change_lnum]
                             let last_change_lnum = change_lnum
                         endif
                     endif
