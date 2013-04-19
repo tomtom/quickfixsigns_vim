@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1216
+" @Revision:    1221
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -458,9 +458,10 @@ function! QuickfixsignsBalloon() "{{{3
             endif
         endfor
         " TLogVAR acc
-        return join(map(acc, 'v:val.text'), "\n")
-    endif
-    if exists('b:quickfixsigns_balloonexpr') && !empty(b:quickfixsigns_balloonexpr)
+        let text = join(map(acc, 'v:val.text'), "\n")
+        " TLogVAR text
+        return text
+    elseif exists('b:quickfixsigns_balloonexpr') && !empty(b:quickfixsigns_balloonexpr)
         let text = eval(b:quickfixsigns_balloonexpr)
         if !has('balloon_multiline')
             let text = substitute(text, '\n', ' ', 'g')
