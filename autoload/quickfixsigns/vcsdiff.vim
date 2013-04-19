@@ -175,34 +175,35 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                 let change_defs = {}
                 let from = -1
                 let to = -1
-                let last_change_lnum = 0
-                let last_del = 0
+                let block_start = -1
+                let block_text = ""
                 for line in lines
-                    if line =~ '^@@\s'
-                        let m = matchlist(line, '^@@ -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@')
+                    if line =~ '^@'
+                        if line =~ '^@@\s'
+                            let m = matchlist(line, '^@@ -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@')
+                            let to = str2nr(m[3])
+                            " TLogVAR "@@", to
+                        elseif line =~ '^@@@\s'
+                            let m = matchlist(line, '^@@@ -\(\d\+\)\(,\d\+\)\? -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@@')
+                            let to = str2nr(m[5])
+                            " TLogVAR "@@@", to
+                        endif
                         " TLogVAR line, m
-                        let to = str2nr(m[3])
-                        " TLogVAR "@@", to
-                        " let change_lnum = m[1]
                         let from = to
-                    elseif line =~ '^@@@\s'
-                        let m = matchlist(line, '^@@@ -\(\d\+\)\(,\d\+\)\? -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@@')
-                        " TLogVAR line, m
-                        let to = str2nr(m[5])
-                        " TLogVAR "@@@", to
-                        " let change_lnum = m[1]
-                        let from = to
+                        let block_start = to
+                        let block_text = m[0]
                     elseif from < 0
                         continue
                     else
+                        " Note: This algorithm assumes that all the deletions
+                        " per hunk will come before the insertions
                         if line[0] == '-'
                             let change = 'DEL'
-                            let text = line
+                            let block_text = s:BalloonJoin(block_text, line)
                             let change_lnum = from
                             let from += 1
                         elseif line[0] == '+'
-                            let change = 'ADD'
-                            let text = line
+                            let change = to > from - 1 ? 'ADD' : 'CHANGE'
                             let change_lnum = to
                             let to += 1
                         else
@@ -217,20 +218,12 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                         elseif change_lnum > lastlnum
                             let change_lnum = lastlnum
                         endif
-                        if !empty(change) && has_key(change_defs, change_lnum)
-                            if change_defs[change_lnum].change == 'CHANGE' || change_defs[change_lnum].change != change
-                                let change = 'CHANGE'
-                            endif
-                            let text = s:BalloonJoin(change_defs[change_lnum].text, line)
-                        endif
-                        if last_change_lnum > 0 && last_del > 0 && change_lnum == last_del + 1 && change == 'DEL' && change_defs[last_change_lnum].change == 'DEL'
-                            let change_defs[last_change_lnum].text = s:BalloonJoin(change_defs[last_change_lnum].text, text)
+
+                        if change == 'DEL'
+                            let change_defs[block_start] = {'change': change, 'text': block_text}
                         else
-                            let change_defs[change_lnum] = {'change': change, 'text': text}
+                            let change_defs[change_lnum] = {'change': change, 'text': block_text}
                             let last_change_lnum = change_lnum
-                        endif
-                        if change == 'DEL' || change == 'CHANGE'
-                            let last_del = change_lnum
                         endif
                     endif
                 endfor
@@ -242,10 +235,9 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
                     " if change_def.change == 'DEL' && lnum < line('$') && !has_key(change_defs, lnum + 1)
                     "     let lnum += 1
                     " endif
-                    let text = s:BalloonJoin(change_def.change .":", change_def.text)
                     " TLogVAR bufnr, lnum, change_def.change, text
                     call add(signs, {"bufnr": bufnr, "lnum": lnum,
-                                \ "change": change_def.change, "text": text})
+                                \ "change": change_def.change, "text": change_def.text})
                 endfor
                 " TLogVAR signs
                 let b:quickfixsigns_vcsdiff_signs = copy(signs)
