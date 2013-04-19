@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1174
+" @Revision:    1216
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -20,7 +20,7 @@ set cpo&vim
 command! QuickfixsignsSet call QuickfixsignsSet("")
 
 " Disable quickfixsign.
-command! QuickfixsignsDisable call s:ClearSigns(keys(g:quickfixsigns_register)) | call QuickfixsignsSelect([])
+command! QuickfixsignsDisable call s:ClearSigns(keys(g:quickfixsigns_register), 1) | call QuickfixsignsSelect([])
 
 " Enable quickfixsign.
 command! QuickfixsignsEnable call QuickfixsignsSelect(g:quickfixsigns_classes) | QuickfixsignsSet
@@ -411,7 +411,7 @@ function! s:UpdateLineNumbers() "{{{3
         endif
     endfor
     if !empty(clear_ikeys)
-        call s:ClearSigns(clear_ikeys)
+        call s:ClearSigns(clear_ikeys, 1)
     endif
 endf
 
@@ -533,15 +533,15 @@ function! QuickfixsignsClear(class) "{{{3
         call filter(ikeys, 'g:quickfixsigns_register[v:val].class ==# a:class')
     endif
     " TLogVAR ikeys
-    call s:ClearSigns(ikeys)
+    call s:ClearSigns(ikeys, 1)
 endf
 
 
-function! s:RemoveBuffer(bufnr) "{{{3
+function! s:RemoveBuffer(bufnr, quick) "{{{3
     " TLogVAR a:bufnr
     let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest('', str2nr(a:bufnr), '')))
     " TLogVAR old_ikeys
-    call s:ClearSigns(old_ikeys)
+    call s:ClearSigns(old_ikeys, !a:quick)
 endf
 
 
@@ -554,19 +554,21 @@ function! s:ClearBuffer(class, sign, bufnr, keep_ikeys) "{{{3
         " let sign_ids = map(copy(old_ikeys), 'g:quickfixsigns_register[v:val].id') " DBG
         " TLogVAR sign_ids
     " endif " DBG
-    call s:ClearSigns(old_ikeys)
+    call s:ClearSigns(old_ikeys, 1)
 endf
 
 
-function! s:ClearSigns(ikeys) "{{{3
+function! s:ClearSigns(ikeys, unplace) "{{{3
     for ikey in a:ikeys
         let def   = g:quickfixsigns_register[ikey]
         let bufnr = def.bufnr
-        if bufloaded(bufnr)
-            " TLogVAR bufnr, ikey
-            exec 'sign unplace '. def.id .' buffer='. bufnr
-        elseif g:quickfixsigns_debug
-            echom "Quickfixsigns DEBUG: bufnr not loaded:" bufnr ikey string(def)
+        if a:unplace
+            if bufloaded(bufnr)
+                " TLogVAR bufnr, ikey
+                exec 'sign unplace '. def.id .' buffer='. bufnr
+            elseif g:quickfixsigns_debug
+                echom "Quickfixsigns DEBUG: bufnr not loaded:" bufnr ikey string(def)
+            endif
         endif
         call remove(g:quickfixsigns_register, ikey)
     endfor
@@ -781,10 +783,9 @@ augroup QuickFixSigns
     if exists('s:class')
         unlet s:ev s:class s:def
     endif
-    let s:will_purge_register = 1
-    autocmd VimLeavePre * let s:will_purge_register = 0
-    autocmd BufUnload * call s:RemoveBuffer(expand("<abuf>"))
-    autocmd BufLeave * if s:will_purge_register | call s:PurgeRegister() | endif
+
+    autocmd BufLeave * if !v:dying | call s:PurgeRegister() | endif
+    autocmd BufUnload * call s:RemoveBuffer(expand("<abuf>"), 1)
     " autocmd BufRead,BufNewFile * exec 'sign place '. (s:quickfixsigns_base - 1) .' name=QFS_DUMMY line=1 buffer='. bufnr('%')
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
 augroup END
