@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1221
+" @Revision:    1238
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -451,8 +451,9 @@ function! QuickfixsignsBalloon() "{{{3
         let acc = []
         for [class, def] in s:ListValues()
             let list = s:GetList(def, bufname)
+            " TLogVAR class, len(list)
             call filter(list, 'v:val.bufnr == bufnr && v:val.lnum == lnum')
-            " TLogVAR list
+            " TLogVAR len(list), g:quickfixsigns_max
             if !empty(list) && len(list) < g:quickfixsigns_max
                 let acc += list
             endif

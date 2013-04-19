@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    431
+" @Revision:    433
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -373,7 +373,7 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
                     " if change_def.change == 'DEL' && lnum < line('$') && !has_key(change_defs, lnum + 1)
                     "     let lnum += 1
                     " endif
-                    " TLogVAR bufnr, lnum, change_def.change, text
+                    " TLogVAR bufnr, lnum, change_def.change, change_def.text
                     call add(signs, {"bufnr": bufnr, "lnum": lnum,
                                 \ "change": change_def.change, "text": change_def.text})
                 endfor
