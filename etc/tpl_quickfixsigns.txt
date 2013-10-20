@@ -1,0 +1,57 @@
+*quickfixsigns.txt*   Mark quickfix & location list items with signs
+                      Author: Thomas Link, micathom at gmail com
+
+Display |signs| at interesting lines:
+
+    - items in the |quickfix| and |location-lists| (e.g. compilation errors)
+    - |marks| a-zA-Z
+    - changes (given the file is under a VCS like git, svn, mercurial, 
+      or bazaar)
+    - relative line numbers (show numbers only until the cursor moves)
+    - etc.
+
+Other lists can be configured via the |g:quickfixsigns_lists| variable.
+
+The text attached to a quickfix or location-list entry is displayed in a 
+balloon via 'balloonexpr'.
+NOTE: This could cause a conflict with other plugins that make use of 
+balloons.
+
+If you want nicer looking images instead of the ASCII markers, you have 
+to change the following signs' definition either in your |vimrc| file or 
+in $VIMFILES/after/plugin/quickfixsigns.vim (by use of |sign-define|):
+
+    QFS_QFL ... Entries in the |quickfix| list
+    QFS_LOC ... Entries in the |location-list|
+    QFS_Mark_[a-zA-Z] ... Marks
+    QFS_CURSOR ... Current cursor position
+    QFS_BREAKPOINT ... Breakpoints
+    QFS_REL_x ... Relative line numbers
+    QFS_VCS_{ADD,DEL,CHANGE} ... VCS changes (see also 
+            |g:quickfixsigns#vcsdiff#highlight|)
+
+CREDITS:
+quickfixsigns includes some icons from the open icon library. See 
+http://openiconlibrary.sourceforge.net for details.
+
+
+-----------------------------------------------------------------------
+Install~
+
+Edit the vba file and type: >
+
+    :so %%
+
+See :help vimball for details. If you have difficulties or use vim 7.0, 
+please make sure, you have the current version of vimball
+(vimscript #1502) installed or update your runtime.
+
+
+Optional enhancements~
+
+If tinykeymap (vimscript #4199) is installed, a map (see 
+|g:tinykeymap#map#quickfixsigns#map|, which defaults to <Leader>ms) can be used 
+to jump from sign to sign or between sign groups.
+
+
+%s
