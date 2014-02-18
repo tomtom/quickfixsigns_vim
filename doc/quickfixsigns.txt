@@ -196,7 +196,7 @@ g:quickfixsigns_max            (default: 500)
     Don't display signs if the list is longer than n items.
 
                                                     *g:quickfixsigns_blacklist_buffer*
-g:quickfixsigns_blacklist_buffer (default: '^\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\)$')
+g:quickfixsigns_blacklist_buffer (default: '^\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$')
     Don't show signs in buffers matching this |regexp|.
 
                                                     *g:quickfixsigns_icons*
