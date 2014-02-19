@@ -344,6 +344,10 @@ function! QuickfixsignsSet(event, ...) "{{{3
                         endif
                     endif
                 else
+                    if !empty(list) && g:quickfixsigns_debug
+                        echom "QuickFixSigns DEBUG: not displaying" len(list)
+                                \ class "signs (max" g:quickfixsigns_max "(g:quickfixsigns_max))."
+                    endif
                     call s:ClearBuffer(class, def.sign, bufnr, [])
                 endif
             endif
