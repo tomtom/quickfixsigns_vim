@@ -331,7 +331,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
                     call filter(list, scope_test)
                 endif
                 " TLogVAR list
-                if !empty(list) && len(list) < g:quickfixsigns_max
+                if !empty(list) && len(list) <= g:quickfixsigns_max
                     call s:UpdateSigns(class, def, bufnr, list)
                     if has('balloon_eval') && g:quickfixsigns_balloon
                         if exists('g:loaded_tlib') && g:loaded_tlib >= 39  " ignore dependency
