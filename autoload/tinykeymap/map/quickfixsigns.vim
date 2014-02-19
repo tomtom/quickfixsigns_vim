@@ -46,6 +46,6 @@ call tinykeymap#Map("quickfixsigns", "<Left>",
             \ "call quickfixsigns#MoveSigns(-<count1>, g:tinykeymap#map#quickfixsigns#pattern, 1)",
             \ {'desc': 'Move to the previous group of signs'})
 call tinykeymap#Map("quickfixsigns", "<Space>",
-            \ "let g:tinykeymap#map#quickfixsigns#pattern = input('Sign Regexp: ', g:tinykeymap#map#quickfixsigns#pattern, 'custom,quickfixsigns#CompleteSigns')",
+            \ "let g:tinykeymap#map#quickfixsigns#pattern = input('Sign Regexp (e.g. ''vcs''): ', g:tinykeymap#map#quickfixsigns#pattern, 'custom,quickfixsigns#CompleteSigns')",
             \ {'desc': 'Edit the sign regexp filter'})
 
