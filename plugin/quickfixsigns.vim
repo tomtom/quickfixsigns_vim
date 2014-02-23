@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1238
+" @Revision:    1244
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -62,6 +62,7 @@ if !exists('g:quickfixsigns_classes')
     "   event: A list of events on which signs of this type should be set
     "   level: Precedence of signs (if there are more signs at a line, 
     "          the one with the higher level will be displayed)
+    "   maxsigns: Override the value of |g:quickfixsigns_max|
     "   timeout: Update the sign at most every X seconds
     "   test:  Update the sign only if the expression is true.
     let g:quickfixsigns_classes = ['qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints']   "{{{2
@@ -331,7 +332,8 @@ function! QuickfixsignsSet(event, ...) "{{{3
                     call filter(list, scope_test)
                 endif
                 " TLogVAR list
-                if !empty(list) && len(list) <= g:quickfixsigns_max
+                let maxsigns = get(def, 'maxsigns', g:quickfixsigns_max)
+                if !empty(list) && len(list) <= maxsigns
                     call s:UpdateSigns(class, def, bufnr, list)
                     if has('balloon_eval') && g:quickfixsigns_balloon
                         if exists('g:loaded_tlib') && g:loaded_tlib >= 39  " ignore dependency
@@ -345,8 +347,10 @@ function! QuickfixsignsSet(event, ...) "{{{3
                     endif
                 else
                     if !empty(list) && g:quickfixsigns_debug
-                        echom "QuickFixSigns DEBUG: not displaying" len(list)
-                                \ class "signs (max" g:quickfixsigns_max "(g:quickfixsigns_max))."
+                        echohl WarningMsg
+                        echom 'QuickFixSigns DEBUG: not displaying' len(list)
+                                \ class 'signs (max' maxsigns .'; see :h g:quickfixsigns_max).'
+                        echohl NONE
                     endif
                     call s:ClearBuffer(class, def.sign, bufnr, [])
                 endif
