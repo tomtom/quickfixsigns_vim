@@ -6,9 +6,13 @@ Display |signs| at interesting lines:
     - items in the |quickfix| and |location-lists| (e.g. compilation errors)
     - |marks| a-zA-Z
     - changes (given the file is under a VCS like git, svn, mercurial, 
-      or bazaar)
-    - relative line numbers (show numbers only until the cursor moves)
-    - etc.
+      or bazaar -- see |g:tlib#vcs#def| for a list of supported VCSs)
+    - breakpoints: vim, R (if rer_vim is installed)
+    - cursor position
+    - relative line numbers (show numbers only until the cursor moves; 
+      this requires that you add the following command to |vimrc|: >
+        noremap <silent> <leader><c-l> :call quickfixsigns#RelNumbersOnce()<cr>
+<    - etc.
 
 Other lists can be configured via the |g:quickfixsigns_lists| variable.
 
@@ -97,9 +101,13 @@ Contents~
         g:quickfixsigns#vcsdiff#cd .................. |g:quickfixsigns#vcsdiff#cd|
         g:quickfixsigns#vcsdiff#cmd_separator ....... |g:quickfixsigns#vcsdiff#cmd_separator|
         g:quickfixsigns#vcsdiff#guess_type .......... |g:quickfixsigns#vcsdiff#guess_type|
+        g:quickfixsigns#vcsdiff#list_type ........... |g:quickfixsigns#vcsdiff#list_type|
         g:quickfixsigns#vcsdiff#highlight ........... |g:quickfixsigns#vcsdiff#highlight|
+        g:quickfixsigns#vcsdiff#del_numbered ........ |g:quickfixsigns#vcsdiff#del_numbered|
         quickfixsigns#vcsdiff#GuessType ............. |quickfixsigns#vcsdiff#GuessType()|
         quickfixsigns#vcsdiff#GetList ............... |quickfixsigns#vcsdiff#GetList()|
+        quickfixsigns#vcsdiff#GetList0 .............. |quickfixsigns#vcsdiff#GetList0()|
+        quickfixsigns#vcsdiff#GetList1 .............. |quickfixsigns#vcsdiff#GetList1()|
         g:quickfixsigns#breakpoints#filetypes ....... |g:quickfixsigns#breakpoints#filetypes|
         g:quickfixsigns_class_breakpoints ........... |g:quickfixsigns_class_breakpoints|
         quickfixsigns#breakpoints#GetList ........... |quickfixsigns#breakpoints#GetList()|
@@ -157,6 +165,7 @@ g:quickfixsigns_classes        (default: ['qfl', 'loc', 'marks', 'vcsdiff', 'bre
       event: A list of events on which signs of this type should be set
       level: Precedence of signs (if there are more signs at a line, 
              the one with the higher level will be displayed)
+      maxsigns: Override the value of |g:quickfixsigns_max|
       timeout: Update the sign at most every X seconds
       test:  Update the sign only if the expression is true.
 
@@ -314,7 +323,7 @@ g:quickfixsigns#vcsdiff#vcs    (default: {...})
     Currently supported vcs: git, hg, svn, bzr
 
                                                     *g:quickfixsigns_class_vcsdiff*
-g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufEnter', 'BufWritePost'], 'level': 6})
+g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufRead', 'BufWritePost'], 'level': 6})
 
                                                     *g:quickfixsigns#vcsdiff#cd*
 g:quickfixsigns#vcsdiff#cd     (default: 'cd')
@@ -330,14 +339,26 @@ g:quickfixsigns#vcsdiff#guess_type (default: 1)
     buffers).
     Can also be buffer-local.
 
+                                                    *g:quickfixsigns#vcsdiff#list_type*
+g:quickfixsigns#vcsdiff#list_type (default: 1)
+    Defines how changed lines are displayed. Must be one of:
+      0 ... QuickFixSigns's original version
+      1 ... An alternative version that works more like `diff -y` (see 
+            |quickfixsigns#vcsdiff#GetList1()|)
+
                                                     *g:quickfixsigns#vcsdiff#highlight*
-g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'DiffDelete', 'ADD': 'DiffAdd', 'CHANGE': 'DiffChange'})
+g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'QuickFixSignsDiffDelete', 'ADD': 'QuickFixSignsDiffAdd', 'CHANGE': 'QuickFixSignsDiffChange'})
     The highlighting of deleted lines can sometimes be confusing. In 
     order to disable the display of signs for DEL changes, save the 
     following line as after/autoload/quickfixsigns/vcsdiff.vim: >
 
       call remove(g:quickfixsigns#vcsdiff#highlight, 'DEL')
 <
+
+                                                    *g:quickfixsigns#vcsdiff#del_numbered*
+g:quickfixsigns#vcsdiff#del_numbered (default: 1)
+    If true, add an indicator for how many lines were deleted next to 
+    the sign for deleted lines.
 
                                                     *quickfixsigns#vcsdiff#GuessType()*
 quickfixsigns#vcsdiff#GuessType()
@@ -352,8 +373,19 @@ quickfixsigns#vcsdiff#GuessType()
 
                                                     *quickfixsigns#vcsdiff#GetList()*
 quickfixsigns#vcsdiff#GetList(filename)
+
+                                                    *quickfixsigns#vcsdiff#GetList0()*
+quickfixsigns#vcsdiff#GetList0(filename)
     quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
     VCS (see |g:quickfixsigns#vcsdiff#vcs|).
+
+                                                    *quickfixsigns#vcsdiff#GetList1()*
+quickfixsigns#vcsdiff#GetList1(filename)
+    quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
+    VCS (see |g:quickfixsigns#vcsdiff#vcs|).
+    This version by Chronial works more like diff -y (see 
+    https://github.com/Chronial/vim-quickfixsigns/commit/1cf739c790746157c3cb9b6234c1454333397c9e 
+    for details).
 
 
 ========================================================================

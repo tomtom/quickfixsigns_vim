@@ -6,9 +6,13 @@ Display |signs| at interesting lines:
     - items in the |quickfix| and |location-lists| (e.g. compilation errors)
     - |marks| a-zA-Z
     - changes (given the file is under a VCS like git, svn, mercurial, 
-      or bazaar)
-    - relative line numbers (show numbers only until the cursor moves)
-    - etc.
+      or bazaar -- see |g:tlib#vcs#def| for a list of supported VCSs)
+    - breakpoints: vim, R (if rer_vim is installed)
+    - cursor position
+    - relative line numbers (show numbers only until the cursor moves; 
+      this requires that you add the following command to |vimrc|: >
+        noremap <silent> <leader><c-l> :call quickfixsigns#RelNumbersOnce()<cr>
+<    - etc.
 
 Other lists can be configured via the |g:quickfixsigns_lists| variable.
 
