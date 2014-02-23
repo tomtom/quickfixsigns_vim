@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    465
+" @Revision:    478
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -81,7 +81,7 @@ if !exists('g:quickfixsigns#vcsdiff#highlight')
     " following line as after/autoload/quickfixsigns/vcsdiff.vim: >
     "
     "   call remove(g:quickfixsigns#vcsdiff#highlight, 'DEL')
-    let g:quickfixsigns#vcsdiff#highlight = {'DEL': 'DiffDelete', 'ADD': 'DiffAdd', 'CHANGE': 'DiffChange'}   "{{{2
+    let g:quickfixsigns#vcsdiff#highlight = {'DEL': 'QuickFixSignsDiffDelete', 'ADD': 'QuickFixSignsDiffAdd', 'CHANGE': 'QuickFixSignsDiffChange'}   "{{{2
 endif
 
 
@@ -89,6 +89,14 @@ if !exists('g:quickfixsigns#vcsdiff#del_numbered')
     " If true, add an indicator for how many lines were deleted next to 
     " the sign for deleted lines.
     let g:quickfixsigns#vcsdiff#del_numbered = 1   "{{{2
+endif
+
+
+
+if len(filter(values(g:quickfixsigns#vcsdiff#highlight), 'v:val =~ ''^QuickFixSignsDiff''')) > 0
+    hi QuickFixSignsDiffAdd    ctermfg=0 ctermbg=2 guifg=black  guibg=green
+    hi QuickFixSignsDiffDelete ctermfg=0 ctermbg=1 guifg=yellow guibg=red
+    hi QuickFixSignsDiffChange ctermfg=0 ctermbg=3 guifg=black  guibg=yellow
 endif
 
 
