@@ -85,6 +85,13 @@ if !exists('g:quickfixsigns#vcsdiff#highlight')
 endif
 
 
+if !exists('g:quickfixsigns#vcsdiff#del_numbered')
+    " If true, add an indicator for how many lines were deleted next to 
+    " the sign for deleted lines.
+    let g:quickfixsigns#vcsdiff#del_numbered = 1   "{{{2
+endif
+
+
 if index(g:quickfixsigns_signs, 'QFS_VCS_ADD') == -1
     exec 'sign define QFS_VCS_ADD text=+ texthl='. g:quickfixsigns#vcsdiff#highlight.ADD
 endif
@@ -93,6 +100,20 @@ if index(g:quickfixsigns_signs, 'QFS_VCS_DEL') == -1
 endif
 if index(g:quickfixsigns_signs, 'QFS_VCS_CHANGE') == -1
     exec 'sign define QFS_VCS_CHANGE text== texthl='. g:quickfixsigns#vcsdiff#highlight.CHANGE
+endif
+
+
+if g:quickfixsigns#vcsdiff#del_numbered
+    for s:i in range(1, 9) + ['M']
+        if !has_key(g:quickfixsigns#vcsdiff#highlight, 'DEL'. s:i) && has_key(g:quickfixsigns#vcsdiff#highlight, 'DEL')
+            let g:quickfixsigns#vcsdiff#highlight['DEL'. s:i] = g:quickfixsigns#vcsdiff#highlight.DEL
+        endif
+        if index(g:quickfixsigns_signs, 'QFS_VCS_DEL'. s:i) == -1
+            let s:text = s:i == 'M' ? '-' : s:i
+            exec 'sign define QFS_VCS_DEL'. s:i 'text=-'. s:text 'texthl='. g:quickfixsigns#vcsdiff#highlight.DEL
+        endif
+        unlet! s:i s:text
+    endfor
 endif
 
 
@@ -253,6 +274,7 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
                     endif
                 endfor
                 let signs = []
+                " TLogVAR change_defs
                 for [lnum, change_def] in items(change_defs)
                     if !has_key(g:quickfixsigns#vcsdiff#highlight, change_def.change)
                         continue
@@ -357,8 +379,19 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
                             let change_lnum = lastlnum
                         endif
                         if change == 'DEL'
+                            if g:quickfixsigns#vcsdiff#del_numbered
+                                let ldiff = from - block_start
+                                " TLogVAR block_start, from, to, ldiff
+                                if ldiff < 1
+                                    let change = 'DEL'
+                                elseif ldiff > 9
+                                    let change = 'DELM'
+                                else
+                                    let change = 'DEL'. ldiff
+                                endif
+                            endif
                             let change_defs[block_start] = {'change': change, 'text': block_text}
-                            " TLogVAR block_start, change_defs[block_start]
+                            " TLogVAR block_start, change_defs[block_start], ldiff
                         else
                             let change_defs[change_lnum] = {'change': change, 'text': block_text}
                             " TLogVAR change_lnum, change_defs[change_lnum]
