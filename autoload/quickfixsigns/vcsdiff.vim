@@ -4,12 +4,13 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    433
+" @Revision:    465
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
 endif
 let g:quickfixsigns#vcsdiff#loaded = 1
+scriptencoding utf-8
 
 
 if index(g:quickfixsigns_classes, 'vcsdiff') == -1
@@ -70,7 +71,7 @@ if !exists('g:quickfixsigns#vcsdiff#list_type')
     "   0 ... QuickFixSigns's original version
     "   1 ... An alternative version that works more like `diff -y` (see 
     "         |quickfixsigns#vcsdiff#GetList1()|)
-    let g:quickfixsigns#vcsdiff#list_type = 0   "{{{2
+    let g:quickfixsigns#vcsdiff#list_type = 1   "{{{2
 endif
 
 
