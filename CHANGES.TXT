@@ -182,3 +182,26 @@ version: "1.01"
   - Avoid irrelevant checks when no buffer signs will be displayed
   MD5 checksum: 8dbfd054978cc99491cf9fbe150cd636
 
+  - vcsdiff: Trigger on BufRead instead of BufEnter events (fixes #30)
+  - vcsdiff: Trigger update on FocusGained events
+  - vcsdiff: cache intermediate results
+  - quickfixsigns#vcsdiff#GetList(): Make sure to return a list (fixes #32)
+  - vcsdiff: Change signs to be more like diff -y
+  - vcsdiff: Removed FocusGained event (fixes #33)
+  - Don't unplace signs on BufUnload events
+  - Merge branch 'master' of https://github.com/Chronial/vim-quickfixsigns into vcsdiff_deletes
+  - vcsdiff: Support for alternative list display (see https://github.com/Chronial/vim-quickfixsigns/commit/1cf739c790746157c3cb9b6234c1454333397c9e)
+  - QuickfixsignsBalloon(): use elseif
+  - Help template
+  - Blacklist unite buffers
+  - Provide an example with "Sign Regexp" input
+  - Fix off-by-one error
+  - Display debug message, if quickfixsigns_max is reached
+  - Merge branch 'debug-info-with-max-reached' of https://github.com/blueyed/quickfixsigns_vim
+  - Support for setting maxsigns per class (closes #38)
+  - g:quickfixsigns#vcsdiff#list_type defaults to 1; use scriptencoding
+  - g:quickfixsigns#vcsdiff#del_numbered: If enabled, add a number to DEL signs to indicate the number of deleted lines (fixes #37)
+  - Use own colors
+  MD5 checksum: df86c09e3a6fca2f363fcfd2af7d9fd5
+version: "1.02"
+
