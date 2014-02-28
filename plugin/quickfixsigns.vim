@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1260
+" @Revision:    1283
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -95,13 +95,18 @@ endif
 
 if !exists('g:quickfixsigns_class_qfl')
     " Signs for |quickfix| lists.
-    let g:quickfixsigns_class_qfl = {'sign': 'QFS_QFL', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 7, 'scope': 'vim'}   "{{{2
+    let g:quickfixsigns_class_qfl = {'sign': '*s:QflSign', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 7, 'scope': 'vim'}   "{{{2
 endif
 
 
 if !exists('g:quickfixsigns_class_loc')
     " Signs for |location| lists.
-    let g:quickfixsigns_class_loc = {'sign': 'QFS_LOC', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 8}   "{{{2
+    let g:quickfixsigns_class_loc = {'sign': '*s:LocSign', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 8}   "{{{2
+endif
+
+
+if !exists('g:quickfixsign_list_types')
+    let g:quickfixsign_list_types = 'EW'   "{{{2
 endif
 
 
@@ -139,8 +144,12 @@ if !exists('g:quickfixsigns_icons')
             let s:icons_dir = expand('<sfile>:p:h:h:') .'/bitmaps/open_icon_library/16x16/'
             if isdirectory(s:icons_dir)
                 let g:quickfixsigns_icons = {
-                            \ 'qfl': s:icons_dir .'status/dialog-error-5.png',
-                            \ 'loc': s:icons_dir .'status/dialog-warning-4.png',
+                            \ 'qfl': s:icons_dir .'emblems/emblem-important.png',
+                            \ 'qfl_E': s:icons_dir .'status/dialog-error-2.png',
+                            \ 'qfl_W': s:icons_dir .'status/dialog-warning-2.png',
+                            \ 'loc': s:icons_dir .'emblems/emblem-important-4.png',
+                            \ 'loc_E': s:icons_dir .'status/dialog-error-5.png',
+                            \ 'loc_W': s:icons_dir .'status/dialog-warning-3.png',
                             \ 'cursor': s:icons_dir .'actions/go-next-4.png',
                             \ 'breakpoint': s:icons_dir .'actions/media-playback-pause-3.png'
                             \ }
@@ -212,6 +221,28 @@ if index(g:quickfixsigns_signs, 'QFS_LOC') == -1
         sign define QFS_LOC text=> texthl=Special
     endif
 endif
+
+for s:char in split(g:quickfixsign_list_types, '\zs')
+    let s:sign = 'QFS_QFL_'. s:char
+    if index(g:quickfixsigns_signs, s:sign) == -1
+        let s:icon = 'qfl_'. s:char
+        if has_key(g:quickfixsigns_icons, s:icon)
+            exec 'sign define' s:sign 'text=*'. s:char 'texthl=WarningMsg icon='. escape(g:quickfixsigns_icons[s:icon], ' \')
+        else
+            exec 'sign define' s:sign 'text=*'. s:char 'texthl=WarningMsg'
+        endif
+    endif
+    let s:sign = 'QFS_LOC_'. s:char
+    if index(g:quickfixsigns_signs, s:sign) == -1
+        let s:icon = 'loc_'. s:char
+        if has_key(g:quickfixsigns_icons, s:icon)
+            exec 'sign define' s:sign 'text=>'. s:char 'texthl=Special icon='. escape(g:quickfixsigns_icons[s:icon], ' \')
+        else
+            exec 'sign define' s:sign 'text=>'. s:char 'texthl=Special'
+        endif
+    endif
+endfor
+unlet! s:char s:sign s:icon
 
 if index(g:quickfixsigns_signs, 'QFS_CURSOR') == -1
     if exists('g:quickfixsigns_icons.cursor')
@@ -516,6 +547,27 @@ endf
 
 function! s:RelSign(item) "{{{3
     return 'QFS_'. a:item.text
+endf
+
+
+function! s:QflSign(item) "{{{3
+    return s:ListSign(a:item, 'QFS_QFL')
+endf
+
+
+function! s:LocSign(item) "{{{3
+    return s:ListSign(a:item, 'QFS_LOC')
+endf
+
+
+function! s:ListSign(item, base) "{{{3
+    let type = get(a:item, 'type', '')
+    " TLogVAR a:item, a:base, type
+    if empty(type) || stridx(g:quickfixsign_list_types, type) == -1
+        return a:base
+    else
+        return a:base .'_'. type
+    endif
 endf
 
 
