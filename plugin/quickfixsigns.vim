@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1283
+" @Revision:    1293
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -135,6 +135,16 @@ endif
 if !exists('g:quickfixsigns_blacklist_buffer')
     " Don't show signs in buffers matching this |regexp|.
     let g:quickfixsigns_blacklist_buffer = '^\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$'   "{{{2
+endif
+
+
+if !exists('g:quickfixsign_type_rx')
+    " A dictionary of {&filetype: [[TYPE, REGEXP] ...]}.
+    " If a qfl or loc list item has no type defined, match the item 
+    " against the |regexp| and assume TYPE if it matches.
+    " Use "*" for default values.
+    " This way, users can patch suboptimal 'errorformat' definitions.
+    let g:quickfixsign_type_rx = {'*': [['E', '\c\<error\>'], ['W', '\c\<warning\>']]}   "{{{2
 endif
 
 
@@ -562,6 +572,16 @@ endf
 
 function! s:ListSign(item, base) "{{{3
     let type = get(a:item, 'type', '')
+    if empty(type) && a:item.bufnr > 0 && !empty(get(a:item, 'text', ''))
+        let ft = getbufvar(a:item.bufnr, '&ft', '*')
+        let text = a:item.text
+        for [t, rx] in get(g:quickfixsign_type_rx, ft, [])
+            if text =~ rx
+                let type = t
+                break
+            endif
+        endfor
+    endif
     " TLogVAR a:item, a:base, type
     if empty(type) || stridx(g:quickfixsign_list_types, type) == -1
         return a:base

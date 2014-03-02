@@ -71,10 +71,12 @@ Contents~
         g:quickfixsigns_class_rel ................... |g:quickfixsigns_class_rel|
         g:quickfixsigns_class_qfl ................... |g:quickfixsigns_class_qfl|
         g:quickfixsigns_class_loc ................... |g:quickfixsigns_class_loc|
+        g:quickfixsign_list_types ................... |g:quickfixsign_list_types|
         g:quickfixsigns_class_cursor ................ |g:quickfixsigns_class_cursor|
         g:quickfixsigns_balloon ..................... |g:quickfixsigns_balloon|
         g:quickfixsigns_max ......................... |g:quickfixsigns_max|
         g:quickfixsigns_blacklist_buffer ............ |g:quickfixsigns_blacklist_buffer|
+        g:quickfixsign_type_rx ...................... |g:quickfixsign_type_rx|
         g:quickfixsigns_icons ....................... |g:quickfixsigns_icons|
         QuickfixsignsSelect ......................... |QuickfixsignsSelect()|
         QuickfixsignsUpdate ......................... |QuickfixsignsUpdate()|
@@ -181,12 +183,15 @@ g:quickfixsigns_class_rel      (default: {'sign': '*s:RelSign', 'get': 's:GetRel
     See also |quickfixsigns#RelNumbersOnce()|.
 
                                                     *g:quickfixsigns_class_qfl*
-g:quickfixsigns_class_qfl      (default: {'sign': 'QFS_QFL', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 7, 'scope': 'vim'})
+g:quickfixsigns_class_qfl      (default: {'sign': '*s:QflSign', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 7, 'scope': 'vim'})
     Signs for |quickfix| lists.
 
                                                     *g:quickfixsigns_class_loc*
-g:quickfixsigns_class_loc      (default: {'sign': 'QFS_LOC', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 8})
+g:quickfixsigns_class_loc      (default: {'sign': '*s:LocSign', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 8})
     Signs for |location| lists.
+
+                                                    *g:quickfixsign_list_types*
+g:quickfixsign_list_types      (default: 'EW')
 
                                                     *g:quickfixsigns_class_cursor*
 g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'CursorMoved', 'CursorMovedI'], 'timeout': 1, 'level': 3})
@@ -207,6 +212,14 @@ g:quickfixsigns_max            (default: 500)
                                                     *g:quickfixsigns_blacklist_buffer*
 g:quickfixsigns_blacklist_buffer (default: '^\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$')
     Don't show signs in buffers matching this |regexp|.
+
+                                                    *g:quickfixsign_type_rx*
+g:quickfixsign_type_rx         (default: {'*': [['E', '\c\<error\>'], ['W', '\c\<warning\>']]})
+    A dictionary of {&filetype: [[TYPE, REGEXP] ...]}.
+    If a qfl or loc list item has no type defined, match the item 
+    against the |regexp| and assume TYPE if it matches.
+    Use "*" for default values.
+    This way, users can patch suboptimal 'errorformat' definitions.
 
                                                     *g:quickfixsigns_icons*
 g:quickfixsigns_icons          (default: {})
