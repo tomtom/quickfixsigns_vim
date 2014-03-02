@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1293
+" @Revision:    1295
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -154,12 +154,12 @@ if !exists('g:quickfixsigns_icons')
             let s:icons_dir = expand('<sfile>:p:h:h:') .'/bitmaps/open_icon_library/16x16/'
             if isdirectory(s:icons_dir)
                 let g:quickfixsigns_icons = {
-                            \ 'qfl': s:icons_dir .'emblems/emblem-important.png',
-                            \ 'qfl_E': s:icons_dir .'status/dialog-error-2.png',
-                            \ 'qfl_W': s:icons_dir .'status/dialog-warning-2.png',
-                            \ 'loc': s:icons_dir .'emblems/emblem-important-4.png',
-                            \ 'loc_E': s:icons_dir .'status/dialog-error-5.png',
-                            \ 'loc_W': s:icons_dir .'status/dialog-warning-3.png',
+                            \ 'qfl': s:icons_dir .'others/bullet-star.png',
+                            \ 'qfl_E': s:icons_dir .'status/dialog-warning-2.png',
+                            \ 'qfl_W': s:icons_dir .'others/flag-red-2.png',
+                            \ 'loc': s:icons_dir .'others/bullet-blue.png',
+                            \ 'loc_E': s:icons_dir .'status/dialog-warning-3.png',
+                            \ 'loc_W': s:icons_dir .'others/flag-orange.png',
                             \ 'cursor': s:icons_dir .'actions/go-next-4.png',
                             \ 'breakpoint': s:icons_dir .'actions/media-playback-pause-3.png'
                             \ }
