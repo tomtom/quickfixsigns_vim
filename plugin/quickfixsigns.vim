@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1295
+" @Revision:    1297
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -573,7 +573,10 @@ endf
 function! s:ListSign(item, base) "{{{3
     let type = get(a:item, 'type', '')
     if empty(type) && a:item.bufnr > 0 && !empty(get(a:item, 'text', ''))
-        let ft = getbufvar(a:item.bufnr, '&ft', '*')
+        let ft = getbufvar(a:item.bufnr, '&ft', '')
+        if empty(ft)
+            let ft = '*'
+        endif
         let text = a:item.text
         for [t, rx] in get(g:quickfixsign_type_rx, ft, [])
             if text =~ rx
