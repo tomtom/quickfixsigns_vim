@@ -311,6 +311,8 @@ function! QuickfixsignsUpdate(...) "{{{3
 endf
 
 
+let s:clists = {}
+
 " :display: QuickfixsignsSet(event, ?classes=[])
 " (Re-)Set the signs that should be updated at a certain event. If event 
 " is empty, update all signs.
@@ -339,9 +341,8 @@ function! QuickfixsignsSet(event, ...) "{{{3
     if !exists('b:quickfixsigns_last_line')
         let b:quickfixsigns_last_line = 0
     endif
-    let bufnr = bufnr(filename)
     let anyway = empty(a:event)
-    " TLogVAR bufnr, anyway, a:event
+    " TLogVAR anyway, a:event
     call s:UpdateLineNumbers()
     for [class, def] in bufsignclasses
         " TLogVAR class, def
@@ -359,50 +360,61 @@ function! QuickfixsignsSet(event, ...) "{{{3
         endif
         if set && select
             " TLogVAR class, set, select
-            let t_d = get(def, 'timeout', 0)
-            let t_l = localtime()
-            let t_s = string(def)
-            if !exists('b:quickfixsigns_last_run')
-                let b:quickfixsigns_last_run = {}
+            let t_d = get(def, 'timeout', g:quickfixsign_timeout)
+            if t_d != 0
+                let t_l = localtime()
+                let t_s = string(def)
+                if !exists('b:quickfixsigns_last_run')
+                    let b:quickfixsigns_last_run = {}
+                endif
+                " TLogVAR t_s, t_d, t_l
+                " echom "DBG" t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d
             endif
-            " TLogVAR t_s, t_d, t_l
             if anyway || (t_d == 0) || (t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d)
                 if g:quickfixsigns_debug
                     call quickfixsigns#AssertNoObsoleteBuffers(g:quickfixsigns_register)
                 endif
-                let b:quickfixsigns_last_run[t_s] = t_l
-                let list = s:GetList(def, filename)
-                " TLogVAR len(list)
-                " TLogVAR list
-                " TLogVAR class, 'scope == buffer'
-                let scope_test = s:GetScopeTest(class, bufnr, '')
-                if !empty(scope_test)
-                    " echom "DBG" scope_test
-                    " echom "DBG" string(list)
-                    call filter(list, scope_test)
+                if t_d != 0
+                    let b:quickfixsigns_last_run[t_s] = t_l
                 endif
-                " TLogVAR list
-                let maxsigns = get(def, 'maxsigns', g:quickfixsigns_max)
-                if !empty(list) && len(list) <= maxsigns
-                    call s:UpdateSigns(class, def, bufnr, list)
-                    if has('balloon_eval') && g:quickfixsigns_balloon
-                        if exists('g:loaded_tlib') && g:loaded_tlib >= 39  " ignore dependency
-                            call tlib#balloon#Register('QuickfixsignsBalloon()')
-                        elseif !exists('b:quickfixsigns_balloon') && empty(&balloonexpr)
-                            let b:quickfixsigns_ballooneval = &ballooneval
-                            let b:quickfixsigns_balloonexpr = &balloonexpr
-                            setlocal ballooneval balloonexpr=QuickfixsignsBalloon()
-                            let b:quickfixsigns_balloon = 1
+                let list = s:GetList(def, filename)
+                let okey = class .'*'. filename
+                let olist = get(s:clists, okey, [])
+                if list != olist
+                    " TLogVAR len(list)
+                    " TLogVAR list
+                    " TLogVAR class, 'scope == buffer'
+                    let bufnr = bufnr(filename)
+                    let s:clists[okey] = deepcopy(list)
+                    let scope_test = s:GetScopeTest(class, bufnr, '')
+                    if !empty(scope_test)
+                        " echom "DBG" scope_test
+                        " echom "DBG" string(list)
+                        call filter(list, scope_test)
+                    endif
+                    " TLogVAR list
+                    let maxsigns = get(def, 'maxsigns', g:quickfixsigns_max)
+                    if !empty(list) && len(list) <= maxsigns
+                        call s:UpdateSigns(class, def, bufnr, list)
+                        if has('balloon_eval') && g:quickfixsigns_balloon
+                            if exists('g:loaded_tlib') && g:loaded_tlib >= 39  " ignore dependency
+                                call tlib#balloon#Register('QuickfixsignsBalloon()')
+                            elseif !exists('b:quickfixsigns_balloon') && empty(&balloonexpr)
+                                let b:quickfixsigns_ballooneval = &ballooneval
+                                let b:quickfixsigns_balloonexpr = &balloonexpr
+                                setlocal ballooneval balloonexpr=QuickfixsignsBalloon()
+                                let b:quickfixsigns_balloon = 1
+                            endif
                         endif
+                    else
+                        if !empty(list) && g:quickfixsigns_debug
+                            echohl WarningMsg
+                            echom 'QuickFixSigns DEBUG: not displaying' len(list)
+                                        \ class 'signs (max' maxsigns .'; see :h g:quickfixsigns_max).'
+                            echohl NONE
+                        endif
+                        call s:ClearBuffer(class, def.sign, bufnr, [])
                     endif
-                else
-                    if !empty(list) && g:quickfixsigns_debug
-                        echohl WarningMsg
-                        echom 'QuickFixSigns DEBUG: not displaying' len(list)
-                                \ class 'signs (max' maxsigns .'; see :h g:quickfixsigns_max).'
-                        echohl NONE
-                    endif
-                    call s:ClearBuffer(class, def.sign, bufnr, [])
                 endif
             endif
         endif
@@ -548,11 +560,15 @@ endf
 
 
 function! s:ListValues() "{{{3
-    let signs_lists = g:quickfixsigns_lists
-    if exists('b:quickfixsigns_ignore')
-        let signs_lists = filter(copy(signs_lists), 'index(b:quickfixsigns_ignore, v:key) == -1')
+    if !exists('b:quickfixsigns_sorted_lists') || b:quickfixsigns_lists != g:quickfixsigns_lists
+        let signs_lists = g:quickfixsigns_lists
+        if exists('b:quickfixsigns_ignore')
+            let signs_lists = filter(copy(signs_lists), 'index(b:quickfixsigns_ignore, v:key) == -1')
+        endif
+        let b:quickfixsigns_lists = copy(g:quickfixsigns_lists)
+        let b:quickfixsigns_sorted_lists = sort(items(signs_lists), 's:CompareClasses')
     endif
-    return sort(items(signs_lists), 's:CompareClasses')
+    return b:quickfixsigns_sorted_lists
 endf
 
 
