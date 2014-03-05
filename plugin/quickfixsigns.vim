@@ -77,9 +77,11 @@ if !exists('g:quickfixsign_timeout')
     " class definitions (see |g:quickfixsigns_classes|).
     let g:quickfixsign_timeout = 0   "{{{2
 endif
+
+
 if !exists('g:quickfixsigns_events')
     " List of events for signs that should be frequently updated.
-    let g:quickfixsigns_events = ['BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter', 'InsertChange']   "{{{2
+    let g:quickfixsigns_events = ['BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter']   "{{{2
 endif
 
 
