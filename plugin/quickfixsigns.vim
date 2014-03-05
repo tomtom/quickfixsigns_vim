@@ -142,7 +142,7 @@ endif
 
 if !exists('g:quickfixsigns_blacklist_buffer')
     " Don't show signs in buffers matching this |regexp|.
-    let g:quickfixsigns_blacklist_buffer = '^\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$'   "{{{2
+    let g:quickfixsigns_blacklist_buffer = '\(^\|[\/]\)\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$'   "{{{2
 endif
 
 
@@ -333,7 +333,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     " TLogVAR a:event, a:000
     let filename = a:0 >= 2 ? a:2 : expand('%:p')
     " TLogVAR a:event, filename, bufname('%')
-    if fnamemodify(filename, ':t') =~ g:quickfixsigns_blacklist_buffer
+    if empty(filename) || filename =~ g:quickfixsigns_blacklist_buffer
         return
     endif
     if !exists('b:quickfixsigns_last_line')
