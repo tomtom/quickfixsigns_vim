@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1297
+" @Revision:    1330
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -64,13 +64,19 @@ if !exists('g:quickfixsigns_classes')
     "   level: Precedence of signs (if there are more signs at a line, 
     "          the one with the higher level will be displayed)
     "   maxsigns: Override the value of |g:quickfixsigns_max|
-    "   timeout: Update the sign at most every X seconds
+    "   timeout: Update the sign at most every X seconds (defaults to 
+    "          |g:quickfixsign_timeout|)
     "   test:  Update the sign only if the expression is true.
     let g:quickfixsigns_classes = ['qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints']   "{{{2
     " let g:quickfixsigns_classes = ['rel', 'qfl', 'loc', 'marks']   "{{{2
 endif
 
 
+if !exists('g:quickfixsign_timeout')
+    " The default number of seconds for the timeout option for sign 
+    " class definitions (see |g:quickfixsigns_classes|).
+    let g:quickfixsign_timeout = 0   "{{{2
+endif
 if !exists('g:quickfixsigns_events')
     " List of events for signs that should be frequently updated.
     let g:quickfixsigns_events = ['BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter', 'InsertChange']   "{{{2
