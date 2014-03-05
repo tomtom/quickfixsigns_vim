@@ -67,6 +67,7 @@ Contents~
         :QuickfixsignsToggle ........................ |:QuickfixsignsToggle|
         :QuickfixsignsSelect ........................ |:QuickfixsignsSelect|
         g:quickfixsigns_classes ..................... |g:quickfixsigns_classes|
+        g:quickfixsign_timeout ...................... |g:quickfixsign_timeout|
         g:quickfixsigns_events ...................... |g:quickfixsigns_events|
         g:quickfixsigns_class_rel ................... |g:quickfixsigns_class_rel|
         g:quickfixsigns_class_qfl ................... |g:quickfixsigns_class_qfl|
@@ -168,11 +169,17 @@ g:quickfixsigns_classes        (default: ['qfl', 'loc', 'marks', 'vcsdiff', 'bre
       level: Precedence of signs (if there are more signs at a line, 
              the one with the higher level will be displayed)
       maxsigns: Override the value of |g:quickfixsigns_max|
-      timeout: Update the sign at most every X seconds
+      timeout: Update the sign at most every X seconds (defaults to 
+             |g:quickfixsign_timeout|)
       test:  Update the sign only if the expression is true.
 
+                                                    *g:quickfixsign_timeout*
+g:quickfixsign_timeout         (default: 0)
+    The default number of seconds for the timeout option for sign 
+    class definitions (see |g:quickfixsigns_classes|).
+
                                                     *g:quickfixsigns_events*
-g:quickfixsigns_events         (default: ['BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter', 'InsertChange'])
+g:quickfixsigns_events         (default: ['BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter'])
     List of events for signs that should be frequently updated.
 
                                                     *g:quickfixsigns_class_rel*
@@ -210,7 +217,7 @@ g:quickfixsigns_max            (default: 500)
     Don't display signs if the list is longer than n items.
 
                                                     *g:quickfixsigns_blacklist_buffer*
-g:quickfixsigns_blacklist_buffer (default: '^\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$')
+g:quickfixsigns_blacklist_buffer (default: '\(^\|[\/]\)\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$')
     Don't show signs in buffers matching this |regexp|.
 
                                                     *g:quickfixsign_type_rx*
