@@ -375,10 +375,6 @@ function! QuickfixsignsSet(event, ...) "{{{3
                 " echom "DBG" t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d
             endif
             if anyway || (t_d == 0) || (t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d)
-                if must_updatelinenumbers
-                    let must_updatelinenumbers = 0
-                    call s:UpdateLineNumbers()
-                endif
                 if g:quickfixsigns_debug
                     call quickfixsigns#AssertNoObsoleteBuffers(g:quickfixsigns_register)
                 endif
@@ -389,6 +385,10 @@ function! QuickfixsignsSet(event, ...) "{{{3
                 let okey = class .'*'. filename
                 let olist = get(s:clists, okey, [])
                 if list != olist
+                    if must_updatelinenumbers
+                        let must_updatelinenumbers = 0
+                        call s:UpdateLineNumbers()
+                    endif
                     " TLogVAR len(list)
                     " TLogVAR list
                     " TLogVAR class, 'scope == buffer'
