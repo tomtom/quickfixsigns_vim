@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1330
+" @Revision:    1332
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -343,7 +343,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     endif
     let anyway = empty(a:event)
     " TLogVAR anyway, a:event
-    call s:UpdateLineNumbers()
+    let must_updatelinenumbers = 1
     for [class, def] in bufsignclasses
         " TLogVAR class, def
         if anyway
@@ -371,6 +371,10 @@ function! QuickfixsignsSet(event, ...) "{{{3
                 " echom "DBG" t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d
             endif
             if anyway || (t_d == 0) || (t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d)
+                if must_updatelinenumbers
+                    let must_updatelinenumbers = 0
+                    call s:UpdateLineNumbers()
+                endif
                 if g:quickfixsigns_debug
                     call quickfixsigns#AssertNoObsoleteBuffers(g:quickfixsigns_register)
                 endif
