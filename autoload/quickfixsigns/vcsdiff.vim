@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    478
+" @Revision:    479
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -42,7 +42,7 @@ endif
 
 
 if !exists('g:quickfixsigns_class_vcsdiff')
-    let g:quickfixsigns_class_vcsdiff = {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufRead', 'BufWritePost'], 'level': 6}   "{{{2
+    let g:quickfixsigns_class_vcsdiff = {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufRead', 'BufWritePost', 'FocusGained'], 'level': 6}   "{{{2
 endif
 
 
