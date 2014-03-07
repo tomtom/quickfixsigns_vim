@@ -18,20 +18,20 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 " Reset the signs in the current buffer.
-command! QuickfixsignsSet call QuickfixsignsSet("")
+command! -bar QuickfixsignsSet call QuickfixsignsSet("")
 
 " Disable quickfixsign.
-command! QuickfixsignsDisable call s:ClearSigns(keys(g:quickfixsigns_register), 1) | call QuickfixsignsSelect([])
+command! -bar QuickfixsignsDisable call s:ClearSigns(keys(g:quickfixsigns_register), 1) | call QuickfixsignsSelect([])
 
 " Enable quickfixsign.
-command! QuickfixsignsEnable call QuickfixsignsSelect(g:quickfixsigns_classes) | QuickfixsignsSet
+command! -bar QuickfixsignsEnable call QuickfixsignsSelect(g:quickfixsigns_classes) | QuickfixsignsSet
 
 " Toggle quickfixsign.
-command! QuickfixsignsToggle call QuickfixsignsToggle()
+command! -bar QuickfixsignsToggle call QuickfixsignsToggle()
 
 " Select the sign classes that should be displayed and reset the signs 
 " in the current buffer.
-command! -nargs=+ -complete=customlist,quickfixsigns#CompleteSelect QuickfixsignsSelect call QuickfixsignsSelect([<f-args>]) | call QuickfixsignsUpdate()
+command! -bar -nargs=+ -complete=customlist,quickfixsigns#CompleteSelect QuickfixsignsSelect call QuickfixsignsSelect([<f-args>]) | call QuickfixsignsUpdate()
 
 
 if !exists('g:quickfixsigns_debug')
