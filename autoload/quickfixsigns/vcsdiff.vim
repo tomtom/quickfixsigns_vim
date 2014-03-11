@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    486
+" @Revision:    489
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -90,7 +90,6 @@ if !exists('g:quickfixsigns#vcsdiff#del_numbered')
     " the sign for deleted lines.
     let g:quickfixsigns#vcsdiff#del_numbered = 1   "{{{2
 endif
-
 
 
 if len(filter(values(g:quickfixsigns#vcsdiff#highlight), 'v:val =~ ''^QuickFixSignsDiff''')) > 0
