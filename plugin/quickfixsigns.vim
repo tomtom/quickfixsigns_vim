@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1354
+" @Revision:    1357
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -17,8 +17,9 @@ scriptencoding utf-8
 let s:save_cpo = &cpo
 set cpo&vim
 
+" :display: :QuickfixsignsSet [SIGN ...]
 " Reset the signs in the current buffer.
-command! -bar QuickfixsignsSet call QuickfixsignsSet("")
+command! -bar -nargs=* QuickfixsignsSet call QuickfixsignsSet('', split(<q-args>, '\s\+'))
 
 " Disable quickfixsign.
 command! -bar QuickfixsignsDisable call s:ClearSigns(keys(g:quickfixsigns_register), 1) | call QuickfixsignsSelect([])
@@ -321,7 +322,7 @@ endf
 
 let s:clists = {}
 
-" :display: QuickfixsignsSet(event, ?classes=[])
+" :display: QuickfixsignsSet(event, ?classes=[], ?filename=expand('%:p'))
 " (Re-)Set the signs that should be updated at a certain event. If event 
 " is empty, update all signs.
 "
