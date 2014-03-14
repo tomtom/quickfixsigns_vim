@@ -34,6 +34,25 @@ in $VIMFILES/after/plugin/quickfixsigns.vim (by use of |sign-define|):
     QFS_VCS_{ADD,DEL,CHANGE} ... VCS changes (see also 
             |g:quickfixsigns#vcsdiff#highlight|)
 
+
+Adding new sign classes~
+
+VIM plugin can easily define new sign classes:
+
+    1. Add your sign class's NAME to |g:quickfixsigns_classes|
+    2. Define a variable g:quickfixsigns_class_{NAME} -- a dictionary that 
+       contains with the at least contain the following keys: sign, get. See 
+       |g:quickfixsigns_classes| for further details.
+
+On startup any files file matching autoload/quickfixsigns/*.vim in the 
+'runtimepath' are loaded. When the sign class is defined in an |autoload| file, 
+you should first check whether NAME is included in |g:quickfixsigns_classes|. 
+See ../autoload/quickfixsigns/breakpoints.vim for a working example.
+
+CAVEAT: If the "get" expression entails running an external program, "event" 
+should not contain |FocusGained| and |FocusLost| events.
+
+
 CREDITS:
 quickfixsigns includes some icons from the open icon library. See 
 http://openiconlibrary.sourceforge.net for details.
@@ -79,6 +98,7 @@ Contents~
         g:quickfixsigns_blacklist_buffer ............ |g:quickfixsigns_blacklist_buffer|
         g:quickfixsign_type_rx ...................... |g:quickfixsign_type_rx|
         g:quickfixsigns_icons ....................... |g:quickfixsigns_icons|
+        g:quickfixsign_use_dummy .................... |g:quickfixsign_use_dummy|
         QuickfixsignsSelect ......................... |QuickfixsignsSelect()|
         QuickfixsignsUpdate ......................... |QuickfixsignsUpdate()|
         QuickfixsignsSet ............................ |QuickfixsignsSet()|
@@ -163,9 +183,11 @@ g:quickfixsigns_classes        (default: ['qfl', 'loc', 'marks', 'vcsdiff', 'bre
              value begins with "*", the value is interpreted as 
              function name that is called with a qfl item as its 
              single argument.
-      get:   A vim script expression as string that returns a list 
-             compatible with |getqflist()|.
-      event: A list of events on which signs of this type should be set
+      get:   A format string (see |printf|) for VIM |expression|, 
+             containing one "%s" placeholder (the filename), that 
+             returns a list compatible with |getqflist()|.
+      event: A list of events on which signs of this type should be 
+             set (default: BufEnter)
       level: Precedence of signs (if there are more signs at a line, 
              the one with the higher level will be displayed)
       maxsigns: Override the value of |g:quickfixsigns_max|
@@ -233,6 +255,11 @@ g:quickfixsigns_icons          (default: {})
     A dictionary {TYPE => IMAGE_FILENAME} that is used to select 
     icons that should be displayed as signs.
     Defaults to empty on windows and non-gui versions.
+
+                                                    *g:quickfixsign_use_dummy*
+g:quickfixsign_use_dummy       (default: index(g:quickfixsigns_classes, 'marks') == -1)
+    If true, set a dummy sign. It's recommended to use dummy signs 
+    when |g:quickfixsigns_classes| does not contain "marks".
 
                                                     *QuickfixsignsSelect()*
 QuickfixsignsSelect(list)

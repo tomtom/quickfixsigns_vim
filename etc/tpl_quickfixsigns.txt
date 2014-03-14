@@ -34,6 +34,25 @@ in $VIMFILES/after/plugin/quickfixsigns.vim (by use of |sign-define|):
     QFS_VCS_{ADD,DEL,CHANGE} ... VCS changes (see also 
             |g:quickfixsigns#vcsdiff#highlight|)
 
+
+Adding new sign classes~
+
+VIM plugin can easily define new sign classes:
+
+    1. Add your sign class's NAME to |g:quickfixsigns_classes|
+    2. Define a variable g:quickfixsigns_class_{NAME} -- a dictionary that 
+       contains with the at least contain the following keys: sign, get. See 
+       |g:quickfixsigns_classes| for further details.
+
+On startup any files file matching autoload/quickfixsigns/*.vim in the 
+'runtimepath' are loaded. When the sign class is defined in an |autoload| file, 
+you should first check whether NAME is included in |g:quickfixsigns_classes|. 
+See ../autoload/quickfixsigns/breakpoints.vim for a working example.
+
+CAVEAT: If the "get" expression entails running an external program, "event" 
+should not contain |FocusGained| and |FocusLost| events.
+
+
 CREDITS:
 quickfixsigns includes some icons from the open icon library. See 
 http://openiconlibrary.sourceforge.net for details.

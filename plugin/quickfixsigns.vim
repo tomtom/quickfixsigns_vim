@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1349
+" @Revision:    1354
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("loaded_quickfixsigns") || !has('signs')
@@ -58,9 +58,11 @@ if !exists('g:quickfixsigns_classes')
     "          value begins with "*", the value is interpreted as 
     "          function name that is called with a qfl item as its 
     "          single argument.
-    "   get:   A vim script expression as string that returns a list 
-    "          compatible with |getqflist()|.
-    "   event: A list of events on which signs of this type should be set
+    "   get:   A format string (see |printf|) for VIM |expression|, 
+    "          containing one "%s" placeholder (the filename), that 
+    "          returns a list compatible with |getqflist()|.
+    "   event: A list of events on which signs of this type should be 
+    "          set (default: BufEnter)
     "   level: Precedence of signs (if there are more signs at a line, 
     "          the one with the higher level will be displayed)
     "   maxsigns: Override the value of |g:quickfixsigns_max|
@@ -185,7 +187,9 @@ endif
 
 
 if !exists('g:quickfixsign_use_dummy')
-    let g:quickfixsign_use_dummy = 1   "{{{2
+    " If true, set a dummy sign. It's recommended to use dummy signs 
+    " when |g:quickfixsigns_classes| does not contain "marks".
+    let g:quickfixsign_use_dummy = index(g:quickfixsigns_classes, 'marks') == -1   "{{{2
 endif
 
 

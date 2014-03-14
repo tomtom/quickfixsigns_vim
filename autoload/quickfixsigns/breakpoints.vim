@@ -3,7 +3,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-11-26.
 " @Last Change: 2011-12-25.
-" @Revision:    31
+" @Revision:    32
 
 
 if exists('g:quickfixsigns#breakpoints#loaded')
@@ -35,7 +35,6 @@ if !exists('g:quickfixsigns_class_breakpoints')
                 \ 'test': 'has_key(g:quickfixsigns#breakpoints#filetypes, &ft)',
                 \ 'timeout': 5
                 \ }
-                " \ 'event': ['BufEnter,BufWritePost']
 endif
 
 
