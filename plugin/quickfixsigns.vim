@@ -5,13 +5,13 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1357
+" @Revision:    1370
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
-if &cp || exists("loaded_quickfixsigns") || !has('signs')
+if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
     finish
 endif
-let loaded_quickfixsigns = 103
+let g:loaded_quickfixsigns = 103
 scriptencoding utf-8
 
 let s:save_cpo = &cpo
@@ -22,10 +22,10 @@ set cpo&vim
 command! -bar -nargs=* QuickfixsignsSet call QuickfixsignsSet('', split(<q-args>, '\s\+'))
 
 " Disable quickfixsign.
-command! -bar QuickfixsignsDisable call s:ClearSigns(keys(g:quickfixsigns_register), 1) | call QuickfixsignsSelect([])
+command! -bar QuickfixsignsDisable call s:ClearSigns(keys(s:quickfixsigns_register), 1) | call QuickfixsignsSelect([]) | let s:clists = {}
 
 " Enable quickfixsign.
-command! -bar QuickfixsignsEnable call QuickfixsignsSelect(g:quickfixsigns_classes) | QuickfixsignsSet
+command! -bar QuickfixsignsEnable call QuickfixsignsSelect(g:quickfixsigns_classes) | call QuickfixsignsSet('')
 
 " Toggle quickfixsign.
 command! -bar QuickfixsignsToggle call QuickfixsignsToggle()
@@ -196,19 +196,19 @@ endif
 
 " ----------------------------------------------------------------------
 let s:quickfixsigns_base = 5272
-let g:quickfixsigns_register = {}
+let s:quickfixsigns_register = {}
 
 
 function! s:PurgeRegister() "{{{3
     let bufnums = {}
-    for [ikey, def] in items(g:quickfixsigns_register)
+    for [ikey, def] in items(s:quickfixsigns_register)
         let bufnr = def.bufnr
         if !bufloaded(bufnr)
             if g:quickfixsigns_debug && !has_key(bufnums, bufnr)
                 echom "QuickFixSigns DEBUG PurgeRegister: Obsolete buffer:" bufnr
                 let bufnums[bufnr] = 1
             endif
-            call remove(g:quickfixsigns_register, ikey)
+            call remove(s:quickfixsigns_register, ikey)
         endif
     endfor
 endf
@@ -316,7 +316,7 @@ endf
 function! QuickfixsignsUpdate(...) "{{{3
     let what = a:0 >= 1 ? a:1 : ""
     call QuickfixsignsClear(what)
-    call QuickfixsignsSet("")
+    call QuickfixsignsSet('')
 endf
 
 
@@ -381,7 +381,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
             endif
             if anyway || (t_d == 0) || (t_l - get(b:quickfixsigns_last_run, t_s, 0) >= t_d)
                 if g:quickfixsigns_debug
-                    call quickfixsigns#AssertNoObsoleteBuffers(g:quickfixsigns_register)
+                    call quickfixsigns#AssertNoObsoleteBuffers(s:quickfixsigns_register)
                 endif
                 if t_d != 0
                     let b:quickfixsigns_last_run[t_s] = t_l
@@ -439,7 +439,7 @@ endf
 function! s:UpdateSigns(class, def, bufnr, list) "{{{3
     let new_ikeys = s:PlaceSign(a:class, a:def.sign, a:list)
     " if g:quickfixsigns_debug " DBG
-        " let sign_ids = map(copy(new_ikeys), 'g:quickfixsigns_register[v:val].id') " DBG
+        " let sign_ids = map(copy(new_ikeys), 's:quickfixsigns_register[v:val].id') " DBG
         " TLogVAR sign_ids
     " endif " DBG
     call s:ClearBuffer(a:class, a:def.sign, a:bufnr, new_ikeys)
@@ -452,7 +452,7 @@ endf
 function! s:UpdateLineNumbers() "{{{3
     let buffersigns = {}
     let clear_ikeys = []
-    for [ikey, item] in items(g:quickfixsigns_register)
+    for [ikey, item] in items(s:quickfixsigns_register)
         let bufnr = item.bufnr
         " if bufnr(bufnr) == -1
         if !bufloaded(bufnr) || bufnr <= 0
@@ -478,13 +478,13 @@ function! s:UpdateLineNumbers() "{{{3
                     " TLogVAR ikey, lnum, slnum
                     let item.lnum = slnum
                     let new_ikey = s:GetIKey(item)
-                    if has_key(g:quickfixsigns_register, new_ikey)
+                    if has_key(s:quickfixsigns_register, new_ikey)
                         " TLogVAR slnum, lnum
                         call add(clear_ikeys, ikey)
                     else
-                        call remove(g:quickfixsigns_register, ikey)
+                        call remove(s:quickfixsigns_register, ikey)
                         let item.ikey = new_ikey
-                        let g:quickfixsigns_register[new_ikey] = item
+                        let s:quickfixsigns_register[new_ikey] = item
                         " TLogVAR ikey, new_ikey
                     endif
                 endif
@@ -558,12 +558,12 @@ endf
 
 
 function! QuickfixsignsToggle()
-    if exists('g:quickfixsigns_register') && len(g:quickfixsigns_register) > 0
-        exec 'QuickfixsignsDisable'
+    if exists('g:quickfixsigns_lists') && !empty(g:quickfixsigns_lists)
+        QuickfixsignsDisable
     else
-        exec 'QuickfixsignsEnable'
+        QuickfixsignsEnable
     end
-endfunction
+endf
 
 
 function! s:GetCursor(bufname) "{{{3
@@ -651,9 +651,9 @@ endf
 " Clear all signs with name SIGN.
 function! QuickfixsignsClear(class) "{{{3
     " TLogVAR a:sign_rx
-    let ikeys = keys(g:quickfixsigns_register)
+    let ikeys = keys(s:quickfixsigns_register)
     if !empty(a:class)
-        call filter(ikeys, 'g:quickfixsigns_register[v:val].class ==# a:class')
+        call filter(ikeys, 's:quickfixsigns_register[v:val].class ==# a:class')
     endif
     " TLogVAR ikeys
     call s:ClearSigns(ikeys, 1)
@@ -662,7 +662,7 @@ endf
 
 function! s:RemoveBuffer(bufnr, quick) "{{{3
     " TLogVAR a:bufnr
-    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest('', str2nr(a:bufnr), '')))
+    let old_ikeys = keys(filter(copy(s:quickfixsigns_register), s:GetScopeTest('', str2nr(a:bufnr), '')))
     " TLogVAR old_ikeys
     call s:ClearSigns(old_ikeys, !a:quick)
 endf
@@ -671,10 +671,10 @@ endf
 " Clear all signs with name SIGN in buffer BUFNR.
 function! s:ClearBuffer(class, sign, bufnr, keep_ikeys) "{{{3
     " TLogVAR a:class, a:sign, a:bufnr, a:keep_ikeys
-    let old_ikeys = keys(filter(copy(g:quickfixsigns_register), s:GetScopeTest(a:class, a:bufnr, 'v:val.class ==# a:class && index(a:keep_ikeys, v:key) == -1')))
+    let old_ikeys = keys(filter(copy(s:quickfixsigns_register), s:GetScopeTest(a:class, a:bufnr, 'v:val.class ==# a:class && index(a:keep_ikeys, v:key) == -1')))
     " TLogVAR old_ikeys
     " if g:quickfixsigns_debug " DBG
-        " let sign_ids = map(copy(old_ikeys), 'g:quickfixsigns_register[v:val].id') " DBG
+        " let sign_ids = map(copy(old_ikeys), 's:quickfixsigns_register[v:val].id') " DBG
         " TLogVAR sign_ids
     " endif " DBG
     call s:ClearSigns(old_ikeys, 1)
@@ -683,7 +683,7 @@ endf
 
 function! s:ClearSigns(ikeys, unplace) "{{{3
     for ikey in a:ikeys
-        let def   = g:quickfixsigns_register[ikey]
+        let def   = s:quickfixsigns_register[ikey]
         let bufnr = def.bufnr
         if a:unplace
             if bufloaded(bufnr)
@@ -693,7 +693,7 @@ function! s:ClearSigns(ikeys, unplace) "{{{3
                 echom "Quickfixsigns DEBUG: bufnr not loaded:" bufnr ikey string(def)
             endif
         endif
-        call remove(g:quickfixsigns_register, ikey)
+        call remove(s:quickfixsigns_register, ikey)
     endfor
 endf
 
@@ -819,7 +819,7 @@ function! s:PlaceSign(class, sign, list) "{{{3
                         let cmd = ':sign place '. item.id .' line='. item.lnum .' name='. sign .' buffer='. item.bufnr
                         " TLogDBG cmd
                         exec cmd
-                        let g:quickfixsigns_register[ikey] = item
+                        let s:quickfixsigns_register[ikey] = item
                     endif
                 endif
             endif
@@ -851,13 +851,13 @@ function! s:SetItemId(item) "{{{3
         if !has_key(a:item, 'ikey')
             let a:item.ikey = s:GetIKey(a:item)
         endif
-        let a:item.new = !has_key(g:quickfixsigns_register, a:item.ikey)
+        let a:item.new = !has_key(s:quickfixsigns_register, a:item.ikey)
         if a:item.new
             let item = a:item
             let item.id = s:quickfixsigns_base
             let s:quickfixsigns_base += 1
         else
-            let item = extend(copy(g:quickfixsigns_register[a:item.ikey]), a:item)
+            let item = extend(copy(s:quickfixsigns_register[a:item.ikey]), a:item)
             if !has_key(item, 'id')
                 echohl WarningMsg
                 echom "Quickfixsigns: Internal error: No ID:" string(item)
@@ -881,7 +881,7 @@ endf
 
 function! s:GetLocList(bufname) "{{{3
     let loclist = getloclist(bufwinnr(a:bufname))
-    " TLogVAR a:bufname, bufnr(a:bufname), loclist
+    " TLogVAR a:bufname, bufnr(a:bufname), len(loclist)
     return QuickfixsignsUnique(loclist)
 endf
 
