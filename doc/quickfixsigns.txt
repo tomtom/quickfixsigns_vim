@@ -37,7 +37,7 @@ in $VIMFILES/after/plugin/quickfixsigns.vim (by use of |sign-define|):
 
 Adding new sign classes~
 
-VIM plugin can easily define new sign classes:
+VIM plugin developers can easily define new sign classes:
 
     1. Add your sign class's NAME to |g:quickfixsigns_classes|
     2. Define a variable g:quickfixsigns_class_{NAME} -- a dictionary that 
