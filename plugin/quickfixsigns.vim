@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1377
+" @Revision:    1399
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -201,9 +201,11 @@ let s:quickfixsigns_register = {}
 
 function! s:PurgeRegister() "{{{3
     let bufnums = {}
+    " echom "DBG quickfixsigns_register" string(s:quickfixsigns_register)
     for [ikey, def] in items(s:quickfixsigns_register)
         let bufnr = def.bufnr
         if !bufloaded(bufnr)
+            " TLogVAR bufnr, ikey
             if g:quickfixsigns_debug && !has_key(bufnums, bufnr)
                 echom "QuickFixSigns DEBUG PurgeRegister: Obsolete buffer:" bufnr
                 let bufnums[bufnr] = 1
@@ -353,6 +355,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
     let anyway = empty(a:event)
     " TLogVAR anyway, a:event
     let must_updatelinenumbers = 1
+    " echom "DBG quickfixsigns_register" string(s:quickfixsigns_register)
     for [class, def] in bufsignclasses
         " TLogVAR class, def
         if anyway
@@ -453,6 +456,7 @@ endf
 function! s:UpdateLineNumbers() "{{{3
     let buffersigns = {}
     let clear_ikeys = []
+    " echom "DBG UpdateLineNumbers quickfixsigns_register" string(s:quickfixsigns_register)
     for [ikey, item] in items(s:quickfixsigns_register)
         let bufnr = item.bufnr
         " if bufnr(bufnr) == -1
@@ -494,6 +498,7 @@ function! s:UpdateLineNumbers() "{{{3
             endif
         endif
     endfor
+    " echom "DBG quickfixsigns_register" string(s:quickfixsigns_register)
     if !empty(clear_ikeys)
         call s:ClearSigns(clear_ikeys, 1)
     endif
@@ -665,6 +670,10 @@ function! s:RemoveBuffer(bufnr, quick) "{{{3
     " TLogVAR a:bufnr
     let old_ikeys = keys(filter(copy(s:quickfixsigns_register), s:GetScopeTest('', str2nr(a:bufnr), '')))
     " TLogVAR old_ikeys
+    let bufname = fnamemodify(bufname(a:bufnr), ':p')
+    let bufname_rx = '\V*'. bufname
+    let s:clists = filter(s:clists, 'v:key !~# bufname_rx')
+    " echom "DBG" string(keys(s:clists))
     call s:ClearSigns(old_ikeys, !a:quick)
 endf
 
@@ -672,6 +681,7 @@ endf
 " Clear all signs with name SIGN in buffer BUFNR.
 function! s:ClearBuffer(class, sign, bufnr, keep_ikeys) "{{{3
     " TLogVAR a:class, a:sign, a:bufnr, a:keep_ikeys
+    " echom "DBG quickfixsigns_register" string(s:quickfixsigns_register)
     let old_ikeys = keys(filter(copy(s:quickfixsigns_register), s:GetScopeTest(a:class, a:bufnr, 'v:val.class ==# a:class && index(a:keep_ikeys, v:key) == -1')))
     " TLogVAR old_ikeys
     " if g:quickfixsigns_debug " DBG
@@ -683,6 +693,8 @@ endf
 
 
 function! s:ClearSigns(ikeys, unplace) "{{{3
+    " TLogVAR a:ikeys, a:unplace
+    " echom "DBG quickfixsigns_register" string(s:quickfixsigns_register)
     for ikey in a:ikeys
         let def   = s:quickfixsigns_register[ikey]
         let bufnr = def.bufnr
@@ -696,6 +708,7 @@ function! s:ClearSigns(ikeys, unplace) "{{{3
         endif
         call remove(s:quickfixsigns_register, ikey)
     endfor
+    " echom "DBG quickfixsigns_register" string(s:quickfixsigns_register)
 endf
 
 
@@ -909,7 +922,7 @@ augroup QuickFixSigns
     endif
 
     autocmd BufLeave * if !v:dying | call s:PurgeRegister() | endif
-    autocmd BufUnload * call s:RemoveBuffer(expand("<abuf>"), 1)
+    autocmd BufDelete * call s:RemoveBuffer(expand("<abuf>"), 1)
     if g:quickfixsign_use_dummy
         exec "autocmd BufRead,BufNewFile * exec 'sign place' (". s:quickfixsigns_base ." - expand('<abuf>')) 'name=QFS_DUMMY line=1 buffer='. expand('<abuf>')"
     endif
