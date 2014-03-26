@@ -205,3 +205,29 @@ version: "1.01"
   MD5 checksum: df86c09e3a6fca2f363fcfd2af7d9fd5
 version: "1.02"
 
+version: "1.03"
+  - FIX: set quickfix signs when loaded after vim_starting
+  - Additional icon files from the open icon library
+  - Use different signs for errors & warnings (closes #42)
+  - g:quickfixsign_type_rx: patch suboptimal 'errorformat' definitions (fix #42)
+  - Changed icons
+  - FIX #42: Use "*" if &ft is empty (it is never unset)
+  - Configurable g:quickfixsign_timeout (default value for timeout option)
+  - Remove InsertChange from g:quickfixsigns_events
+  - g:quickfixsigns_blacklist_buffer matches full filename (don't check buffers with empty filenames)
+  - Minor improvements to avoid unnecessary updates (fix #43)
+  - Call s:UpdateLineNumbers() only if necessary
+  - g:quickfixsign_use_dummy: Option to set dummy sign (fix #44)
+  - Make sure to use new IDs for dummy signs
+  - Set the dummy sign ID correctly
+  - g:quickfixsign_use_dummy defaults to 1
+  - g:quickfixsigns_class_vcsdiff: Update on FocusGained events
+  - Add -bar to command definitions
+  - Call s:UpdateLineNumbers() only when the list has actually changed
+  - g:quickfixsigns_class_vcsdiff: Remove FocusGained event Caused infinite loop when calling git etc.
+  - doc: fix grammar/typos with "Adding new sign classes"
+  - :QuickfixsignsSet: Takes sign classes as optional arguments
+  - quickfixsigns_register is script-local; FIX #47: Use g:quickfixsigns_lists to toggle state
+  - Call RemoveBuffer on BufDelete, not BufUnload (fix #46)
+  MD5 checksum: 415d45c58cbbce01e276d80685ce3096
+
