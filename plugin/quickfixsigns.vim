@@ -5,13 +5,13 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1400
+" @Revision:    1401
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
     finish
 endif
-let g:loaded_quickfixsigns = 103
+let g:loaded_quickfixsigns = 104
 scriptencoding utf-8
 
 let s:save_cpo = &cpo
