@@ -231,3 +231,7 @@ version: "1.03"
   - Call RemoveBuffer on BufDelete, not BufUnload (fix #46)
   MD5 checksum: 415d45c58cbbce01e276d80685ce3096
 
+  - FIX #48: Omit 3rd arg for getbufvar() (vim 7.3 compatibility)
+  MD5 checksum: 556e79d0556d77801d76c634f7a3be50
+version: "1.04"
+
