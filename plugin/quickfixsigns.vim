@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1401
+" @Revision:    1410
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -671,7 +671,9 @@ function! s:RemoveBuffer(bufnr, quick) "{{{3
     let old_ikeys = keys(filter(copy(s:quickfixsigns_register), s:GetScopeTest('', str2nr(a:bufnr), '')))
     " TLogVAR old_ikeys
     let bufname = fnamemodify(bufname(a:bufnr), ':p')
-    let bufname_rx = '\V*'. bufname
+    let bufname_rx = '\V*'. escape(bufname, '\') .'\$'
+    " TLogVAR bufname_rx
+    " echom "DBG" string(keys(s:clists))
     let s:clists = filter(s:clists, 'v:key !~# bufname_rx')
     " echom "DBG" string(keys(s:clists))
     call s:ClearSigns(old_ikeys, !a:quick)
