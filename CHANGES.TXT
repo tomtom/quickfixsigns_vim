@@ -235,3 +235,7 @@ version: "1.03"
   MD5 checksum: 556e79d0556d77801d76c634f7a3be50
 version: "1.04"
 
+  - FIX: regexp-related error @ windows: properly escape backslashes
+  MD5 checksum: 7e465b9bdccd1736746d8f02ba4637e9
+version: "1.05"
+
