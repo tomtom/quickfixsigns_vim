@@ -5,7 +5,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
 " @Last Change: 2013-03-04.
-" @Revision:    1412
+" @Revision:    1419
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -409,6 +409,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
                         " echom "DBG" string(list)
                         call filter(list, scope_test)
                     endif
+                    " TLogVAR len(list)
                     " TLogVAR list
                     let maxsigns = get(def, 'maxsigns', g:quickfixsigns_max)
                     if !empty(list) && len(list) <= maxsigns
@@ -441,8 +442,9 @@ endf
 
 
 function! s:UpdateSigns(class, def, bufnr, list) "{{{3
-    " TLogVAR a:class, a:bufnr
+    " TLogVAR a:class, a:bufnr, len(a:list)
     let new_ikeys = s:PlaceSign(a:class, a:def.sign, a:list)
+    " TLogVAR len(new_ikeys)
     " if g:quickfixsigns_debug " DBG
         " let sign_ids = map(copy(new_ikeys), 's:quickfixsigns_register[v:val].id') " DBG
         " TLogVAR sign_ids
@@ -816,7 +818,7 @@ endf
 function! s:PlaceSign(class, sign, list) "{{{3
     " TAssertType a:sign, 'string'
     " TAssertType a:list, 'list'
-    " TLogVAR a:class, a:sign, a:list
+    " TLogVAR a:class, a:sign, len(a:list)
     let keep_ikeys = []
     let cbs = s:CreateBufferSignsCache()
     try

@@ -12,6 +12,7 @@ Display |signs| at interesting lines:
     - relative line numbers (show numbers only until the cursor moves; 
       this requires that you add the following command to |vimrc|: >
         noremap <silent> <leader><c-l> :call quickfixsigns#RelNumbersOnce()<cr>
+    - long lines (see |g:quickfixsigns_class_longlines| for details)
 <    - etc.
 
 Other lists can be configured via the |g:quickfixsigns_lists| variable.

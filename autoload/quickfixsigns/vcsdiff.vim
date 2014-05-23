@@ -1,10 +1,10 @@
 " @Author:      Tom Link (micathom AT gmail com?subject=[vim])
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
-" @vcs:         http://vcshub.com/tomtom/quickfixsigns_vim/
+" @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    491
+" @Revision:    492
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish

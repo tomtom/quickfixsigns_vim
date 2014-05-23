@@ -12,6 +12,7 @@ Display |signs| at interesting lines:
     - relative line numbers (show numbers only until the cursor moves; 
       this requires that you add the following command to |vimrc|: >
         noremap <silent> <leader><c-l> :call quickfixsigns#RelNumbersOnce()<cr>
+    - long lines (see |g:quickfixsigns_class_longlines| for details)
 <    - etc.
 
 Other lists can be configured via the |g:quickfixsigns_lists| variable.
@@ -119,6 +120,9 @@ Contents~
         g:quickfixsigns#marks#texthl ................ |g:quickfixsigns#marks#texthl|
         quickfixsigns#marks#GetList ................. |quickfixsigns#marks#GetList()|
         quickfixsigns#marks#GetSign ................. |quickfixsigns#marks#GetSign()|
+        g:quickfixsigns_class_longlines ............. |g:quickfixsigns_class_longlines|
+        g:quickfixsigns#longlines#width_expr ........ |g:quickfixsigns#longlines#width_expr|
+        quickfixsigns#longlines#GetList ............. |quickfixsigns#longlines#GetList()|
         g:quickfixsigns#vcsdiff#vcs ................. |g:quickfixsigns#vcsdiff#vcs|
         g:quickfixsigns_class_vcsdiff ............... |g:quickfixsigns_class_vcsdiff|
         g:quickfixsigns#vcsdiff#cd .................. |g:quickfixsigns#vcsdiff#cd|
@@ -349,6 +353,24 @@ quickfixsigns#marks#GetList(filename)
 
                                                     *quickfixsigns#marks#GetSign()*
 quickfixsigns#marks#GetSign(item)
+
+
+========================================================================
+autoload/quickfixsigns/longlines.vim~
+
+                                                    *g:quickfixsigns_class_longlines*
+g:quickfixsigns_class_longlines (default: {'sign': 'QFS_LONGLINES', 'get': 'quickfixsigns#longlines#GetList(%s)', 'event': ['BufRead', 'BufWritePost']})
+    Mark long lines (see |g:quickfixsigns#longlines#width_expr|) with 
+    a sign.
+
+    Users have to enable this sign class by adding 'longlines' to 
+    |g:quickfixsigns_classes|.
+
+                                                    *g:quickfixsigns#longlines#width_expr*
+g:quickfixsigns#longlines#width_expr (default: '&tw')
+
+                                                    *quickfixsigns#longlines#GetList()*
+quickfixsigns#longlines#GetList(filename)
 
 
 ========================================================================
