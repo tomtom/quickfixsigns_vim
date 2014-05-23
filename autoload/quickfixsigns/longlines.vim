@@ -3,7 +3,7 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Last Change: 2012-10-02.
-" @Revision:    509
+" @Revision:    510
 
 if exists('g:quickfixsigns#longlines#loaded')
     finish
@@ -45,13 +45,16 @@ function! quickfixsigns#longlines#GetList(filename) "{{{3
             throw "QuickFixSigns DEBUG: bufnr mismatch:" a:filename bufnr bufnr(a:filename)
         endif
     else
-        let pos = getpos('.')
-        try
-            exec 'g/\%>'. eval(g:quickfixsigns#longlines#width_expr) .'v./'
-                        \ 'call add(signs, {"bufnr": bufnr, "lnum": line("."), "text": "Long line"})'
-        finally
-            call setpos('.', pos)
-        endtry
+        let width = eval(g:quickfixsigns#longlines#width_expr)
+        if width > 0
+            let pos = getpos('.')
+            try
+                exec 'g/\%>'. width .'v./'
+                            \ 'call add(signs, {"bufnr": bufnr, "lnum": line("."), "text": "Long line"})'
+            finally
+                call setpos('.', pos)
+            endtry
+        endif
     endif
     " TLogVAR signs
     return signs
