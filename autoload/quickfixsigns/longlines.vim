@@ -3,7 +3,7 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Last Change: 2012-10-02.
-" @Revision:    510
+" @Revision:    515
 
 if exists('g:quickfixsigns#longlines#loaded')
     finish
@@ -49,7 +49,7 @@ function! quickfixsigns#longlines#GetList(filename) "{{{3
         if width > 0
             let pos = getpos('.')
             try
-                exec 'g/\%>'. width .'v./'
+                exec 'silent g/\%>'. width .'v./'
                             \ 'call add(signs, {"bufnr": bufnr, "lnum": line("."), "text": "Long line"})'
             finally
                 call setpos('.', pos)
