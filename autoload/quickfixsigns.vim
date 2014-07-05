@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
 " @Last Change: 2012-10-02.
-" @Revision:    0.0.141
+" @Revision:    0.0.142
 
 
 if !exists('g:quickfixsigns#use_relativenumber')
@@ -83,7 +83,7 @@ endf
 function! quickfixsigns#AssertNoObsoleteBuffers(register) "{{{3
     let buffers = {}
     for val in values(a:register)
-        if !bufloaded(val.bufnr)
+        if !bufexists(val.bufnr)
             let buffers[val.bufnr] = 1
         endif
     endfor
