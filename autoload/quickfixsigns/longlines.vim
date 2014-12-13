@@ -3,7 +3,7 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Last Change: 2012-10-02.
-" @Revision:    515
+" @Revision:    516
 
 if exists('g:quickfixsigns#longlines#loaded')
     finish
@@ -38,6 +38,9 @@ endif
 
 
 function! quickfixsigns#longlines#GetList(filename) "{{{3
+    if &tw == 0
+        return []
+    endif
     let bufnr = bufnr('%')
     let signs = []
     if bufnr != bufnr(a:filename)
