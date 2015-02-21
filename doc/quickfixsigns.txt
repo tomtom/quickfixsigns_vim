@@ -484,4 +484,4 @@ g:tinykeymap#map#quickfixsigns#options (default: {...})
 
 
 
-vim:tw=78:fo=tcq2:isk=!-~,^*,^|,^":ts=8:ft=help:norl:
+vim:tw=78:fo=w2croql:isk=!-~,^*,^|,^":ts=8:ft=help:norl:
