@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    493
+" @Revision:    495
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -155,19 +155,25 @@ function! quickfixsigns#vcsdiff#GuessType() "{{{3
         if (exists('b:quickfixsigns_vcsdiff_guess_type') ? b:quickfixsigns_vcsdiff_guess_type : g:quickfixsigns#vcsdiff#guess_type) && empty(type)
             let path = escape(expand('%:p:h'), ',') .';'
             let depth = -1
-            for vcs in keys(g:quickfixsigns#vcsdiff#vcs)
-                let dir = g:quickfixsigns#vcsdiff#vcs[vcs].dir
-                " TLogVAR dir
-                let vcsdir = finddir(dir, path)
-                if !empty(vcsdir)
-                    let vcsdir_depth = len(split(fnamemodify(vcsdir, ':p'), '\/'))
-                    if vcsdir_depth > depth
-                        let depth = vcsdir_depth
-                        let type = vcs
-                        " TLogVAR type, depth
+            let suffixes_add = &l:suffixesadd
+            try
+                let &l:suffixesadd = ''
+                for vcs in keys(g:quickfixsigns#vcsdiff#vcs)
+                    let dir = g:quickfixsigns#vcsdiff#vcs[vcs].dir
+                    " TLogVAR dir
+                    let vcsdir = finddir(dir, path)
+                    if !empty(vcsdir)
+                        let vcsdir_depth = len(split(fnamemodify(vcsdir, ':p'), '\/'))
+                        if vcsdir_depth > depth
+                            let depth = vcsdir_depth
+                            let type = vcs
+                            " TLogVAR type, depth
+                        endif
                     endif
-                endif
-            endfor
+                endfor
+            finally
+                let &l:suffixesadd = suffixes_add
+            endtry
         endif
         let b:vcs_type = type
     endif
