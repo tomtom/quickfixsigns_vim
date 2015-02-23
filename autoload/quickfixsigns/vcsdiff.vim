@@ -4,7 +4,7 @@
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
 " @Last Change: 2012-10-02.
-" @Revision:    495
+" @Revision:    496
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
