@@ -186,8 +186,10 @@ function! quickfixsigns#vcsdiff#GuessType() "{{{3
 endf
 
 
-" A cached list of VCS marks, indexed by list type.
+" A cached list of VCS marks and hunk stats, indexed by filename.
+" It gets invalidated through quickfixsigns#vcsdiff#GetList.
 let s:cached_list = {}
+let s:cached_hunkstat = {}
 
 
 " Get the list of vcsdiff signs (uncached).
@@ -196,8 +198,9 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
     if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
         throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
     endif
-    let s:cached_list[list_type] = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
-    return s:cached_list[list_type]
+    let s:cached_hunkstat = {}
+    let s:cached_list[a:filename] = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
+    return s:cached_list[a:filename]
 endf
 
 
@@ -205,8 +208,8 @@ endf
 " The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
 function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
     let list_type = g:quickfixsigns#vcsdiff#list_type
-    if exists('s:cached_list[list_type]')
-        return s:cached_list[list_type]
+    if exists('s:cached_list[a:filename]')
+        return s:cached_list[a:filename]
     endif
     return quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
 endf
@@ -215,18 +218,21 @@ endf
 " Get status of VCS changes as [added, modified, removed].
 function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
     let filename = a:0 ? a:1 : expand("%")
-    let list = quickfixsigns#vcsdiff#GetListCached(filename)
-    let r = [0, 0, 0]  " added, modified, removed.
-    for item in list
-        if item.change == 'ADD'
-            let r[0] += 1
-        elseif item.change == 'CHANGE'
-            let r[1] += 1
-        elseif item.sign == 'DEL'
-            let r[2] += 1
-        endif
-    endfor
-    return r
+    if !exists('s:cached_hunkstat[filename]')
+        let list = quickfixsigns#vcsdiff#GetListCached(filename)
+        let r = [0, 0, 0]  " added, modified, removed.
+        for item in list
+            if item.change == 'ADD'
+                let r[0] += 1
+            elseif item.change == 'CHANGE'
+                let r[1] += 1
+            elseif item.change == 'DEL'
+                let r[2] += 1
+            endif
+        endfor
+        let s:cached_hunkstat[filename] = r
+    endif
+    return s:cached_hunkstat[filename]
 endfunction
 
 
