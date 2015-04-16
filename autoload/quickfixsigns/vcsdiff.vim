@@ -186,11 +186,29 @@ function! quickfixsigns#vcsdiff#GuessType() "{{{3
 endf
 
 
+" A cached list of VCS marks, indexed by list type.
+let s:cached_list = {}
+
+
+" Get the list of vcsdiff signs (uncached).
 function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
-    if !(type(g:quickfixsigns#vcsdiff#list_type) == 0 && g:quickfixsigns#vcsdiff#list_type >= 0 && g:quickfixsigns#vcsdiff#list_type <= 1)
-        throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ".   g:quickfixsigns#vcsdiff#list_type
+    let list_type = g:quickfixsigns#vcsdiff#list_type
+    if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
+        throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
     endif
-    return quickfixsigns#vcsdiff#GetList{g:quickfixsigns#vcsdiff#list_type}(a:filename)
+    let s:cached_list[list_type] = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
+    return s:cached_list[list_type]
+endf
+
+
+" Get the list of vcsdiff signs (cached).
+" The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
+function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
+    let list_type = g:quickfixsigns#vcsdiff#list_type
+    if exists('s:cached_list[list_type]')
+        return s:cached_list[list_type]
+    endif
+    return quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
 endf
 
 
