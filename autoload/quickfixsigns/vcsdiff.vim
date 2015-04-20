@@ -218,6 +218,9 @@ endf
 " Get status of VCS changes as [added, modified, removed].
 function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
     let filename = a:0 ? a:1 : expand("%")
+    if filename == ""
+        return [0, 0, 0]
+    endif
     if !exists('s:cached_hunkstat[filename]')
         let list = quickfixsigns#vcsdiff#GetListCached(filename)
         let r = [0, 0, 0]  " added, modified, removed.
