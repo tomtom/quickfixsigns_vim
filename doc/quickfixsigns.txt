@@ -205,7 +205,7 @@ g:quickfixsign_timeout         (default: 0)
     class definitions (see |g:quickfixsigns_classes|).
 
                                                     *g:quickfixsigns_events*
-g:quickfixsigns_events         (default: ['BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter'])
+g:quickfixsigns_events         (default: ['BufReadPost', 'BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter'])
     List of events for signs that should be frequently updated.
 
                                                     *g:quickfixsigns_class_rel*
