@@ -192,9 +192,9 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
     if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
         throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
     endif
-    unlet! b:cached_hunkstat
-    let b:cached_list_{list_type} = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
-    return b:cached_list_{list_type}
+    unlet! b:qfs_vcsdiff_hunkstat
+    let b:qfs_vcsdiff_list_{list_type} = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
+    return b:qfs_vcsdiff_list_{list_type}
 endf
 
 
@@ -202,8 +202,8 @@ endf
 " The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
 function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
     let list_type = g:quickfixsigns#vcsdiff#list_type
-    if exists('b:cached_list_'.list_type)
-        return b:cached_list_{list_type}
+    if exists('b:qfs_vcsdiff_list_'.list_type)
+        return b:qfs_vcsdiff_list_{list_type}
     endif
     return quickfixsigns#vcsdiff#GetList(a:filename)
 endf
@@ -215,7 +215,7 @@ function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
     if filename == ""
         return [0, 0, 0]
     endif
-    if !exists('b:cached_hunkstat')
+    if !exists('b:qfs_vcsdiff_hunkstat')
         let list = quickfixsigns#vcsdiff#GetListCached(filename)
         let r = [0, 0, 0]  " added, modified, removed.
         for item in list
@@ -227,10 +227,22 @@ function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
                 let r[2] += 1
             endif
         endfor
-        let b:cached_hunkstat = r
+        let b:qfs_vcsdiff_hunkstat = r
     endif
-    return b:cached_hunkstat
-endfunction
+    return b:qfs_vcsdiff_hunkstat
+endf
+
+
+" Get status of VCS changes as string.
+function! quickfixsigns#vcsdiff#GetHunkSummaryAsString(...) "{{{3
+    let r = call('quickfixsigns#vcsdiff#GetHunkSummary', a:000)
+    if r[0] + r[1] + r[2] == 0
+        let b:qfs_vcsdiff_hunkstat_str = ''
+    else
+        let b:qfs_vcsdiff_hunkstat_str = printf('+%s,=%s,-%s', r[0], r[1], r[2])
+    endif
+    return b:qfs_vcsdiff_hunkstat_str
+endf
 
 
 " quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
@@ -482,4 +494,9 @@ function! s:BalloonJoin(...) "{{{3
         return join(a:000, " ")
     endif
 endf
+
+
+if exists('g:tstatus_exprs')
+    call add(g:tstatus_exprs, 'quickfixsigns#vcsdiff#GetHunkSummaryAsString()')
+endif
 
