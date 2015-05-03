@@ -186,21 +186,15 @@ function! quickfixsigns#vcsdiff#GuessType() "{{{3
 endf
 
 
-" A cached list of VCS marks and hunk stats, indexed by filename.
-" It gets invalidated through quickfixsigns#vcsdiff#GetList.
-let s:cached_list = {}
-let s:cached_hunkstat = {}
-
-
 " Get the list of vcsdiff signs (uncached).
 function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
     let list_type = g:quickfixsigns#vcsdiff#list_type
     if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
         throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
     endif
-    let s:cached_hunkstat = {}
-    let s:cached_list[a:filename] = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
-    return s:cached_list[a:filename]
+    unlet! b:cached_hunkstat
+    let b:cached_list{list_type} = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
+    return b:cached_list{list_type}
 endf
 
 
@@ -208,10 +202,10 @@ endf
 " The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
 function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
     let list_type = g:quickfixsigns#vcsdiff#list_type
-    if exists('s:cached_list[a:filename]')
-        return s:cached_list[a:filename]
+    if exists('b:cached_list'.list_type)
+        return b:cached_list{list_type}
     endif
-    return quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
+    return quickfixsigns#vcsdiff#GetList(a:filename)
 endf
 
 
@@ -221,7 +215,7 @@ function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
     if filename == ""
         return [0, 0, 0]
     endif
-    if !exists('s:cached_hunkstat[filename]')
+    if !exists('b:cached_hunkstat')
         let list = quickfixsigns#vcsdiff#GetListCached(filename)
         let r = [0, 0, 0]  " added, modified, removed.
         for item in list
@@ -233,9 +227,9 @@ function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
                 let r[2] += 1
             endif
         endfor
-        let s:cached_hunkstat[filename] = r
+        let b:cached_hunkstat = r
     endif
-    return s:cached_hunkstat[filename]
+    return b:cached_hunkstat
 endfunction
 
 
