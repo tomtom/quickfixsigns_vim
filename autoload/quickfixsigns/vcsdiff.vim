@@ -186,12 +186,51 @@ function! quickfixsigns#vcsdiff#GuessType() "{{{3
 endf
 
 
+" Get the list of vcsdiff signs (uncached).
 function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
-    if !(type(g:quickfixsigns#vcsdiff#list_type) == 0 && g:quickfixsigns#vcsdiff#list_type >= 0 && g:quickfixsigns#vcsdiff#list_type <= 1)
-        throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ".   g:quickfixsigns#vcsdiff#list_type
+    let list_type = g:quickfixsigns#vcsdiff#list_type
+    if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
+        throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
     endif
-    return quickfixsigns#vcsdiff#GetList{g:quickfixsigns#vcsdiff#list_type}(a:filename)
+    unlet! b:cached_hunkstat
+    let b:cached_list{list_type} = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
+    return b:cached_list{list_type}
 endf
+
+
+" Get the list of vcsdiff signs (cached).
+" The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
+function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
+    let list_type = g:quickfixsigns#vcsdiff#list_type
+    if exists('b:cached_list'.list_type)
+        return b:cached_list{list_type}
+    endif
+    return quickfixsigns#vcsdiff#GetList(a:filename)
+endf
+
+
+" Get status of VCS changes as [added, modified, removed].
+function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
+    let filename = a:0 ? a:1 : expand("%")
+    if filename == ""
+        return [0, 0, 0]
+    endif
+    if !exists('b:cached_hunkstat')
+        let list = quickfixsigns#vcsdiff#GetListCached(filename)
+        let r = [0, 0, 0]  " added, modified, removed.
+        for item in list
+            if item.change == 'ADD'
+                let r[0] += 1
+            elseif item.change == 'CHANGE'
+                let r[1] += 1
+            elseif item.change == 'DEL'
+                let r[2] += 1
+            endif
+        endfor
+        let b:cached_hunkstat = r
+    endif
+    return b:cached_hunkstat
+endfunction
 
 
 " quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
