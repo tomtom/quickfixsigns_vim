@@ -81,66 +81,70 @@ to jump from sign to sign or between sign groups.
 ========================================================================
 Contents~
 
-        :QuickfixsignsSet ........................... |:QuickfixsignsSet|
-        :QuickfixsignsDisable ....................... |:QuickfixsignsDisable|
-        :QuickfixsignsEnable ........................ |:QuickfixsignsEnable|
-        :QuickfixsignsToggle ........................ |:QuickfixsignsToggle|
-        :QuickfixsignsSelect ........................ |:QuickfixsignsSelect|
-        g:quickfixsigns_classes ..................... |g:quickfixsigns_classes|
-        g:quickfixsign_timeout ...................... |g:quickfixsign_timeout|
-        g:quickfixsigns_events ...................... |g:quickfixsigns_events|
-        g:quickfixsigns_class_rel ................... |g:quickfixsigns_class_rel|
-        g:quickfixsigns_class_qfl ................... |g:quickfixsigns_class_qfl|
-        g:quickfixsigns_class_loc ................... |g:quickfixsigns_class_loc|
-        g:quickfixsign_list_types ................... |g:quickfixsign_list_types|
-        g:quickfixsigns_class_cursor ................ |g:quickfixsigns_class_cursor|
-        g:quickfixsigns_balloon ..................... |g:quickfixsigns_balloon|
-        g:quickfixsigns_max ......................... |g:quickfixsigns_max|
-        g:quickfixsigns_blacklist_buffer ............ |g:quickfixsigns_blacklist_buffer|
-        g:quickfixsign_type_rx ...................... |g:quickfixsign_type_rx|
-        g:quickfixsigns_icons ....................... |g:quickfixsigns_icons|
-        g:quickfixsign_use_dummy .................... |g:quickfixsign_use_dummy|
-        QuickfixsignsSelect ......................... |QuickfixsignsSelect()|
-        QuickfixsignsUpdate ......................... |QuickfixsignsUpdate()|
-        QuickfixsignsSet ............................ |QuickfixsignsSet()|
-        QuickfixsignsUnique ......................... |QuickfixsignsUnique()|
-        QuickfixsignsBalloon ........................ |QuickfixsignsBalloon()|
-        QuickfixsignsToggle ......................... |QuickfixsignsToggle()|
-        QuickfixsignsClear .......................... |QuickfixsignsClear()|
-        QuickfixsignsListBufferSigns ................ |QuickfixsignsListBufferSigns()|
-        g:quickfixsigns#use_relativenumber .......... |g:quickfixsigns#use_relativenumber|
-        quickfixsigns#CompleteSelect ................ |quickfixsigns#CompleteSelect()|
-        quickfixsigns#RelNumbersOnce ................ |quickfixsigns#RelNumbersOnce()|
-        quickfixsigns#AssertUniqueSigns ............. |quickfixsigns#AssertUniqueSigns()|
-        quickfixsigns#AssertNoObsoleteBuffers ....... |quickfixsigns#AssertNoObsoleteBuffers()|
-        quickfixsigns#MoveSigns ..................... |quickfixsigns#MoveSigns()|
-        g:quickfixsigns_class_marks ................. |g:quickfixsigns_class_marks|
-        g:quickfixsigns#marks#buffer ................ |g:quickfixsigns#marks#buffer|
-        g:quickfixsigns#marks#global ................ |g:quickfixsigns#marks#global|
-        g:quickfixsigns#marks#texthl ................ |g:quickfixsigns#marks#texthl|
-        quickfixsigns#marks#GetList ................. |quickfixsigns#marks#GetList()|
-        quickfixsigns#marks#GetSign ................. |quickfixsigns#marks#GetSign()|
-        g:quickfixsigns_class_longlines ............. |g:quickfixsigns_class_longlines|
-        g:quickfixsigns#longlines#width_expr ........ |g:quickfixsigns#longlines#width_expr|
-        quickfixsigns#longlines#GetList ............. |quickfixsigns#longlines#GetList()|
-        g:quickfixsigns#vcsdiff#vcs ................. |g:quickfixsigns#vcsdiff#vcs|
-        g:quickfixsigns_class_vcsdiff ............... |g:quickfixsigns_class_vcsdiff|
-        g:quickfixsigns#vcsdiff#cd .................. |g:quickfixsigns#vcsdiff#cd|
-        g:quickfixsigns#vcsdiff#cmd_separator ....... |g:quickfixsigns#vcsdiff#cmd_separator|
-        g:quickfixsigns#vcsdiff#guess_type .......... |g:quickfixsigns#vcsdiff#guess_type|
-        g:quickfixsigns#vcsdiff#list_type ........... |g:quickfixsigns#vcsdiff#list_type|
-        g:quickfixsigns#vcsdiff#highlight ........... |g:quickfixsigns#vcsdiff#highlight|
-        g:quickfixsigns#vcsdiff#del_numbered ........ |g:quickfixsigns#vcsdiff#del_numbered|
-        quickfixsigns#vcsdiff#GuessType ............. |quickfixsigns#vcsdiff#GuessType()|
-        quickfixsigns#vcsdiff#GetList ............... |quickfixsigns#vcsdiff#GetList()|
-        quickfixsigns#vcsdiff#GetList0 .............. |quickfixsigns#vcsdiff#GetList0()|
-        quickfixsigns#vcsdiff#GetList1 .............. |quickfixsigns#vcsdiff#GetList1()|
-        g:quickfixsigns#breakpoints#filetypes ....... |g:quickfixsigns#breakpoints#filetypes|
-        g:quickfixsigns_class_breakpoints ........... |g:quickfixsigns_class_breakpoints|
-        quickfixsigns#breakpoints#GetList ........... |quickfixsigns#breakpoints#GetList()|
-        quickfixsigns#breakpoints#Vim ............... |quickfixsigns#breakpoints#Vim()|
-        g:tinykeymap#map#quickfixsigns#map .......... |g:tinykeymap#map#quickfixsigns#map|
-        g:tinykeymap#map#quickfixsigns#options ...... |g:tinykeymap#map#quickfixsigns#options|
+        :QuickfixsignsSet .............................. |:QuickfixsignsSet|
+        :QuickfixsignsDisable .......................... |:QuickfixsignsDisable|
+        :QuickfixsignsEnable ........................... |:QuickfixsignsEnable|
+        :QuickfixsignsToggle ........................... |:QuickfixsignsToggle|
+        :QuickfixsignsSelect ........................... |:QuickfixsignsSelect|
+        g:quickfixsigns_classes ........................ |g:quickfixsigns_classes|
+        g:quickfixsign_timeout ......................... |g:quickfixsign_timeout|
+        g:quickfixsigns_events ......................... |g:quickfixsigns_events|
+        g:quickfixsigns_class_rel ...................... |g:quickfixsigns_class_rel|
+        g:quickfixsigns_class_qfl ...................... |g:quickfixsigns_class_qfl|
+        g:quickfixsigns_class_loc ...................... |g:quickfixsigns_class_loc|
+        g:quickfixsign_list_types ...................... |g:quickfixsign_list_types|
+        g:quickfixsigns_class_cursor ................... |g:quickfixsigns_class_cursor|
+        g:quickfixsigns_balloon ........................ |g:quickfixsigns_balloon|
+        g:quickfixsigns_echo_balloon ................... |g:quickfixsigns_echo_balloon|
+        g:quickfixsigns_max ............................ |g:quickfixsigns_max|
+        g:quickfixsigns_blacklist_buffer ............... |g:quickfixsigns_blacklist_buffer|
+        g:quickfixsign_type_rx ......................... |g:quickfixsign_type_rx|
+        g:quickfixsigns_icons .......................... |g:quickfixsigns_icons|
+        g:quickfixsign_use_dummy ....................... |g:quickfixsign_use_dummy|
+        QuickfixsignsSelect ............................ |QuickfixsignsSelect()|
+        QuickfixsignsUpdate ............................ |QuickfixsignsUpdate()|
+        QuickfixsignsSet ............................... |QuickfixsignsSet()|
+        QuickfixsignsUnique ............................ |QuickfixsignsUnique()|
+        QuickfixsignsBalloon ........................... |QuickfixsignsBalloon()|
+        QuickfixsignsToggle ............................ |QuickfixsignsToggle()|
+        QuickfixsignsClear ............................. |QuickfixsignsClear()|
+        QuickfixsignsListBufferSigns ................... |QuickfixsignsListBufferSigns()|
+        g:quickfixsigns#use_relativenumber ............. |g:quickfixsigns#use_relativenumber|
+        quickfixsigns#CompleteSelect ................... |quickfixsigns#CompleteSelect()|
+        quickfixsigns#RelNumbersOnce ................... |quickfixsigns#RelNumbersOnce()|
+        quickfixsigns#AssertUniqueSigns ................ |quickfixsigns#AssertUniqueSigns()|
+        quickfixsigns#AssertNoObsoleteBuffers .......... |quickfixsigns#AssertNoObsoleteBuffers()|
+        quickfixsigns#MoveSigns ........................ |quickfixsigns#MoveSigns()|
+        g:quickfixsigns_class_marks .................... |g:quickfixsigns_class_marks|
+        g:quickfixsigns#marks#buffer ................... |g:quickfixsigns#marks#buffer|
+        g:quickfixsigns#marks#global ................... |g:quickfixsigns#marks#global|
+        g:quickfixsigns#marks#texthl ................... |g:quickfixsigns#marks#texthl|
+        quickfixsigns#marks#GetList .................... |quickfixsigns#marks#GetList()|
+        quickfixsigns#marks#GetSign .................... |quickfixsigns#marks#GetSign()|
+        g:quickfixsigns_class_longlines ................ |g:quickfixsigns_class_longlines|
+        g:quickfixsigns#longlines#width_expr ........... |g:quickfixsigns#longlines#width_expr|
+        quickfixsigns#longlines#GetList ................ |quickfixsigns#longlines#GetList()|
+        g:quickfixsigns#vcsdiff#vcs .................... |g:quickfixsigns#vcsdiff#vcs|
+        g:quickfixsigns_class_vcsdiff .................. |g:quickfixsigns_class_vcsdiff|
+        g:quickfixsigns#vcsdiff#cd ..................... |g:quickfixsigns#vcsdiff#cd|
+        g:quickfixsigns#vcsdiff#cmd_separator .......... |g:quickfixsigns#vcsdiff#cmd_separator|
+        g:quickfixsigns#vcsdiff#guess_type ............. |g:quickfixsigns#vcsdiff#guess_type|
+        g:quickfixsigns#vcsdiff#list_type .............. |g:quickfixsigns#vcsdiff#list_type|
+        g:quickfixsigns#vcsdiff#highlight .............. |g:quickfixsigns#vcsdiff#highlight|
+        g:quickfixsigns#vcsdiff#del_numbered ........... |g:quickfixsigns#vcsdiff#del_numbered|
+        quickfixsigns#vcsdiff#GuessType ................ |quickfixsigns#vcsdiff#GuessType()|
+        quickfixsigns#vcsdiff#GetList .................. |quickfixsigns#vcsdiff#GetList()|
+        quickfixsigns#vcsdiff#GetListCached ............ |quickfixsigns#vcsdiff#GetListCached()|
+        quickfixsigns#vcsdiff#GetHunkSummary ........... |quickfixsigns#vcsdiff#GetHunkSummary()|
+        quickfixsigns#vcsdiff#GetHunkSummaryAsString ... |quickfixsigns#vcsdiff#GetHunkSummaryAsString()|
+        quickfixsigns#vcsdiff#GetList0 ................. |quickfixsigns#vcsdiff#GetList0()|
+        quickfixsigns#vcsdiff#GetList1 ................. |quickfixsigns#vcsdiff#GetList1()|
+        g:quickfixsigns#breakpoints#filetypes .......... |g:quickfixsigns#breakpoints#filetypes|
+        g:quickfixsigns_class_breakpoints .............. |g:quickfixsigns_class_breakpoints|
+        quickfixsigns#breakpoints#GetList .............. |quickfixsigns#breakpoints#GetList()|
+        quickfixsigns#breakpoints#Vim .................. |quickfixsigns#breakpoints#Vim()|
+        g:tinykeymap#map#quickfixsigns#map ............. |g:tinykeymap#map#quickfixsigns#map|
+        g:tinykeymap#map#quickfixsigns#options ......... |g:tinykeymap#map#quickfixsigns#options|
 
 
 ========================================================================
@@ -237,6 +241,11 @@ g:quickfixsigns_balloon        (default: 1)
     If non-null, display a balloon when hovering with the mouse over 
     the sign.
     buffer-local or global
+
+                                                    *g:quickfixsigns_echo_balloon*
+g:quickfixsigns_echo_balloon   (default: 0)
+    If true, echo text in tooltip balloon also on the command line. 
+    You may have to press ENTER to continue.
 
                                                     *g:quickfixsigns_max*
 g:quickfixsigns_max            (default: 500)
@@ -442,6 +451,20 @@ quickfixsigns#vcsdiff#GuessType()
 
                                                     *quickfixsigns#vcsdiff#GetList()*
 quickfixsigns#vcsdiff#GetList(filename)
+    Get the list of vcsdiff signs (uncached).
+
+                                                    *quickfixsigns#vcsdiff#GetListCached()*
+quickfixsigns#vcsdiff#GetListCached(filename)
+    Get the list of vcsdiff signs (cached).
+    The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
+
+                                                    *quickfixsigns#vcsdiff#GetHunkSummary()*
+quickfixsigns#vcsdiff#GetHunkSummary(...)
+    Get status of VCS changes as [added, modified, removed].
+
+                                                    *quickfixsigns#vcsdiff#GetHunkSummaryAsString()*
+quickfixsigns#vcsdiff#GetHunkSummaryAsString(...)
+    Get status of VCS changes as string.
 
                                                     *quickfixsigns#vcsdiff#GetList0()*
 quickfixsigns#vcsdiff#GetList0(filename)
