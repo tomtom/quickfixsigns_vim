@@ -3,7 +3,7 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2012-10-02.
+" @Last Change: 2015-05-03.
 " @Revision:    496
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
@@ -193,8 +193,8 @@ function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
         throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
     endif
     unlet! b:cached_hunkstat
-    let b:cached_list{list_type} = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
-    return b:cached_list{list_type}
+    let b:cached_list_{list_type} = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
+    return b:cached_list_{list_type}
 endf
 
 
@@ -202,8 +202,8 @@ endf
 " The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
 function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
     let list_type = g:quickfixsigns#vcsdiff#list_type
-    if exists('b:cached_list'.list_type)
-        return b:cached_list{list_type}
+    if exists('b:cached_list_'.list_type)
+        return b:cached_list_{list_type}
     endif
     return quickfixsigns#vcsdiff#GetList(a:filename)
 endf
