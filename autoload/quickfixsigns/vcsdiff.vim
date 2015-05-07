@@ -3,7 +3,7 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2015-05-04.
+" @Last Change: 2015-05-07.
 " @Revision:    496
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
@@ -509,7 +509,7 @@ function! s:BalloonJoin(...) "{{{3
 endf
 
 
-if exists(':TStatusregisterexpr')
-    TStatusregisterexpr --event=BufRead,BufWritePost vcs quickfixsigns#vcsdiff#GetHunkSummaryAsString()
+if exists(':TStatusregister1')
+    TStatusregister1 --event=BufRead,BufWritePost vcs quickfixsigns#vcsdiff#GetHunkSummaryAsString()
 endif
 
