@@ -3,7 +3,7 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2015-05-07.
+" @Last Change: 2015-07-01.
 " @Revision:    496
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
@@ -95,7 +95,12 @@ if !exists('g:quickfixsigns#vcsdiff#del_numbered')
 endif
 
 
-if len(filter(values(g:quickfixsigns#vcsdiff#highlight), 'v:val =~ ''^QuickFixSignsDiff''')) > 0
+if !exists('g:quickfixsigns#vcsdiff#use_hidef')
+    let g:quickfixsigns#vcsdiff#use_hidef = 1   "{{{2
+endif
+
+
+if g:quickfixsigns#vcsdiff#use_hidef && len(filter(values(g:quickfixsigns#vcsdiff#highlight), 'v:val =~ ''^QuickFixSignsDiff''')) > 0
     hi QuickFixSignsDiffAdd    ctermfg=0 ctermbg=2 guifg=black  guibg=green
     hi QuickFixSignsDiffDelete ctermfg=0 ctermbg=1 guifg=yellow guibg=red
     hi QuickFixSignsDiffChange ctermfg=0 ctermbg=3 guifg=black  guibg=yellow
