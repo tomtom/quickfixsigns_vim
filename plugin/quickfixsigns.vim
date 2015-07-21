@@ -152,7 +152,7 @@ endif
 
 if !exists('g:quickfixsigns_blacklist_buffer')
     " Don't show signs in buffers matching this |regexp|.
-    let g:quickfixsigns_blacklist_buffer = '\(^\|[\/]\)\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$'   "{{{2
+    let g:quickfixsigns_blacklist_buffer = '\(^\|[\/]\)\(__.*__\|ControlP\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$'   "{{{2
 endif
 
 
