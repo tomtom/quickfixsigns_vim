@@ -228,7 +228,8 @@ function! s:Redir(cmd) "{{{3
     let &verbose = 0
     try
         let rv = ''
-        redir => rv
+        " Use 'silent!' to protect against unsupported nesting of 'redir'.
+        silent! redir => rv
         exec 'silent' a:cmd
         redir END
         return exists('rv')? rv : ''
