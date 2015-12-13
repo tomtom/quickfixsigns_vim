@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2015-12-12.
-" @Revision:    1420
+" @Last Change: 2015-12-13.
+" @Revision:    1422
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -82,9 +82,19 @@ if !exists('g:quickfixsign_timeout')
 endif
 
 
+if !exists('g:quickfixsigns_events_default')
+    let g:quickfixsigns_events_default = ['BufEnter']   "{{{2
+endif
+
+
+if !exists('g:quickfixsigns_events_base')
+    let g:quickfixsigns_events_base = g:quickfixsigns_events_default + ['CursorHold', 'CursorHoldI']   "{{{2
+endif
+
+
 if !exists('g:quickfixsigns_events')
     " List of events for signs that should be frequently updated.
-    let g:quickfixsigns_events = ['BufReadPost', 'BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter']   "{{{2
+    let g:quickfixsigns_events = g:quickfixsigns_events_base + ['BufReadPost', 'InsertLeave', 'InsertEnter']   "{{{2
 endif
 
 
@@ -106,13 +116,13 @@ endif
 
 if !exists('g:quickfixsigns_class_qfl')
     " Signs for |quickfix| lists.
-    let g:quickfixsigns_class_qfl = {'sign': '*s:QflSign', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 7, 'scope': 'vim'}   "{{{2
+    let g:quickfixsigns_class_qfl = {'sign': '*s:QflSign', 'get': 's:GetQFList(%s)', 'event': g:quickfixsigns_events_base + ['QuickFixCmdPost'], 'level': 7, 'scope': 'vim'}   "{{{2
 endif
 
 
 if !exists('g:quickfixsigns_class_loc')
     " Signs for |location| lists.
-    let g:quickfixsigns_class_loc = {'sign': '*s:LocSign', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 8}   "{{{2
+    let g:quickfixsigns_class_loc = {'sign': '*s:LocSign', 'get': 's:GetLocList(%s)', 'event': g:quickfixsigns_events_base + ['QuickFixCmdPost'], 'level': 8}   "{{{2
 endif
 
 
@@ -125,7 +135,7 @@ if !exists('g:quickfixsigns_class_cursor')
     " Sign for the current cursor position. The cursor position is 
     " lazily updated. If you want something more precise, consider 
     " setting 'cursorline'.
-    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'CursorMoved', 'CursorMovedI'], 'timeout': 1, 'level': 3}   "{{{2
+    let g:quickfixsigns_class_cursor = {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': g:quickfixsigns_events_base + ['CursorMoved', 'CursorMovedI'], 'timeout': 1, 'level': 3}   "{{{2
 endif
 
 
@@ -367,7 +377,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
         " TLogVAR class, def
         if anyway
             let set = 1
-        elseif index(get(def, 'event', ['BufEnter']), a:event) != -1
+        elseif index(get(def, 'event', g:quickfixsigns_events_default), a:event) != -1
             let set = !has_key(def, 'test') || eval(def.test)
         else
             let set = 0
