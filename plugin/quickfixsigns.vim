@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2015-12-13.
-" @Revision:    1422
+" @Last Change: 2015-12-16.
+" @Revision:    1426
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -83,7 +83,7 @@ endif
 
 
 if !exists('g:quickfixsigns_events_default')
-    let g:quickfixsigns_events_default = ['BufEnter']   "{{{2
+    let g:quickfixsigns_events_default = exists('g:loaded_ArgsAndMore') || exists('g:loaded_EnhancedJumps') ? [] : ['BufEnter']   "{{{2
 endif
 
 
@@ -353,6 +353,9 @@ let s:clists = {}
 function! QuickfixsignsSet(event, ...) "{{{3
     " TLogVAR a:event, a:000
     if exists("b:noquickfixsigns") && b:noquickfixsigns
+        return
+    endif
+    if exists("g:noquickfixsigns") && g:noquickfixsigns
         return
     endif
     let bufsignclasses = s:ListValues()

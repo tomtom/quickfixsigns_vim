@@ -88,6 +88,8 @@ Contents~
         :QuickfixsignsSelect ........................... |:QuickfixsignsSelect|
         g:quickfixsigns_classes ........................ |g:quickfixsigns_classes|
         g:quickfixsign_timeout ......................... |g:quickfixsign_timeout|
+        g:quickfixsigns_events_default ................. |g:quickfixsigns_events_default|
+        g:quickfixsigns_events_base .................... |g:quickfixsigns_events_base|
         g:quickfixsigns_events ......................... |g:quickfixsigns_events|
         g:quickfixsigns_class_rel ...................... |g:quickfixsigns_class_rel|
         g:quickfixsigns_class_qfl ...................... |g:quickfixsigns_class_qfl|
@@ -132,6 +134,7 @@ Contents~
         g:quickfixsigns#vcsdiff#list_type .............. |g:quickfixsigns#vcsdiff#list_type|
         g:quickfixsigns#vcsdiff#highlight .............. |g:quickfixsigns#vcsdiff#highlight|
         g:quickfixsigns#vcsdiff#del_numbered ........... |g:quickfixsigns#vcsdiff#del_numbered|
+        g:quickfixsigns#vcsdiff#use_hidef .............. |g:quickfixsigns#vcsdiff#use_hidef|
         quickfixsigns#vcsdiff#GuessType ................ |quickfixsigns#vcsdiff#GuessType()|
         quickfixsigns#vcsdiff#GetList .................. |quickfixsigns#vcsdiff#GetList()|
         quickfixsigns#vcsdiff#GetListCached ............ |quickfixsigns#vcsdiff#GetListCached()|
@@ -208,8 +211,14 @@ g:quickfixsign_timeout         (default: 0)
     The default number of seconds for the timeout option for sign 
     class definitions (see |g:quickfixsigns_classes|).
 
+                                                    *g:quickfixsigns_events_default*
+g:quickfixsigns_events_default (default: exists('g:loaded_ArgsAndMore') || exists('g:loaded_EnhancedJumps') ? [] : ['BufEnter'])
+
+                                                    *g:quickfixsigns_events_base*
+g:quickfixsigns_events_base    (default: g:quickfixsigns_events_default + ['CursorHold', 'CursorHoldI'])
+
                                                     *g:quickfixsigns_events*
-g:quickfixsigns_events         (default: ['BufReadPost', 'BufEnter', 'CursorHold', 'CursorHoldI', 'InsertLeave', 'InsertEnter'])
+g:quickfixsigns_events         (default: g:quickfixsigns_events_base + ['BufReadPost', 'InsertLeave', 'InsertEnter'])
     List of events for signs that should be frequently updated.
 
                                                     *g:quickfixsigns_class_rel*
@@ -220,18 +229,18 @@ g:quickfixsigns_class_rel      (default: {'sign': '*s:RelSign', 'get': 's:GetRel
     See also |quickfixsigns#RelNumbersOnce()|.
 
                                                     *g:quickfixsigns_class_qfl*
-g:quickfixsigns_class_qfl      (default: {'sign': '*s:QflSign', 'get': 's:GetQFList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 7, 'scope': 'vim'})
+g:quickfixsigns_class_qfl      (default: {'sign': '*s:QflSign', 'get': 's:GetQFList(%s)', 'event': g:quickfixsigns_events_base + ['QuickFixCmdPost'], 'level': 7, 'scope': 'vim'})
     Signs for |quickfix| lists.
 
                                                     *g:quickfixsigns_class_loc*
-g:quickfixsigns_class_loc      (default: {'sign': '*s:LocSign', 'get': 's:GetLocList(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'QuickFixCmdPost'], 'level': 8})
+g:quickfixsigns_class_loc      (default: {'sign': '*s:LocSign', 'get': 's:GetLocList(%s)', 'event': g:quickfixsigns_events_base + ['QuickFixCmdPost'], 'level': 8})
     Signs for |location| lists.
 
                                                     *g:quickfixsign_list_types*
 g:quickfixsign_list_types      (default: 'EW')
 
                                                     *g:quickfixsigns_class_cursor*
-g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': ['BufEnter', 'CursorHold', 'CursorHoldI', 'CursorMoved', 'CursorMovedI'], 'timeout': 1, 'level': 3})
+g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': g:quickfixsigns_events_base + ['CursorMoved', 'CursorMovedI'], 'timeout': 1, 'level': 3})
     Sign for the current cursor position. The cursor position is 
     lazily updated. If you want something more precise, consider 
     setting 'cursorline'.
@@ -252,7 +261,7 @@ g:quickfixsigns_max            (default: 500)
     Don't display signs if the list is longer than n items.
 
                                                     *g:quickfixsigns_blacklist_buffer*
-g:quickfixsigns_blacklist_buffer (default: '\(^\|[\/]\)\(__.*__\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$')
+g:quickfixsigns_blacklist_buffer (default: '\(^\|[\/]\)\(__.*__\|ControlP\|NERD_tree_.*\|-MiniBufExplorer-\|\[unite\] - .*\)$')
     Don't show signs in buffers matching this |regexp|.
 
                                                     *g:quickfixsign_type_rx*
@@ -400,6 +409,9 @@ g:quickfixsigns#vcsdiff#vcs    (default: {...})
         dir ... the directory name
     Currently supported vcs: git, hg, svn, bzr
 
+    Users can also use g:quickfixsigns#vcsdiff#vcs_{vcs_type} for 
+    configuration.
+
                                                     *g:quickfixsigns_class_vcsdiff*
 g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufRead', 'BufWritePost'], 'level': 6})
 
@@ -437,6 +449,9 @@ g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'QuickFixSignsDiffDelete', '
 g:quickfixsigns#vcsdiff#del_numbered (default: 1)
     If true, add an indicator for how many lines were deleted next to 
     the sign for deleted lines.
+
+                                                    *g:quickfixsigns#vcsdiff#use_hidef*
+g:quickfixsigns#vcsdiff#use_hidef (default: 1)
 
                                                     *quickfixsigns#vcsdiff#GuessType()*
 quickfixsigns#vcsdiff#GuessType()
