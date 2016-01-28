@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2015-12-16.
-" @Revision:    1426
+" @Last Change: 2016-01-19.
+" @Revision:    1428
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -94,7 +94,7 @@ endif
 
 if !exists('g:quickfixsigns_events')
     " List of events for signs that should be frequently updated.
-    let g:quickfixsigns_events = g:quickfixsigns_events_base + ['BufReadPost', 'InsertLeave', 'InsertEnter']   "{{{2
+    let g:quickfixsigns_events = g:quickfixsigns_events_base + ['BufReadPost', 'InsertEnter', 'InsertLeave']   "{{{2
 endif
 
 
