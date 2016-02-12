@@ -1,8 +1,13 @@
 " @Author:      Sergey Vlasov (sergey@vlasov.me)
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Last Change: 2016-02-11
-" @Revision:    1
+" @Last Change: 2016-02-12
+" @Revision:    9
+
+
+" :doc:
+"                                                     *quickfixsigns-vcsmerge*
+" Add signs for merge conflicts produced by VCS like Git.
 
 if exists('g:quickfixsigns#vcsmerge#loaded')
     finish
@@ -14,6 +19,7 @@ scriptencoding utf-8
 if index(g:quickfixsigns_classes, 'vcsmerge') == -1
     finish
 endif
+
 
 if !exists('g:quickfixsigns_class_vcsmerge')
     " VCS merge conflict markers.
@@ -27,17 +33,18 @@ if !exists('g:quickfixsigns_class_vcsmerge')
                 \ }
 endif
 
-function! quickfixsigns#vcsmerge#Signs(item)
-    return 'QFS_VCSMERGE_'. a:item.change
-endf
 
 if !exists('g:quickfixsigns#vcsmerge#regex')
-    let g:quickfixsigns#vcsmerge#regex = {'TOP': '^<<<<<<< \@=', 'MID': '^=======$', 'BOT': '^>>>>>>> \@='}
+    " Expressions to match conflict hunks.
+    let g:quickfixsigns#vcsmerge#regex = {'TOP': '^<<<<<<< \@=', 'MID': '^=======$', 'BOT': '^>>>>>>> \@='}   "{{{2
 endif
 
+
 if !exists('g:quickfixsigns#vcsmerge#sign')
-    let g:quickfixsigns#vcsmerge#sign = {'TOP': '<<', 'MID': '==', 'BOT': '>>'}
+    " Signs to mark conflict hunks.
+    let g:quickfixsigns#vcsmerge#sign = {'TOP': '<<', 'MID': '==', 'BOT': '>>'}   "{{{2
 endif
+
 
 if index(g:quickfixsigns_signs, 'QFS_VCSMERGE_TOP') == -1
     exec 'sign define QFS_VCSMERGE_TOP text='.  g:quickfixsigns#vcsmerge#sign.TOP .' texthl=Error'
@@ -52,6 +59,13 @@ if index(g:quickfixsigns_signs, 'QFS_VCSMERGE_BOT') == -1
 endif
 
 
+" :nodoc:
+function! quickfixsigns#vcsmerge#Signs(item)
+    return 'QFS_VCSMERGE_'. a:item.change
+endf
+
+
+" :nodoc:
 function! quickfixsigns#vcsmerge#GetList(filename)
     let bufnr = bufnr('%')
     let signs = []

@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2016-01-19.
-" @Revision:    1428
+" @Last Change: 2016-02-12.
+" @Revision:    1429
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -49,6 +49,7 @@ if !exists('g:quickfixsigns_classes')
     "   qfl     ... |quickfix| list
     "   loc     ... |location| list
     "   vcsdiff ... mark changed lines (see |quickfixsigns#vcsdiff#GetList()|)
+    "   vcsmerge .. merge conflicts produced by VCS like Git
     "   marks   ... marks |'a|-zA-Z (see also " |g:quickfixsigns_marks|)
     "
     " The sign classes are defined in g:quickfixsigns_class_{NAME}.
