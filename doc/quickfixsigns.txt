@@ -12,8 +12,10 @@ Display |signs| at interesting lines:
     - relative line numbers (show numbers only until the cursor moves; 
       this requires that you add the following command to |vimrc|: >
         noremap <silent> <leader><c-l> :call quickfixsigns#RelNumbersOnce()<cr>
-    - long lines (see |g:quickfixsigns_class_longlines| for details)
-<    - etc.
+<    - long lines (see |g:quickfixsigns_class_longlines| for details)
+    - VCS merge conflict markers (Users have to enable this sign class 
+      by adding 'vcsmerge' to |g:quickfixsigns_classes|)
+    - etc.
 
 Other lists can be configured via the |g:quickfixsigns_lists| variable.
 
@@ -123,6 +125,8 @@ Contents~
         g:quickfixsigns#marks#texthl ................... |g:quickfixsigns#marks#texthl|
         quickfixsigns#marks#GetList .................... |quickfixsigns#marks#GetList()|
         quickfixsigns#marks#GetSign .................... |quickfixsigns#marks#GetSign()|
+        g:quickfixsigns#vcsmerge#regex ................. |g:quickfixsigns#vcsmerge#regex|
+        g:quickfixsigns#vcsmerge#sign .................. |g:quickfixsigns#vcsmerge#sign|
         g:quickfixsigns_class_longlines ................ |g:quickfixsigns_class_longlines|
         g:quickfixsigns#longlines#width_expr ........... |g:quickfixsigns#longlines#width_expr|
         quickfixsigns#longlines#GetList ................ |quickfixsigns#longlines#GetList()|
@@ -184,6 +188,7 @@ g:quickfixsigns_classes        (default: ['qfl', 'loc', 'marks', 'vcsdiff', 'bre
       qfl     ... |quickfix| list
       loc     ... |location| list
       vcsdiff ... mark changed lines (see |quickfixsigns#vcsdiff#GetList()|)
+      vcsmerge .. merge conflicts produced by VCS like Git
       marks   ... marks |'a|-zA-Z (see also " |g:quickfixsigns_marks|)
 
     The sign classes are defined in g:quickfixsigns_class_{NAME}.
@@ -218,7 +223,7 @@ g:quickfixsigns_events_default (default: exists('g:loaded_ArgsAndMore') || exist
 g:quickfixsigns_events_base    (default: g:quickfixsigns_events_default + ['CursorHold', 'CursorHoldI'])
 
                                                     *g:quickfixsigns_events*
-g:quickfixsigns_events         (default: g:quickfixsigns_events_base + ['BufReadPost', 'InsertLeave', 'InsertEnter'])
+g:quickfixsigns_events         (default: g:quickfixsigns_events_base + ['BufReadPost', 'InsertEnter', 'InsertLeave'])
     List of events for signs that should be frequently updated.
 
                                                     *g:quickfixsigns_class_rel*
@@ -371,6 +376,22 @@ quickfixsigns#marks#GetList(filename)
 
                                                     *quickfixsigns#marks#GetSign()*
 quickfixsigns#marks#GetSign(item)
+
+
+========================================================================
+autoload/quickfixsigns/vcsmerge.vim~
+
+
+                                                    *quickfixsigns-vcsmerge*
+Add signs for merge conflicts produced by VCS like Git.
+
+                                                    *g:quickfixsigns#vcsmerge#regex*
+g:quickfixsigns#vcsmerge#regex (default: {'TOP': '^<<<<<<< \@=', 'MID': '^=======$', 'BOT': '^>>>>>>> \@='})
+    Expressions to match conflict hunks.
+
+                                                    *g:quickfixsigns#vcsmerge#sign*
+g:quickfixsigns#vcsmerge#sign  (default: {'TOP': '<<', 'MID': '==', 'BOT': '>>'})
+    Signs to mark conflict hunks.
 
 
 ========================================================================
