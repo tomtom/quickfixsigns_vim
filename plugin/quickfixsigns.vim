@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2016-02-12.
-" @Revision:    1429
+" @Last Change: 2016-02-14.
+" @Revision:    1456
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -174,6 +174,13 @@ if !exists('g:quickfixsign_type_rx')
     " Use "*" for default values.
     " This way, users can patch suboptimal 'errorformat' definitions.
     let g:quickfixsign_type_rx = {'*': [['E', '\c\<error\>'], ['W', '\c\<warning\>']]}   "{{{2
+endif
+
+
+if !exists('g:quickfixsign_protect_sign_rx')
+    " Don't set signs at lines with signs whose name match this 
+    " |regexp|.
+    let g:quickfixsign_protect_sign_rx = ''   "{{{2
 endif
 
 
@@ -762,7 +769,7 @@ function! s:CreateBufferSignsCache() "{{{3
     if exists('s:buffer_signs')
         return 0
     else
-        let s:buffer_signs = {}
+        let s:buffer_signs = {'blacklist': {}}
         return 1
     endif
 endf
@@ -775,20 +782,48 @@ function! s:RemoveBufferSignsCache(cbs) "{{{3
 endf
 
 
-function! s:SignExistsAt(bufnr, lnum, sign) "{{{3
-    " TLogVAR a:bufnr, a:lnum, a:sign
-    if !has_key(s:buffer_signs, a:bufnr)
-        let s:buffer_signs[a:bufnr] = QuickfixsignsListBufferSigns(a:bufnr)
+function! s:GetBufferSignsBlacklist(bufnr) abort "{{{3
+    if !has_key(s:buffer_signs.blacklist, a:bufnr)
+        " TODO
+        let s:buffer_signs.blacklist[a:bufnr] = s:BlacklistedLnums(QuickfixsignsListBufferSigns(a:bufnr))
     endif
-    let bsigns = copy(s:buffer_signs[a:bufnr])
-    " TLogVAR bsigns
-    if empty(a:sign)
-        call filter(bsigns, 'v:val.lnum == a:lnum')
-    else
-        call filter(bsigns, 'v:val.lnum == a:lnum && v:val.name == a:sign')
-    endif
-    return len(bsigns) > 0
+    return s:buffer_signs.blacklist[a:bufnr]
 endf
+
+
+function! s:BlacklistedLnums(qfs) abort "{{{3
+    let lnums = {}
+    if !empty(g:quickfixsign_protect_sign_rx)
+        for signdef in a:qfs
+            if signdef.name =~ g:quickfixsign_protect_sign_rx
+                let lnums[signdef.lnum] = 1
+            endif
+        endfor
+    endif
+    return lnums
+endf
+
+
+function! s:CheckOtherSigns(bufnr, lnum) "{{{3
+    " TLogVAR a:bufnr, a:lnum
+    return !has_key(s:GetBufferSignsBlacklist(a:bufnr), a:lnum)
+endf
+
+
+" function! s:SignExistsAt(bufnr, lnum, sign) "{{{3
+"     " TLogVAR a:bufnr, a:lnum, a:sign
+"     if !has_key(s:buffer_signs, a:bufnr)
+"         let s:buffer_signs[a:bufnr] = QuickfixsignsListBufferSigns(a:bufnr)
+"     endif
+"     let bsigns = copy(s:buffer_signs[a:bufnr])
+"     " TLogVAR bsigns
+"     if empty(a:sign)
+"         call filter(bsigns, 'v:val.lnum == a:lnum')
+"     else
+"         call filter(bsigns, 'v:val.lnum == a:lnum && v:val.name == a:sign')
+"     endif
+"     return len(bsigns) > 0
+" endf
 
 
 function! QuickfixsignsListBufferSigns(bufnr) "{{{3
@@ -853,7 +888,7 @@ function! s:PlaceSign(class, sign, list) "{{{3
                 let item = extend(item, {'class': a:class, 'sign': sign})
                 let item = s:SetItemId(item)
                 " TLogVAR item
-                if !empty(item) && bufloaded(item.bufnr)
+                if !empty(item) && bufloaded(item.bufnr) && s:CheckOtherSigns(item.bufnr, item.lnum)
                     let ikey = item.ikey
                     " TLogVAR ikey, item
                     call add(keep_ikeys, ikey)

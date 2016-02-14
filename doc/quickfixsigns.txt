@@ -103,6 +103,7 @@ Contents~
         g:quickfixsigns_max ............................ |g:quickfixsigns_max|
         g:quickfixsigns_blacklist_buffer ............... |g:quickfixsigns_blacklist_buffer|
         g:quickfixsign_type_rx ......................... |g:quickfixsign_type_rx|
+        g:quickfixsign_protect_sign_rx ................. |g:quickfixsign_protect_sign_rx|
         g:quickfixsigns_icons .......................... |g:quickfixsigns_icons|
         g:quickfixsign_use_dummy ....................... |g:quickfixsign_use_dummy|
         QuickfixsignsSelect ............................ |QuickfixsignsSelect()|
@@ -276,6 +277,11 @@ g:quickfixsign_type_rx         (default: {'*': [['E', '\c\<error\>'], ['W', '\c\
     against the |regexp| and assume TYPE if it matches.
     Use "*" for default values.
     This way, users can patch suboptimal 'errorformat' definitions.
+
+                                                    *g:quickfixsign_protect_sign_rx*
+g:quickfixsign_protect_sign_rx (default: '')
+    Don't set signs at lines with signs whose name match this 
+    |regexp|.
 
                                                     *g:quickfixsigns_icons*
 g:quickfixsigns_icons          (default: {})
