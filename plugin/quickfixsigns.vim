@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2016-02-14.
-" @Revision:    1456
+" @Last Change: 2016-04-27.
+" @Revision:    1457
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -69,17 +69,17 @@ if !exists('g:quickfixsigns_classes')
     "          the one with the higher level will be displayed)
     "   maxsigns: Override the value of |g:quickfixsigns_max|
     "   timeout: Update the sign at most every X seconds (defaults to 
-    "          |g:quickfixsign_timeout|)
+    "          |g:quickfixsigns_timeout|)
     "   test:  Update the sign only if the expression is true.
     let g:quickfixsigns_classes = ['qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints']   "{{{2
     " let g:quickfixsigns_classes = ['rel', 'qfl', 'loc', 'marks']   "{{{2
 endif
 
 
-if !exists('g:quickfixsign_timeout')
+if !exists('g:quickfixsigns_timeout')
     " The default number of seconds for the timeout option for sign 
     " class definitions (see |g:quickfixsigns_classes|).
-    let g:quickfixsign_timeout = 0   "{{{2
+    let g:quickfixsigns_timeout = 0   "{{{2
 endif
 
 
@@ -127,8 +127,8 @@ if !exists('g:quickfixsigns_class_loc')
 endif
 
 
-if !exists('g:quickfixsign_list_types')
-    let g:quickfixsign_list_types = 'EW'   "{{{2
+if !exists('g:quickfixsigns_list_types')
+    let g:quickfixsigns_list_types = 'EW'   "{{{2
 endif
 
 
@@ -167,20 +167,20 @@ if !exists('g:quickfixsigns_blacklist_buffer')
 endif
 
 
-if !exists('g:quickfixsign_type_rx')
+if !exists('g:quickfixsigns_type_rx')
     " A dictionary of {&filetype: [[TYPE, REGEXP] ...]}.
     " If a qfl or loc list item has no type defined, match the item 
     " against the |regexp| and assume TYPE if it matches.
     " Use "*" for default values.
     " This way, users can patch suboptimal 'errorformat' definitions.
-    let g:quickfixsign_type_rx = {'*': [['E', '\c\<error\>'], ['W', '\c\<warning\>']]}   "{{{2
+    let g:quickfixsigns_type_rx = {'*': [['E', '\c\<error\>'], ['W', '\c\<warning\>']]}   "{{{2
 endif
 
 
-if !exists('g:quickfixsign_protect_sign_rx')
+if !exists('g:quickfixsigns_protect_sign_rx')
     " Don't set signs at lines with signs whose name match this 
     " |regexp|.
-    let g:quickfixsign_protect_sign_rx = ''   "{{{2
+    let g:quickfixsigns_protect_sign_rx = ''   "{{{2
 endif
 
 
@@ -212,10 +212,10 @@ if !exists('g:quickfixsigns_icons')
 endif
 
 
-if !exists('g:quickfixsign_use_dummy')
+if !exists('g:quickfixsigns_use_dummy')
     " If true, set a dummy sign. It's recommended to use dummy signs 
     " when |g:quickfixsigns_classes| does not contain "marks".
-    let g:quickfixsign_use_dummy = index(g:quickfixsigns_classes, 'marks') == -1   "{{{2
+    let g:quickfixsigns_use_dummy = index(g:quickfixsigns_classes, 'marks') == -1   "{{{2
 endif
 
 
@@ -276,7 +276,7 @@ if index(g:quickfixsigns_signs, 'QFS_LOC') == -1
     endif
 endif
 
-for s:char in split(g:quickfixsign_list_types, '\zs')
+for s:char in split(g:quickfixsigns_list_types, '\zs')
     let s:sign = 'QFS_QFL_'. s:char
     if index(g:quickfixsigns_signs, s:sign) == -1
         let s:icon = 'qfl_'. s:char
@@ -400,7 +400,7 @@ function! QuickfixsignsSet(event, ...) "{{{3
         endif
         if set && select
             " TLogVAR class, set, select
-            let t_d = get(def, 'timeout', g:quickfixsign_timeout)
+            let t_d = get(def, 'timeout', g:quickfixsigns_timeout)
             if t_d != 0
                 let t_l = localtime()
                 let t_s = string(def)
@@ -655,7 +655,7 @@ function! s:ListSign(item, base) "{{{3
             let ft = '*'
         endif
         let text = a:item.text
-        for [t, rx] in get(g:quickfixsign_type_rx, ft, [])
+        for [t, rx] in get(g:quickfixsigns_type_rx, ft, [])
             if text =~ rx
                 let type = t
                 break
@@ -663,7 +663,7 @@ function! s:ListSign(item, base) "{{{3
         endfor
     endif
     " TLogVAR a:item, a:base, type
-    if empty(type) || stridx(g:quickfixsign_list_types, type) == -1
+    if empty(type) || stridx(g:quickfixsigns_list_types, type) == -1
         return a:base
     else
         return a:base .'_'. type
@@ -793,9 +793,9 @@ endf
 
 function! s:BlacklistedLnums(qfs) abort "{{{3
     let lnums = {}
-    if !empty(g:quickfixsign_protect_sign_rx)
+    if !empty(g:quickfixsigns_protect_sign_rx)
         for signdef in a:qfs
-            if signdef.name =~ g:quickfixsign_protect_sign_rx
+            if signdef.name =~ g:quickfixsigns_protect_sign_rx
                 let lnums[signdef.lnum] = 1
             endif
         endfor
@@ -986,7 +986,7 @@ augroup QuickFixSigns
 
     autocmd BufLeave * if !v:dying | call s:PurgeRegister() | endif
     autocmd BufDelete * call s:RemoveBuffer(expand("<abuf>"), 1)
-    if g:quickfixsign_use_dummy
+    if g:quickfixsigns_use_dummy
         exec "autocmd BufRead,BufNewFile * exec 'sign place' (". s:quickfixsigns_base ." - expand('<abuf>')) 'name=QFS_DUMMY line=1 buffer='. expand('<abuf>')"
     endif
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
