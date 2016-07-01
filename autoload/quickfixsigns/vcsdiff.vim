@@ -206,12 +206,8 @@ endf
 
 " Get the list of vcsdiff signs (uncached).
 function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
-    let list_type = g:quickfixsigns#vcsdiff#list_type
-    if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
-        throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
-    endif
-    unlet! b:qfs_vcsdiff_hunkstat b:qfs_vcsdiff_list b:qfs_vcsdiff_hunkstat_str
-    return quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
+    call quickfixsigns#vcsdiff#ClearCache()
+    return quickfixsigns#vcsdiff#GetListCached(a:filename)
 endf
 
 
@@ -219,10 +215,19 @@ endf
 " The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
 function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
     if !exists('b:qfs_vcsdiff_list')
-        let b:qfs_vcsdiff_list = quickfixsigns#vcsdiff#GetList(a:filename)
+        let list_type = g:quickfixsigns#vcsdiff#list_type
+        if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
+            throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
+        endif
+        let b:qfs_vcsdiff_list = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
     endif
     return b:qfs_vcsdiff_list
 endf
+
+
+function! quickfixsigns#vcsdiff#ClearCache()
+    unlet! b:qfs_vcsdiff_list b:qfs_vcsdiff_hunkstat b:qfs_vcsdiff_hunkstat_str
+endfunction
 
 
 " Get status of VCS changes as [added, modified, removed].
