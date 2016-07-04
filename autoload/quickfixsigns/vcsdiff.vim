@@ -249,7 +249,7 @@ function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
                 let r[0] += 1
             elseif item.change == 'CHANGE'
                 let r[1] += 1
-            elseif item.change == 'DEL'
+            elseif item.change[0:2] == 'DEL'
                 let r[2] += 1
             endif
         endfor
