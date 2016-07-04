@@ -17,6 +17,8 @@ if index(g:quickfixsigns_classes, 'vcsdiff') == -1
     finish
 endif
 
+let s:UNSET_LIST = []
+let s:UNSET_STRING = ''
 
 if !exists('g:quickfixsigns#vcsdiff#vcs')
     " Show signs for new (+), changed (=), or deleted (-) lines.
@@ -206,23 +208,31 @@ endf
 
 " Get the list of vcsdiff signs (uncached).
 function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
-    let list_type = g:quickfixsigns#vcsdiff#list_type
-    if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
-        throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
-    endif
-    unlet! b:qfs_vcsdiff_hunkstat b:qfs_vcsdiff_list b:qfs_vcsdiff_hunkstat_str
-    return quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
+    call quickfixsigns#vcsdiff#ClearCache()
+    return quickfixsigns#vcsdiff#GetListCached(a:filename)
 endf
 
 
 " Get the list of vcsdiff signs (cached).
 " The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
 function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
-    if !exists('b:qfs_vcsdiff_list')
-        let b:qfs_vcsdiff_list = quickfixsigns#vcsdiff#GetList(a:filename)
+    if get(b:, 'qfs_vcsdiff_list', s:UNSET_LIST) is s:UNSET_LIST
+        let list_type = g:quickfixsigns#vcsdiff#list_type
+        if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
+            throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
+        endif
+        let b:qfs_vcsdiff_list = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
     endif
     return b:qfs_vcsdiff_list
 endf
+
+
+function! quickfixsigns#vcsdiff#ClearCache(...)
+    let bufnr = a:0 ? a:1 : bufnr('%')
+    call setbufvar(bufnr, 'qfs_vcsdiff_list', s:UNSET_LIST)
+    call setbufvar(bufnr, 'qfs_vcsdiff_hunkstat', s:UNSET_LIST)
+    call setbufvar(bufnr, 'qfs_vcsdiff_hunkstat_str', s:UNSET_STRING)
+endfunction
 
 
 " Get status of VCS changes as [added, modified, removed].
@@ -231,7 +241,7 @@ function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
     if filename == ''
         return [0, 0, 0]
     endif
-    if !exists('b:qfs_vcsdiff_hunkstat')
+    if get(b:, 'qfs_vcsdiff_hunkstat', s:UNSET_LIST) is s:UNSET_LIST
         let list = quickfixsigns#vcsdiff#GetListCached(filename)
         let r = [0, 0, 0]  " added, modified, removed.
         for item in list
@@ -251,7 +261,7 @@ endf
 
 " Get status of VCS changes as string.
 function! quickfixsigns#vcsdiff#GetHunkSummaryAsString(...) "{{{3
-    if !exists('b:qfs_vcsdiff_hunkstat_str')
+    if get(b:, 'qfs_vcsdiff_hunkstat_str', s:UNSET_STRING) is s:UNSET_STRING
         let r = call('quickfixsigns#vcsdiff#GetHunkSummary', a:000)
         if r[0] + r[1] + r[2] == 0
             let b:qfs_vcsdiff_hunkstat_str = ''
