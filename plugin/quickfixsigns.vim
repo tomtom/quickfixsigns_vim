@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2016-04-27.
-" @Revision:    1458
+" @Last Change: 2016-07-04.
+" @Revision:    1469
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -388,10 +388,16 @@ function! QuickfixsignsSet(event, ...) "{{{3
         " TLogVAR class, def
         if anyway
             let set = 1
-        elseif index(get(def, 'event', g:quickfixsigns_events_default), a:event) != -1
-            let set = !has_key(def, 'test') || eval(def.test)
         else
-            let set = 0
+            let set = index(get(def, 'event', g:quickfixsigns_events_default), a:event) != -1
+            if set
+                if has_key(def, 'test')
+                    let set = eval(def.test)
+                endif
+            elseif exists('b:quickfixsigns_needs_update') && b:quickfixsigns_needs_update
+                let set = 1
+                let b:quickfixsigns_needs_update = 0
+            endif
         endif
         if a:0 >= 1 && !empty(a:1)
             let select = index(a:1, class) != -1
