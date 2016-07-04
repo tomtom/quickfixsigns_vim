@@ -143,6 +143,7 @@ Contents~
         quickfixsigns#vcsdiff#GuessType ................ |quickfixsigns#vcsdiff#GuessType()|
         quickfixsigns#vcsdiff#GetList .................. |quickfixsigns#vcsdiff#GetList()|
         quickfixsigns#vcsdiff#GetListCached ............ |quickfixsigns#vcsdiff#GetListCached()|
+        quickfixsigns#vcsdiff#ClearCache ............... |quickfixsigns#vcsdiff#ClearCache()|
         quickfixsigns#vcsdiff#GetHunkSummary ........... |quickfixsigns#vcsdiff#GetHunkSummary()|
         quickfixsigns#vcsdiff#GetHunkSummaryAsString ... |quickfixsigns#vcsdiff#GetHunkSummaryAsString()|
         quickfixsigns#vcsdiff#GetList0 ................. |quickfixsigns#vcsdiff#GetList0()|
@@ -499,6 +500,9 @@ quickfixsigns#vcsdiff#GetList(filename)
 quickfixsigns#vcsdiff#GetListCached(filename)
     Get the list of vcsdiff signs (cached).
     The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
+
+                                                    *quickfixsigns#vcsdiff#ClearCache()*
+quickfixsigns#vcsdiff#ClearCache(...)
 
                                                     *quickfixsigns#vcsdiff#GetHunkSummary()*
 quickfixsigns#vcsdiff#GetHunkSummary(...)
