@@ -140,6 +140,7 @@ Contents~
         g:quickfixsigns#vcsdiff#highlight .............. |g:quickfixsigns#vcsdiff#highlight|
         g:quickfixsigns#vcsdiff#del_numbered ........... |g:quickfixsigns#vcsdiff#del_numbered|
         g:quickfixsigns#vcsdiff#use_hidef .............. |g:quickfixsigns#vcsdiff#use_hidef|
+        g:quickfixsigns#vcsdiff#revision ............... |g:quickfixsigns#vcsdiff#revision|
         quickfixsigns#vcsdiff#GuessType ................ |quickfixsigns#vcsdiff#GuessType()|
         quickfixsigns#vcsdiff#GetList .................. |quickfixsigns#vcsdiff#GetList()|
         quickfixsigns#vcsdiff#GetListCached ............ |quickfixsigns#vcsdiff#GetListCached()|
@@ -481,6 +482,10 @@ g:quickfixsigns#vcsdiff#del_numbered (default: 1)
                                                     *g:quickfixsigns#vcsdiff#use_hidef*
 g:quickfixsigns#vcsdiff#use_hidef (default: 1)
 
+                                                     *g:quickfixsigns#vcsdiff#revision*
+g:quickfixsigns#vcsdiff#revision
+    Choose revision instead of latest change.
+    Default value depends on version control system, as following:
                                                     *quickfixsigns#vcsdiff#GuessType()*
 quickfixsigns#vcsdiff#GuessType()
     Return the name of a VCS system based on the values of the following 
