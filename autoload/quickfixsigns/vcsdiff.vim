@@ -38,10 +38,10 @@ if !exists('g:quickfixsigns#vcsdiff#vcs')
     " configuration.
     " :read: let g:quickfixsigns#vcsdiff#vcs = {...}  "{{{2
     let g:quickfixsigns#vcsdiff#vcs = {
-                \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s', 'dir': '.git'}
-                \ , 'hg': {'cmd': 'hg diff -U0 %s', 'dir': '.hg'}
-                \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 %s', 'dir': '.svn'}
-                \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 %s', 'dir': '.bzr'}
+                \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s -- %s', 'dir': '.git', 'revision': 'HEAD'}
+                \ , 'hg': {'cmd': 'hg diff -U0 -r %s %s', 'dir': '.hg', 'revision': 'head'}
+                \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 --revision %s %s', 'dir': '.svn', 'revision': 'BASE'}
+                \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 -r %s %s', 'dir': '.bzr', 'revision': 'last:1'}
                 \ }
 endif
 
@@ -284,11 +284,15 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
     " Ignore files that are not readable
     if !empty(s:Config(vcs_type)) && filereadable(a:filename)
         let cmdt = s:Config(vcs_type).cmd
+        let rev  = s:Config(vcs_type).revision
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
+        if exists('g:quickfixsigns#vcsdiff#revision')
+          let rev = g:quickfixsigns#vcsdiff#revision
+        endif
         let cmds = join([
                     \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
-                    \ printf(cmdt, shellescape(file))
+                    \ printf(cmdt, rev, shellescape(file))
                     \ ], g:quickfixsigns#vcsdiff#cmd_separator)
         " TLogVAR cmds
         let diff = system(cmds)
@@ -405,11 +409,15 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
     " Ignore files that are not readable
     if !empty(s:Config(vcs_type)) && filereadable(a:filename)
         let cmdt = s:Config(vcs_type).cmd
+        let rev  = s:Config(vcs_type).revision
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
+        if exists('g:quickfixsigns#vcsdiff#revision')
+          let rev = g:quickfixsigns#vcsdiff#revision
+        endif
         let cmds = join([
                     \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
-                    \ printf(cmdt, shellescape(file))
+                    \ printf(cmdt, rev, shellescape(file))
                     \ ], g:quickfixsigns#vcsdiff#cmd_separator)
         " TLogVAR cmds
         let diff = system(cmds)
