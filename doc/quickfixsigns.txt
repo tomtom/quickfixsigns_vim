@@ -436,6 +436,7 @@ g:quickfixsigns#vcsdiff#vcs    (default: {...})
         cmd ... command templates that generate a unified diff file. 
         "%s" is replaced with the filename.
         dir ... the directory name
+        revision ... The default revision/branch
     Currently supported vcs: git, hg, svn, bzr
 
     Users can also use g:quickfixsigns#vcsdiff#vcs_{vcs_type} for 
@@ -482,10 +483,12 @@ g:quickfixsigns#vcsdiff#del_numbered (default: 1)
                                                     *g:quickfixsigns#vcsdiff#use_hidef*
 g:quickfixsigns#vcsdiff#use_hidef (default: 1)
 
-                                                     *g:quickfixsigns#vcsdiff#revision*
-g:quickfixsigns#vcsdiff#revision
-    Choose revision instead of latest change.
-    Default value depends on version control system, as following:
+                                                    *g:quickfixsigns#vcsdiff#revision*
+g:quickfixsigns#vcsdiff#revision (default: '')
+    Choose a different branch/revision instead of the latest change.
+    By default, the head/last/master branch is selected -- see also 
+    |g:quickfixsigns#vcsdiff#vcs|.
+
                                                     *quickfixsigns#vcsdiff#GuessType()*
 quickfixsigns#vcsdiff#GuessType()
     Return the name of a VCS system based on the values of the following 

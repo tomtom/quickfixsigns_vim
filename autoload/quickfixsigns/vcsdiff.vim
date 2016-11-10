@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2015-07-01.
-" @Revision:    496
+" @Last Change: 2016-11-10.
+" @Revision:    504
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -32,6 +32,7 @@ if !exists('g:quickfixsigns#vcsdiff#vcs')
     "     cmd ... command templates that generate a unified diff file. 
     "     "%s" is replaced with the filename.
     "     dir ... the directory name
+    "     revision ... The default revision/branch
     " Currently supported vcs: git, hg, svn, bzr
     "
     " Users can also use g:quickfixsigns#vcsdiff#vcs_{vcs_type} for 
@@ -99,6 +100,14 @@ endif
 
 if !exists('g:quickfixsigns#vcsdiff#use_hidef')
     let g:quickfixsigns#vcsdiff#use_hidef = 1   "{{{2
+endif
+
+
+if !exists('g:quickfixsigns#vcsdiff#revision')
+    " Choose a different branch/revision instead of the latest change.
+    " By default, the head/last/master branch is selected -- see also 
+    " |g:quickfixsigns#vcsdiff#vcs|.
+    let g:quickfixsigns#vcsdiff#revision = ''   "{{{2
 endif
 
 
@@ -287,7 +296,7 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
         let rev  = s:Config(vcs_type).revision
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
-        if exists('g:quickfixsigns#vcsdiff#revision')
+        if !empty('g:quickfixsigns#vcsdiff#revision')
           let rev = g:quickfixsigns#vcsdiff#revision
         endif
         let cmds = join([
@@ -412,7 +421,7 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
         let rev  = s:Config(vcs_type).revision
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
-        if exists('g:quickfixsigns#vcsdiff#revision')
+        if !empty('g:quickfixsigns#vcsdiff#revision')
           let rev = g:quickfixsigns#vcsdiff#revision
         endif
         let cmds = join([
