@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2016-11-10.
-" @Revision:    504
+" @Last Change: 2016-11-11.
+" @Revision:    505
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -296,7 +296,7 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
         let rev  = s:Config(vcs_type).revision
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
-        if !empty('g:quickfixsigns#vcsdiff#revision')
+        if exists('g:quickfixsigns#vcsdiff#revision') && !empty('g:quickfixsigns#vcsdiff#revision')
           let rev = g:quickfixsigns#vcsdiff#revision
         endif
         let cmds = join([
@@ -421,7 +421,7 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
         let rev  = s:Config(vcs_type).revision
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
-        if !empty('g:quickfixsigns#vcsdiff#revision')
+        if exists('g:quickfixsigns#vcsdiff#revision') && !empty('g:quickfixsigns#vcsdiff#revision')
           let rev = g:quickfixsigns#vcsdiff#revision
         endif
         let cmds = join([
