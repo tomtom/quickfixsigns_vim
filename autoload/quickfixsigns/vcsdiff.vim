@@ -40,7 +40,7 @@ if !exists('g:quickfixsigns#vcsdiff#vcs')
     " :read: let g:quickfixsigns#vcsdiff#vcs = {...}  "{{{2
     let g:quickfixsigns#vcsdiff#vcs = {
                 \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s -- %s', 'dir': '.git', 'revision': 'HEAD'}
-                \ , 'hg': {'cmd': 'hg diff -U0 -r %s %s', 'dir': '.hg', 'revision': 'head'}
+                \ , 'hg': {'cmd': 'hg diff -U0 -r %s %s', 'dir': '.hg', 'revision': '-1'}
                 \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 --revision %s %s', 'dir': '.svn', 'revision': 'BASE'}
                 \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 -r %s %s', 'dir': '.bzr', 'revision': 'last:1'}
                 \ }
