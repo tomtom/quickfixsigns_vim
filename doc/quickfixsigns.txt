@@ -141,6 +141,7 @@ Contents~
         g:quickfixsigns#vcsdiff#del_numbered ........... |g:quickfixsigns#vcsdiff#del_numbered|
         g:quickfixsigns#vcsdiff#use_hidef .............. |g:quickfixsigns#vcsdiff#use_hidef|
         g:quickfixsigns#vcsdiff#revision ............... |g:quickfixsigns#vcsdiff#revision|
+        g:quickfixsigns#vcsdiff#extra_args ............. |g:quickfixsigns#vcsdiff#extra_args|
         quickfixsigns#vcsdiff#GuessType ................ |quickfixsigns#vcsdiff#GuessType()|
         quickfixsigns#vcsdiff#GetList .................. |quickfixsigns#vcsdiff#GetList()|
         quickfixsigns#vcsdiff#GetListCached ............ |quickfixsigns#vcsdiff#GetListCached()|
@@ -488,6 +489,14 @@ g:quickfixsigns#vcsdiff#revision (default: '')
     Choose a different branch/revision instead of the latest change.
     By default, the head/last/master branch is selected -- see also 
     |g:quickfixsigns#vcsdiff#vcs|.
+    Can also be buffer local b:quickfixsigns_vcsdiff_revision or vcs 
+    specific as g:quickfixsigns#vcsdiff#revision_{type}.
+
+                                                    *g:quickfixsigns#vcsdiff#extra_args*
+g:quickfixsigns#vcsdiff#extra_args (default: '')
+    Extra arguments.
+    Can also be buffer local b:quickfixsigns_vcsdiff_extra_args or vcs 
+    specific as g:quickfixsigns#vcsdiff#extra_args_{type}.
 
                                                     *quickfixsigns#vcsdiff#GuessType()*
 quickfixsigns#vcsdiff#GuessType()

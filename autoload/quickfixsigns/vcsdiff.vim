@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2016-11-11.
-" @Revision:    505
+" @Last Change: 2016-11-13.
+" @Revision:    514
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -39,10 +39,10 @@ if !exists('g:quickfixsigns#vcsdiff#vcs')
     " configuration.
     " :read: let g:quickfixsigns#vcsdiff#vcs = {...}  "{{{2
     let g:quickfixsigns#vcsdiff#vcs = {
-                \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s -- %s', 'dir': '.git', 'revision': 'HEAD'}
-                \ , 'hg': {'cmd': 'hg diff -U0 -r %s %s', 'dir': '.hg', 'revision': '-1'}
-                \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 --revision %s %s', 'dir': '.svn', 'revision': 'BASE'}
-                \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 -r %s %s', 'dir': '.bzr', 'revision': 'last:1'}
+                \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s %s -- %s', 'dir': '.git', 'revision': 'HEAD'}
+                \ , 'hg': {'cmd': 'hg diff -U0 -r %s %s %s', 'dir': '.hg', 'revision': '-1'}
+                \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 --revision %s %s %s', 'dir': '.svn', 'revision': 'BASE'}
+                \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 -r %s %s %s', 'dir': '.bzr', 'revision': 'last:1'}
                 \ }
 endif
 
@@ -107,7 +107,17 @@ if !exists('g:quickfixsigns#vcsdiff#revision')
     " Choose a different branch/revision instead of the latest change.
     " By default, the head/last/master branch is selected -- see also 
     " |g:quickfixsigns#vcsdiff#vcs|.
+    " Can also be buffer local b:quickfixsigns_vcsdiff_revision or vcs 
+    " specific as g:quickfixsigns#vcsdiff#revision_{type}.
     let g:quickfixsigns#vcsdiff#revision = ''   "{{{2
+endif
+
+
+if !exists('g:quickfixsigns#vcsdiff#extra_args')
+    " Extra arguments.
+    " Can also be buffer local b:quickfixsigns_vcsdiff_extra_args or vcs 
+    " specific as g:quickfixsigns#vcsdiff#extra_args_{type}.
+    let g:quickfixsigns#vcsdiff#extra_args = ''   "{{{2
 endif
 
 
@@ -293,15 +303,13 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
     " Ignore files that are not readable
     if !empty(s:Config(vcs_type)) && filereadable(a:filename)
         let cmdt = s:Config(vcs_type).cmd
-        let rev  = s:Config(vcs_type).revision
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
-        if exists('g:quickfixsigns#vcsdiff#revision') && !empty('g:quickfixsigns#vcsdiff#revision')
-          let rev = g:quickfixsigns#vcsdiff#revision
-        endif
+        let rev  = s:GetParam('quickfixsigns#vcsdiff#revision', vcs_type, s:Config(vcs_type).revision)
+        let extra = s:GetParam('quickfixsigns#vcsdiff#extra_args', vcs_type, '')
         let cmds = join([
                     \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
-                    \ printf(cmdt, rev, shellescape(file))
+                    \ printf(cmdt, rev, extra, shellescape(file))
                     \ ], g:quickfixsigns#vcsdiff#cmd_separator)
         " TLogVAR cmds
         let diff = system(cmds)
@@ -418,15 +426,13 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
     " Ignore files that are not readable
     if !empty(s:Config(vcs_type)) && filereadable(a:filename)
         let cmdt = s:Config(vcs_type).cmd
-        let rev  = s:Config(vcs_type).revision
+        let rev  = s:GetParam('quickfixsigns#vcsdiff#revision', vcs_type, s:Config(vcs_type).revision)
+        let extra = s:GetParam('quickfixsigns#vcsdiff#extra_args', vcs_type, '')
         let dir  = fnamemodify(a:filename, ':h')
         let file = fnamemodify(a:filename, ':t')
-        if exists('g:quickfixsigns#vcsdiff#revision') && !empty('g:quickfixsigns#vcsdiff#revision')
-          let rev = g:quickfixsigns#vcsdiff#revision
-        endif
         let cmds = join([
                     \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
-                    \ printf(cmdt, rev, shellescape(file))
+                    \ printf(cmdt, extra, rev, shellescape(file))
                     \ ], g:quickfixsigns#vcsdiff#cmd_separator)
         " TLogVAR cmds
         let diff = system(cmds)
@@ -538,6 +544,32 @@ function! s:BalloonJoin(...) "{{{3
     else
         return join(a:000)
     endif
+endf
+
+
+function! s:GetParam(name, type, default) abort "{{{3
+    let b = substitute(a:name, '#', '_', 'g')
+    if exists('b:'. b)
+        let bval = b:{b}
+        if !empty(bval)
+            return bval
+        endif
+    endif
+    let gt = a:name .'_'. a:type
+    if exists('g:'. gt)
+        let gtval = g:{gt}
+        if !empty(gtval)
+            return gtval
+        endif
+    endif
+    let g = a:name
+    if exists('g:'. g)
+        let gval = g:{g}
+        if !empty(gval)
+            return gval
+        endif
+    endif
+    return a:default
 endf
 
 
