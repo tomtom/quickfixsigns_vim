@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2016-11-13.
-" @Revision:    514
+" @Last Change: 2016-12-07.
+" @Revision:    516
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -109,7 +109,7 @@ if !exists('g:quickfixsigns#vcsdiff#revision')
     " |g:quickfixsigns#vcsdiff#vcs|.
     " Can also be buffer local b:quickfixsigns_vcsdiff_revision or vcs 
     " specific as g:quickfixsigns#vcsdiff#revision_{type}.
-    let g:quickfixsigns#vcsdiff#revision = ''   "{{{2
+    let g:quickfixsigns#vcsdiff#revision = s:UNSET_STRING   "{{{2
 endif
 
 
@@ -117,7 +117,7 @@ if !exists('g:quickfixsigns#vcsdiff#extra_args')
     " Extra arguments.
     " Can also be buffer local b:quickfixsigns_vcsdiff_extra_args or vcs 
     " specific as g:quickfixsigns#vcsdiff#extra_args_{type}.
-    let g:quickfixsigns#vcsdiff#extra_args = ''   "{{{2
+    let g:quickfixsigns#vcsdiff#extra_args = s:UNSET_STRING   "{{{2
 endif
 
 
@@ -558,14 +558,14 @@ function! s:GetParam(name, type, default) abort "{{{3
     let gt = a:name .'_'. a:type
     if exists('g:'. gt)
         let gtval = g:{gt}
-        if !empty(gtval)
+        if !(gtval is s:UNSET_STRING)
             return gtval
         endif
     endif
     let g = a:name
     if exists('g:'. g)
         let gval = g:{g}
-        if !empty(gval)
+        if !(gval is s:UNSET_STRING)
             return gval
         endif
     endif
