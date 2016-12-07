@@ -485,7 +485,7 @@ g:quickfixsigns#vcsdiff#del_numbered (default: 1)
 g:quickfixsigns#vcsdiff#use_hidef (default: 1)
 
                                                     *g:quickfixsigns#vcsdiff#revision*
-g:quickfixsigns#vcsdiff#revision (default: '')
+g:quickfixsigns#vcsdiff#revision (default: s:UNSET_STRING)
     Choose a different branch/revision instead of the latest change.
     By default, the head/last/master branch is selected -- see also 
     |g:quickfixsigns#vcsdiff#vcs|.
@@ -493,7 +493,7 @@ g:quickfixsigns#vcsdiff#revision (default: '')
     specific as g:quickfixsigns#vcsdiff#revision_{type}.
 
                                                     *g:quickfixsigns#vcsdiff#extra_args*
-g:quickfixsigns#vcsdiff#extra_args (default: '')
+g:quickfixsigns#vcsdiff#extra_args (default: s:UNSET_STRING)
     Extra arguments.
     Can also be buffer local b:quickfixsigns_vcsdiff_extra_args or vcs 
     specific as g:quickfixsigns#vcsdiff#extra_args_{type}.
