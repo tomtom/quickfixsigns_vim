@@ -437,7 +437,7 @@ g:quickfixsigns#vcsdiff#vcs    (default: {...})
         cmd ... command templates that generate a unified diff file. 
         "%s" is replaced with the filename.
         dir ... the directory name
-        revision ... The default revision/branch
+        rev_arg ... argument to selection revision to diff against
     Currently supported vcs: git, hg, svn, bzr
 
     Users can also use g:quickfixsigns#vcsdiff#vcs_{vcs_type} for 
