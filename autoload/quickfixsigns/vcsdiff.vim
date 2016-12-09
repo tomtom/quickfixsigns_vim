@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2016-12-07.
-" @Revision:    516
+" @Last Change: 2016-12-09.
+" @Revision:    521
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -32,17 +32,17 @@ if !exists('g:quickfixsigns#vcsdiff#vcs')
     "     cmd ... command templates that generate a unified diff file. 
     "     "%s" is replaced with the filename.
     "     dir ... the directory name
-    "     revision ... The default revision/branch
+    "     rev_arg ... argument to selection revision to diff against
     " Currently supported vcs: git, hg, svn, bzr
     "
     " Users can also use g:quickfixsigns#vcsdiff#vcs_{vcs_type} for 
     " configuration.
     " :read: let g:quickfixsigns#vcsdiff#vcs = {...}  "{{{2
     let g:quickfixsigns#vcsdiff#vcs = {
-                \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s %s -- %s', 'dir': '.git', 'revision': 'HEAD'}
-                \ , 'hg': {'cmd': 'hg diff -U0 -r %s %s %s', 'dir': '.hg', 'revision': '-1'}
-                \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 --revision %s %s %s', 'dir': '.svn', 'revision': 'BASE'}
-                \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 -r %s %s %s', 'dir': '.bzr', 'revision': 'last:1'}
+                \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s %s -- %s', 'dir': '.git', 'rev_arg': ''}
+                \ , 'hg': {'cmd': 'hg diff -U0 %s %s %s', 'dir': '.hg', 'rev_arg': '-r'}
+                \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 %s %s %s', 'dir': '.svn', 'rev_arg': '--revision'}
+                \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 %s %s %s', 'dir': '.bzr', 'rev_arg': '-r'}
                 \ }
 endif
 
@@ -302,17 +302,8 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
     " TLogVAR a:filename, vcs_type
     " Ignore files that are not readable
     if !empty(s:Config(vcs_type)) && filereadable(a:filename)
-        let cmdt = s:Config(vcs_type).cmd
-        let dir  = fnamemodify(a:filename, ':h')
-        let file = fnamemodify(a:filename, ':t')
-        let rev  = s:GetParam('quickfixsigns#vcsdiff#revision', vcs_type, s:Config(vcs_type).revision)
-        let extra = s:GetParam('quickfixsigns#vcsdiff#extra_args', vcs_type, '')
-        let cmds = join([
-                    \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
-                    \ printf(cmdt, rev, extra, shellescape(file))
-                    \ ], g:quickfixsigns#vcsdiff#cmd_separator)
         " TLogVAR cmds
-        let diff = system(cmds)
+        let diff = s:Diff(a:filename, vcs_type)
         " TLogVAR diff
         let bufnr = bufnr('%')
         let bufdiff = exists('b:quickfixsigns_vcsdiff') ? b:quickfixsigns_vcsdiff : ''
@@ -425,17 +416,8 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
     " TLogVAR a:filename, vcs_type
     " Ignore files that are not readable
     if !empty(s:Config(vcs_type)) && filereadable(a:filename)
-        let cmdt = s:Config(vcs_type).cmd
-        let rev  = s:GetParam('quickfixsigns#vcsdiff#revision', vcs_type, s:Config(vcs_type).revision)
-        let extra = s:GetParam('quickfixsigns#vcsdiff#extra_args', vcs_type, '')
-        let dir  = fnamemodify(a:filename, ':h')
-        let file = fnamemodify(a:filename, ':t')
-        let cmds = join([
-                    \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
-                    \ printf(cmdt, extra, rev, shellescape(file))
-                    \ ], g:quickfixsigns#vcsdiff#cmd_separator)
         " TLogVAR cmds
-        let diff = system(cmds)
+        let diff = s:Diff(a:filename, vcs_type)
         " TLogVAR diff
         let bufnr = bufnr('%')
         let bufdiff = exists('b:quickfixsigns_vcsdiff') ? b:quickfixsigns_vcsdiff : ''
@@ -573,7 +555,32 @@ function! s:GetParam(name, type, default) abort "{{{3
 endf
 
 
-if exists(':TStatusregister1')
+function! s:Diff(filename, vcs_type) "{{{3
+  let cmdt    = s:Config(a:vcs_type).cmd
+  let rev_arg = s:Config(a:vcs_type).rev_arg
+  let revision= s:GetParam('quickfixsigns#vcsdiff#revision', a:vcs_type, '')
+  let extra   = s:GetParam('quickfixsigns#vcsdiff#extra_args', a:vcs_type, '')
+  let dir     = fnamemodify(a:filename, ':h')
+  let file    = fnamemodify(a:filename, ':t')
+
+  " Create command string
+  if !empty(revision)
+    let rev  = printf("%s %s", rev_arg, revision)
+  else
+    let rev = ''
+  endif
+  let cmds = join([
+        \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
+        \ printf(cmdt, extra, rev, shellescape(file))
+        \ ], g:quickfixsigns#vcsdiff#cmd_separator)
+
+  " Return command result
+  return system(cmds)
+endf
+
+
+if exists(':TStatusregister1') == 2
     TStatusregister1 --event=BufRead,BufWritePost vcs quickfixsigns#vcsdiff#GetHunkSummaryAsString()
+    TStatusregister --event=BufEnter b:quickfixsigns_vcsdiff_revision=branch
 endif
 
