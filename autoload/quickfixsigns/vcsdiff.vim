@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2016-12-07.
-" @Revision:    516
+" @Last Change: 2016-12-09.
+" @Revision:    521
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -579,7 +579,8 @@ function! s:Diff(filename, vcs_type) "{{{3
 endf
 
 
-if exists(':TStatusregister1')
+if exists(':TStatusregister1') == 2
     TStatusregister1 --event=BufRead,BufWritePost vcs quickfixsigns#vcsdiff#GetHunkSummaryAsString()
+    TStatusregister --event=BufEnter b:quickfixsigns_vcsdiff_revision=branch
 endif
 
