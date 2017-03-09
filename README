@@ -9,8 +9,10 @@ Display |signs| at interesting lines:
     - relative line numbers (show numbers only until the cursor moves; 
       this requires that you add the following command to |vimrc|: >
         noremap <silent> <leader><c-l> :call quickfixsigns#RelNumbersOnce()<cr>
-    - long lines (see |g:quickfixsigns_class_longlines| for details)
-<    - etc.
+<    - long lines (see |g:quickfixsigns_class_longlines| for details)
+    - VCS merge conflict markers (Users have to enable this sign class 
+      by adding 'vcsmerge' to |g:quickfixsigns_classes|)
+    - etc.
 
 Other lists can be configured via the |g:quickfixsigns_lists| variable.
 
@@ -57,6 +59,25 @@ http://openiconlibrary.sourceforge.net for details.
 
 
 -----------------------------------------------------------------------
+Install~
+
+Edit the vba file and type: >
+
+    :so %
+
+See :help vimball for details. If you have difficulties or use vim 7.0, 
+please make sure, you have the current version of vimball
+(vimscript #1502) installed or update your runtime.
+
+
+Optional enhancements~
+
+If tinykeymap (vimscript #4199) is installed, a map (see 
+|g:tinykeymap#map#quickfixsigns#map|, which defaults to <Leader>ms) can be used 
+to jump from sign to sign or between sign groups.
+
+
+
 
 
 License: GPLv3 or later
