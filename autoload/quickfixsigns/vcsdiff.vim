@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2016-12-09.
-" @Revision:    521
+" @Last Change: 2017-03-14.
+" @Revision:    548
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -121,7 +121,7 @@ if !exists('g:quickfixsigns#vcsdiff#extra_args')
 endif
 
 
-if g:quickfixsigns#vcsdiff#use_hidef && len(filter(values(g:quickfixsigns#vcsdiff#highlight), 'v:val =~ ''^QuickFixSignsDiff''')) > 0
+if g:quickfixsigns#vcsdiff#use_hidef && len(filter(values(g:quickfixsigns#vcsdiff#highlight), 'v:val =~# ''^QuickFixSignsDiff''')) > 0
     hi QuickFixSignsDiffAdd    ctermfg=0 ctermbg=2 guifg=black  guibg=green
     hi QuickFixSignsDiffDelete ctermfg=0 ctermbg=1 guifg=yellow guibg=red
     hi QuickFixSignsDiffChange ctermfg=0 ctermbg=3 guifg=black  guibg=yellow
@@ -145,7 +145,7 @@ if g:quickfixsigns#vcsdiff#del_numbered
             let g:quickfixsigns#vcsdiff#highlight['DEL'. s:i] = g:quickfixsigns#vcsdiff#highlight.DEL
         endif
         if index(g:quickfixsigns_signs, 'QFS_VCS_DEL'. s:i) == -1
-            let s:text = s:i == 'M' ? '-' : s:i
+            let s:text = s:i ==# 'M' ? '-' : s:i
             exec 'sign define QFS_VCS_DEL'. s:i 'text=-'. s:text 'texthl='. g:quickfixsigns#vcsdiff#highlight.DEL
         endif
         unlet! s:i s:text
@@ -154,17 +154,16 @@ endif
 
 
 function! s:Config(vcs_type) abort "{{{3
+    let cfg = get(g:quickfixsigns#vcsdiff#vcs, a:vcs_type, {})
     if exists('g:quickfixsigns#vcsdiff#vcs_'. a:vcs_type)
-        let cfg = g:quickfixsigns#vcsdiff#vcs_{a:vcs_type}
-    else
-        let cfg = get(g:quickfixsigns#vcsdiff#vcs, a:vcs_type, {})
+        let cfg = extend(cfg, g:quickfixsigns#vcsdiff#vcs_{a:vcs_type})
     endif
     return cfg
 endf
 
 
 " :nodoc:
-function! quickfixsigns#vcsdiff#Signs(item) "{{{3
+function! quickfixsigns#vcsdiff#Signs(item) abort "{{{3
     return 'QFS_VCS_'. a:item.change
 endf
 
@@ -177,7 +176,7 @@ endf
 "   - b:VCSCommandVCSType
 "
 " If none of these variables is defined, try to guess the vcs type.
-function! quickfixsigns#vcsdiff#GuessType() "{{{3
+function! quickfixsigns#vcsdiff#GuessType() abort "{{{3
     if exists('b:vcs_type')
         let type = b:vcs_type
     else
@@ -226,7 +225,7 @@ endf
 
 
 " Get the list of vcsdiff signs (uncached).
-function! quickfixsigns#vcsdiff#GetList(filename) "{{{3
+function! quickfixsigns#vcsdiff#GetList(filename) abort "{{{3
     call quickfixsigns#vcsdiff#ClearCache()
     return quickfixsigns#vcsdiff#GetListCached(a:filename)
 endf
@@ -234,11 +233,11 @@ endf
 
 " Get the list of vcsdiff signs (cached).
 " The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
-function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
+function! quickfixsigns#vcsdiff#GetListCached(filename) abort "{{{3
     if get(b:, 'qfs_vcsdiff_list', s:UNSET_LIST) is s:UNSET_LIST
         let list_type = g:quickfixsigns#vcsdiff#list_type
         if !(type(list_type) == 0 && list_type >= 0 && list_type <= 1)
-            throw "Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was ". list_type
+            throw 'Quickfixsigns: g:quickfixsigns#vcsdiff#list_type must be 0 or 1 but was '. list_type
         endif
         let b:qfs_vcsdiff_list = quickfixsigns#vcsdiff#GetList{list_type}(a:filename)
     endif
@@ -246,7 +245,7 @@ function! quickfixsigns#vcsdiff#GetListCached(filename) "{{{3
 endf
 
 
-function! quickfixsigns#vcsdiff#ClearCache(...)
+function! quickfixsigns#vcsdiff#ClearCache(...) abort
     let bufnr = a:0 ? a:1 : bufnr('%')
     call setbufvar(bufnr, 'qfs_vcsdiff_list', s:UNSET_LIST)
     call setbufvar(bufnr, 'qfs_vcsdiff_hunkstat', s:UNSET_LIST)
@@ -255,20 +254,20 @@ endfunction
 
 
 " Get status of VCS changes as [added, modified, removed].
-function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
-    let filename = a:0 ? a:1 : expand("%")
-    if filename == ''
+function! quickfixsigns#vcsdiff#GetHunkSummary(...) abort "{{{3
+    let filename = a:0 ? a:1 : expand('%')
+    if empty(filename)
         return [0, 0, 0]
     endif
     if get(b:, 'qfs_vcsdiff_hunkstat', s:UNSET_LIST) is s:UNSET_LIST
         let list = quickfixsigns#vcsdiff#GetListCached(filename)
         let r = [0, 0, 0]  " added, modified, removed.
         for item in list
-            if item.change == 'ADD'
+            if item.change ==# 'ADD'
                 let r[0] += 1
-            elseif item.change == 'CHANGE'
+            elseif item.change ==# 'CHANGE'
                 let r[1] += 1
-            elseif item.change[0:2] == 'DEL'
+            elseif item.change[0:2] ==# 'DEL'
                 let r[2] += 1
             endif
         endfor
@@ -279,7 +278,7 @@ endf
 
 
 " Get status of VCS changes as string.
-function! quickfixsigns#vcsdiff#GetHunkSummaryAsString(...) "{{{3
+function! quickfixsigns#vcsdiff#GetHunkSummaryAsString(...) abort "{{{3
     if get(b:, 'qfs_vcsdiff_hunkstat_str', s:UNSET_STRING) is s:UNSET_STRING
         let r = call('quickfixsigns#vcsdiff#GetHunkSummary', a:000)
         if r[0] + r[1] + r[2] == 0
@@ -294,8 +293,8 @@ endf
 
 " quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
 " VCS (see |g:quickfixsigns#vcsdiff#vcs|).
-function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
-    if &buftype =~ '\<\(nofile\|quickfix\|help\)\>' || &previewwindow || exists('b:fugitive_type')
+function! quickfixsigns#vcsdiff#GetList0(filename) abort "{{{3
+    if &buftype =~# '\<\(nofile\|quickfix\|help\)\>' || &previewwindow || exists('b:fugitive_type')
         return []
     endif
     let vcs_type = quickfixsigns#vcsdiff#GuessType()
@@ -305,13 +304,13 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
         " TLogVAR cmds
         let diff = s:Diff(a:filename, vcs_type)
         " TLogVAR diff
-        let bufnr = bufnr('%')
-        let bufdiff = exists('b:quickfixsigns_vcsdiff') ? b:quickfixsigns_vcsdiff : ''
         if !empty(diff)
+            let bufnr = bufnr('%')
+            let bufdiff = exists('b:quickfixsigns_vcsdiff') ? b:quickfixsigns_vcsdiff : ''
             if diff != bufdiff || !exists('b:quickfixsigns_vcsdiff_signs')
                 let b:quickfixsigns_vcsdiff = diff
                 if g:quickfixsigns_debug && bufnr != bufnr(a:filename)
-                    echom "QuickFixSigns DEBUG: bufnr mismatch:" a:filename bufnr bufnr(a:filename)
+                    echom 'QuickFixSigns DEBUG: bufnr mismatch:' a:filename bufnr bufnr(a:filename)
                 endif
                 let lastlnum = line('$')
                 let lines = split(diff, '\n')
@@ -321,14 +320,14 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
                 let last_change_lnum = 0
                 let last_del = 0
                 for line in lines
-                    if line =~ '^@@\s'
+                    if line =~# '^@@\s'
                         let m = matchlist(line, '^@@ -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@')
                         " TLogVAR line, m
                         let to = str2nr(m[3])
                         " TLogVAR "@@", to
                         " let change_lnum = m[1]
                         let from = to
-                    elseif line =~ '^@@@\s'
+                    elseif line =~# '^@@@\s'
                         let m = matchlist(line, '^@@@ -\(\d\+\)\(,\d\+\)\? -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@@')
                         " TLogVAR line, m
                         let to = str2nr(m[5])
@@ -338,12 +337,12 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
                     elseif from < 0
                         continue
                     else
-                        if line[0] == '-'
+                        if line[0] ==# '-'
                             let change = 'DEL'
                             let text = line
                             let change_lnum = from
                             let from += 1
-                        elseif line[0] == '+'
+                        elseif line[0] ==# '+'
                             let change = 'ADD'
                             let text = line
                             let change_lnum = to
@@ -361,18 +360,18 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
                             let change_lnum = lastlnum
                         endif
                         if !empty(change) && has_key(change_defs, change_lnum)
-                            if change_defs[change_lnum].change == 'CHANGE' || change_defs[change_lnum].change != change
+                            if change_defs[change_lnum].change ==# 'CHANGE' || change_defs[change_lnum].change != change
                                 let change = 'CHANGE'
                             endif
                             let text = s:BalloonJoin(change_defs[change_lnum].text, line)
                         endif
-                        if last_change_lnum > 0 && last_del > 0 && change_lnum == last_del + 1 && change == 'DEL' && change_defs[last_change_lnum].change == 'DEL'
+                        if last_change_lnum > 0 && last_del > 0 && change_lnum == last_del + 1 && change ==# 'DEL' && change_defs[last_change_lnum].change ==# 'DEL'
                             let change_defs[last_change_lnum].text = s:BalloonJoin(change_defs[last_change_lnum].text, text)
                         else
                             let change_defs[change_lnum] = {'change': change, 'text': text}
                             let last_change_lnum = change_lnum
                         endif
-                        if change == 'DEL' || change == 'CHANGE'
+                        if change ==# 'DEL' || change ==# 'CHANGE'
                             let last_del = change_lnum
                         endif
                     endif
@@ -386,10 +385,10 @@ function! quickfixsigns#vcsdiff#GetList0(filename) "{{{3
                     " if change_def.change == 'DEL' && lnum < line('$') && !has_key(change_defs, lnum + 1)
                     "     let lnum += 1
                     " endif
-                    let text = s:BalloonJoin(change_def.change .":", change_def.text)
+                    let text = s:BalloonJoin(change_def.change .':', change_def.text)
                     " TLogVAR bufnr, lnum, change_def.change, text
-                    call add(signs, {"bufnr": bufnr, "lnum": lnum,
-                                \ "change": change_def.change, "text": text})
+                    call add(signs, {'bufnr': bufnr, 'lnum': lnum,
+                                \ 'change': change_def.change, 'text': text})
                 endfor
                 " TLogVAR signs
                 let b:quickfixsigns_vcsdiff_signs = copy(signs)
@@ -408,8 +407,8 @@ endf
 " This version by Chronial works more like diff -y (see 
 " https://github.com/Chronial/vim-quickfixsigns/commit/1cf739c790746157c3cb9b6234c1454333397c9e 
 " for details).
-function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
-    if &buftype =~ '\<\(nofile\|quickfix\|help\)\>' || &previewwindow || exists('b:fugitive_type')
+function! quickfixsigns#vcsdiff#GetList1(filename) abort "{{{3
+    if &buftype =~# '\<\(nofile\|quickfix\|help\)\>' || &previewwindow || exists('b:fugitive_type')
         return []
     endif
     let vcs_type = quickfixsigns#vcsdiff#GuessType()
@@ -419,13 +418,13 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
         " TLogVAR cmds
         let diff = s:Diff(a:filename, vcs_type)
         " TLogVAR diff
-        let bufnr = bufnr('%')
-        let bufdiff = exists('b:quickfixsigns_vcsdiff') ? b:quickfixsigns_vcsdiff : ''
         if !empty(diff)
+            let bufnr = bufnr('%')
+            let bufdiff = exists('b:quickfixsigns_vcsdiff') ? b:quickfixsigns_vcsdiff : ''
             if diff != bufdiff || !exists('b:quickfixsigns_vcsdiff_signs')
                 let b:quickfixsigns_vcsdiff = diff
                 if g:quickfixsigns_debug && bufnr != bufnr(a:filename)
-                    echom "QuickFixSigns DEBUG: bufnr mismatch:" a:filename bufnr bufnr(a:filename)
+                    echom 'QuickFixSigns DEBUG: bufnr mismatch:' a:filename bufnr bufnr(a:filename)
                 endif
                 let lastlnum = line('$')
                 let lines = split(diff, '\n')
@@ -433,14 +432,14 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
                 let from = -1
                 let to = -1
                 let block_start = -1
-                let block_text = ""
+                let block_text = ''
                 for line in lines
-                    if line =~ '^@'
-                        if line =~ '^@@\s'
+                    if line =~# '^@'
+                        if line =~# '^@@\s'
                             let m = matchlist(line, '^@@ -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@')
                             let to = str2nr(m[3])
                             " TLogVAR "@@", to
-                        elseif line =~ '^@@@\s'
+                        elseif line =~# '^@@@\s'
                             let m = matchlist(line, '^@@@ -\(\d\+\)\(,\d\+\)\? -\(\d\+\)\(,\d\+\)\? +\(\d\+\)\(,\d\+\)\? @@@')
                             let to = str2nr(m[5])
                             " TLogVAR "@@@", to
@@ -454,12 +453,12 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
                     else
                         " Note: This algorithm assumes that all the deletions
                         " per hunk will come before the insertions
-                        if line[0] == '-'
+                        if line[0] ==# '-'
                             let change = 'DEL'
                             let block_text = s:BalloonJoin(block_text, line)
                             let change_lnum = from
                             let from += 1
-                        elseif line[0] == '+'
+                        elseif line[0] ==# '+'
                             let change = to > from - 1 ? 'ADD' : 'CHANGE'
                             let change_lnum = to
                             let to += 1
@@ -475,7 +474,7 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
                         elseif change_lnum > lastlnum
                             let change_lnum = lastlnum
                         endif
-                        if change == 'DEL'
+                        if change ==# 'DEL'
                             if g:quickfixsigns#vcsdiff#del_numbered
                                 let ldiff = from - block_start
                                 " TLogVAR block_start, from, to, ldiff
@@ -505,8 +504,8 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
                     "     let lnum += 1
                     " endif
                     " TLogVAR bufnr, lnum, change_def.change, change_def.text
-                    call add(signs, {"bufnr": bufnr, "lnum": lnum,
-                                \ "change": change_def.change, "text": change_def.text})
+                    call add(signs, {'bufnr': bufnr, 'lnum': lnum,
+                                \ 'change': change_def.change, 'text': change_def.text})
                 endfor
                 " TLogVAR signs
                 let b:quickfixsigns_vcsdiff_signs = copy(signs)
@@ -520,7 +519,7 @@ function! quickfixsigns#vcsdiff#GetList1(filename) "{{{3
 endf
 
 
-function! s:BalloonJoin(...) "{{{3
+function! s:BalloonJoin(...) abort "{{{3
     if has('balloon_multiline')
         return join(a:000, "\n")
     else
@@ -555,32 +554,35 @@ function! s:GetParam(name, type, default) abort "{{{3
 endf
 
 
-function! s:Diff(filename, vcs_type) "{{{3
-  let cmdt    = s:Config(a:vcs_type).cmd
-  let rev_arg = s:Config(a:vcs_type).rev_arg
-  let revision= s:GetParam('quickfixsigns#vcsdiff#revision', a:vcs_type, '')
-  let extra   = s:GetParam('quickfixsigns#vcsdiff#extra_args', a:vcs_type, '')
-  let dir     = fnamemodify(a:filename, ':h')
-  let file    = fnamemodify(a:filename, ':t')
-
-  " Create command string
-  if !empty(revision)
-    let rev  = printf("%s %s", rev_arg, revision)
-  else
-    let rev = ''
-  endif
-  let cmds = join([
-        \ printf("%s %s", g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
-        \ printf(cmdt, extra, rev, shellescape(file))
-        \ ], g:quickfixsigns#vcsdiff#cmd_separator)
-
-  " Return command result
-  return system(cmds)
+function! s:Diff(filename, vcs_type) abort "{{{3
+    let cfg = s:Config(a:vcs_type)
+    if !empty(cfg)
+        let cmdt    = cfg.cmd
+        let rev_arg = cfg.rev_arg
+        let revision= s:GetParam('quickfixsigns#vcsdiff#revision', a:vcs_type, '')
+        let extra   = s:GetParam('quickfixsigns#vcsdiff#extra_args', a:vcs_type, '')
+        let dir     = fnamemodify(a:filename, ':h')
+        let file    = fnamemodify(a:filename, ':t')
+        " Create command string
+        if !empty(revision)
+            let rev  = printf('%s %s', rev_arg, revision)
+        else
+            let rev = ''
+        endif
+        let cmds = join([
+                    \ printf('%s %s', g:quickfixsigns#vcsdiff#cd, shellescape(dir)),
+                    \ printf(cmdt, extra, rev, shellescape(file))
+                    \ ], g:quickfixsigns#vcsdiff#cmd_separator)
+        " Return command result
+        return system(cmds)
+    else
+        return ''
+    endif
 endf
 
 
 if exists(':TStatusregister1') == 2
     TStatusregister1 --event=BufRead,BufWritePost vcs quickfixsigns#vcsdiff#GetHunkSummaryAsString()
-    TStatusregister --event=BufEnter b:quickfixsigns_vcsdiff_revision=branch
+    TStatusregister --event=BufEnter,BufWinEnter,CmdwinLeave b:quickfixsigns_vcsdiff_revision=branch
 endif
 
