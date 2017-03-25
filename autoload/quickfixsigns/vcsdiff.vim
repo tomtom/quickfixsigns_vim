@@ -291,6 +291,24 @@ function! quickfixsigns#vcsdiff#GetHunkSummaryAsString(...) abort "{{{3
 endf
 
 
+" Get status of VCS changes as [added, modified, removed].
+function! quickfixsigns#vcsdiff#GetHunkSummary(...) "{{{3
+    let filename = a:0 ? a:1 : expand("%")
+    let list = quickfixsigns#vcsdiff#GetList(filename)
+    let r = [0, 0, 0]  " added, modified, removed.
+    for item in list
+        if item.change == 'ADD'
+            let r[0] += 1
+        elseif item.change == 'CHANGE'
+            let r[1] += 1
+        elseif item.sign == 'DEL'
+            let r[2] += 1
+        endif
+    endfor
+    return r
+endfunction
+
+
 " quickfixsigns#vcsdiff#GuessType() must return the name of a supported 
 " VCS (see |g:quickfixsigns#vcsdiff#vcs|).
 function! quickfixsigns#vcsdiff#GetList0(filename) abort "{{{3
