@@ -58,7 +58,8 @@ endf
 
 
 function! quickfixsigns#breakpoints#Vim() "{{{3
-    redir => bps
+    " Use 'silent!' to protect against unsupported nesting of 'redir'.
+    silent! redir => bps
     silent breaklist
     redir END
     let acc = []
