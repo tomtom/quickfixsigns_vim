@@ -3,8 +3,8 @@
 " @Website:     http://www.vim.org/account/profile.php?user_id=4037
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-03-19.
-" @Last Change: 2012-10-02.
-" @Revision:    0.0.142
+" @Last Change: 2017-04-03.
+" @Revision:    1.0.142
 
 
 if !exists('g:quickfixsigns#use_relativenumber')
@@ -23,7 +23,7 @@ function! quickfixsigns#CompleteSelect(ArgLead, CmdLine, CursorPos) "{{{3
     call map(vars, 'strpart(v:val, start)')
     let selected = split(a:CmdLine, '\s\+')
     call filter(vars, 'index(selected, v:val) == -1')
-    if a:CmdLine =~ '\<QuickfixsignsSelect\s\+$'
+    if a:CmdLine =~# '\<QuickfixsignsSelect\s\+$'
         call insert(vars, join(g:quickfixsigns_classes))
     endif
     return vars

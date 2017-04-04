@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2016-07-04.
-" @Revision:    1469
+" @Last Change: 2017-04-03.
+" @Revision:    1486
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -16,6 +16,7 @@ scriptencoding utf-8
 
 let s:save_cpo = &cpo
 set cpo&vim
+
 
 " :display: :QuickfixsignsSet [SIGN ...]
 " Reset the signs in the current buffer.
@@ -34,9 +35,22 @@ command! -bar QuickfixsignsToggle call QuickfixsignsToggle()
 " in the current buffer.
 command! -bar -nargs=+ -complete=customlist,quickfixsigns#CompleteSelect QuickfixsignsSelect call QuickfixsignsSelect([<f-args>]) | call QuickfixsignsUpdate()
 
+" Print the text for the signs at the current line.
+command! -bar Quickfixsignsecho call QuickfixsignsEcho(bufnr("%"), line("."))
+
 
 if !exists('g:quickfixsigns_debug')
     let g:quickfixsigns_debug = 0
+endif
+
+
+if !exists('g:quickfixsigns_echo_map')
+    " Call |:Quickfixsignsecho|. Print the text for the signs at the 
+    " current line.
+    let g:quickfixsigns_echo_map = '<Leader>qq'   "{{{2
+endif
+if !empty(g:quickfixsigns_echo_map)
+    exec 'nnoremap' g:quickfixsigns_echo_map ':Quickfixsignsecho<cr>'
 endif
 
 
@@ -566,25 +580,41 @@ function! QuickfixsignsUnique(list) "{{{3
 endf
 
 
+function! s:GetSignsAtLine(bufnr, lnum) abort "{{{3
+    " TLogVAR a:bufnr, a:lnum
+    let bufname = bufname(a:bufnr)
+    let acc = []
+    for [class, def] in s:ListValues()
+        let list = s:GetList(def, bufname)
+        " TLogVAR class, len(list)
+        call filter(list, 'v:val.bufnr == a:bufnr && v:val.lnum == a:lnum')
+        " TLogVAR len(list), g:quickfixsigns_max
+        if !empty(list) && len(list) < g:quickfixsigns_max
+            let acc += list
+        endif
+    endfor
+    return acc
+endf
+
+
+function! s:GetSignsTextAtLine(bufnr, lnum) abort "{{{3
+    let acc = s:GetSignsAtLine(a:bufnr, a:lnum)
+    " TLogVAR acc
+    let text = join(map(acc, 'v:val.text'), "\n")
+    return text
+endf
+
+
+function! QuickfixsignsEcho(bufnr, lnum) abort "{{{3
+    let l:text = s:GetSignsTextAtLine(a:bufnr, a:lnum)
+    echo l:text
+endf
+
+
 function! QuickfixsignsBalloon() "{{{3
     " TLogVAR v:beval_lnum, v:beval_col
     if v:beval_col <= 1
-        let lnum = v:beval_lnum
-        let bufnr = bufnr('%')
-        " TLogVAR bufnr, lnum
-        let bufname = bufname(bufnr)
-        let acc = []
-        for [class, def] in s:ListValues()
-            let list = s:GetList(def, bufname)
-            " TLogVAR class, len(list)
-            call filter(list, 'v:val.bufnr == bufnr && v:val.lnum == lnum')
-            " TLogVAR len(list), g:quickfixsigns_max
-            if !empty(list) && len(list) < g:quickfixsigns_max
-                let acc += list
-            endif
-        endfor
-        " TLogVAR acc
-        let text = join(map(acc, 'v:val.text'), "\n")
+        let text = s:GetSignsTextAtLine(bufnr('%'), v:beval_lnum)
         " TLogVAR text
     elseif exists('b:quickfixsigns_balloonexpr') && !empty(b:quickfixsigns_balloonexpr)
         let text = eval(b:quickfixsigns_balloonexpr)
@@ -916,7 +946,7 @@ endf
 
 
 function! s:GetSign(sign, item) "{{{3
-    if a:sign[0] == '*'
+    if a:sign[0] ==# '*'
         let sign = call(a:sign[1 : -1], [a:item])
         " TLogVAR sign
     else
