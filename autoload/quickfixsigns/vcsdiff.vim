@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2017-03-14.
-" @Revision:    548
+" @Last Change: 2017-04-10.
+" @Revision:    556
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -581,8 +581,17 @@ function! s:Diff(filename, vcs_type) abort "{{{3
 endf
 
 
-if exists(':TStatusregister1') == 2
-    TStatusregister1 --event=BufRead,BufWritePost vcs quickfixsigns#vcsdiff#GetHunkSummaryAsString()
-    TStatusregister --event=BufEnter,BufWinEnter,CmdwinLeave b:quickfixsigns_vcsdiff_revision=branch
+function! s:QuickfixsignsMaybeRegisterTStatus() abort "{{{3
+    if exists(':TStatusregister1') == 2
+        TStatusregister1 --event=BufRead,BufWritePost vcs quickfixsigns#vcsdiff#GetHunkSummaryAsString()
+        TStatusregister --event=BufEnter,BufWinEnter,CmdwinLeave b:quickfixsigns_vcsdiff_revision=branch
+    endif
+endf
+
+
+if has('vim_starting')
+    autocmd VimEnter * call s:QuickfixsignsMaybeRegisterTStatus()
+else
+    call s:QuickfixsignsMaybeRegisterTStatus()
 endif
 
