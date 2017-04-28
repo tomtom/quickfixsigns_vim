@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2017-04-03.
-" @Revision:    1486
+" @Last Change: 2017-04-26.
+" @Revision:    1504
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -274,61 +274,35 @@ let g:quickfixsigns_signs = split(s:Redir('sign list'), '\n')
 call filter(g:quickfixsigns_signs, 'v:val =~ ''^sign QFS_''')
 call map(g:quickfixsigns_signs, 'matchstr(v:val, ''^sign \zsQFS_\w\+'')')
 
-if index(g:quickfixsigns_signs, 'QFS_QFL') == -1
-    if exists('g:quickfixsigns_icons.qfl')
-        exec 'sign define QFS_QFL text=* texthl=WarningMsg icon='. escape(g:quickfixsigns_icons.qfl, ' \')
-    else
-        sign define QFS_QFL text=* texthl=WarningMsg
-    endif
-endif
 
-if index(g:quickfixsigns_signs, 'QFS_LOC') == -1
-    if exists('g:quickfixsigns_icons.loc')
-        exec 'sign define QFS_LOC text=> texthl=Special icon='. escape(g:quickfixsigns_icons.loc, ' \')
-    else
-        sign define QFS_LOC text=> texthl=Special
+function! s:DefineSign(name, text, texthl, icon_name) abort "{{{3
+    if index(g:quickfixsigns_signs, a:name) == -1
+        let cmd = 'sign define '. a:name .' text='. a:text .' texthl='. a:texthl
+        if !empty(a:icon_name) && has_key(g:quickfixsigns_icons, a:icon_name)
+            let cmd .= ' icon='. escape(g:quickfixsigns_icons[a:icon_name], ' \')
+        endif
+        exec cmd
+        call add(g:quickfixsigns_signs, a:name)
     endif
-endif
+endf
+
+call s:DefineSign('QFS_CURSOR', '-', 'Question', 'cursor')
+call s:DefineSign('QFS_DUMMY', '.', 'NonText', '')
+call s:DefineSign('QFS_QFL', &enc ==? 'utf-8' ? '╠' : '*', 'WarningMsg', 'qfl')
+call s:DefineSign('QFS_LOC', &enc ==? 'utf-8' ? '├' : '>', 'Special', 'loc')
 
 for s:char in split(g:quickfixsigns_list_types, '\zs')
-    let s:sign = 'QFS_QFL_'. s:char
-    if index(g:quickfixsigns_signs, s:sign) == -1
-        let s:icon = 'qfl_'. s:char
-        if has_key(g:quickfixsigns_icons, s:icon)
-            exec 'sign define' s:sign 'text=*'. s:char 'texthl=WarningMsg icon='. escape(g:quickfixsigns_icons[s:icon], ' \')
-        else
-            exec 'sign define' s:sign 'text=*'. s:char 'texthl=WarningMsg'
-        endif
-    endif
-    let s:sign = 'QFS_LOC_'. s:char
-    if index(g:quickfixsigns_signs, s:sign) == -1
-        let s:icon = 'loc_'. s:char
-        if has_key(g:quickfixsigns_icons, s:icon)
-            exec 'sign define' s:sign 'text=>'. s:char 'texthl=Special icon='. escape(g:quickfixsigns_icons[s:icon], ' \')
-        else
-            exec 'sign define' s:sign 'text=>'. s:char 'texthl=Special'
-        endif
-    endif
+    call s:DefineSign('QFS_QFL_'. s:char, (&enc ==? 'utf-8' ? '║' : '*') . s:char, 'WarningMsg', 'qfl_'. s:char)
+    call s:DefineSign('QFS_LOC_'. s:char, (&enc ==? 'utf-8' ? '│' : '>') . s:char, 'Special', 'loc_'. s:char)
 endfor
-unlet! s:char s:sign s:icon
-
-if index(g:quickfixsigns_signs, 'QFS_CURSOR') == -1
-    if exists('g:quickfixsigns_icons.cursor')
-        exec 'sign define QFS_CURSOR text=- texthl=Question icon='. escape(g:quickfixsigns_icons.cursor, ' \')
-    else
-        sign define QFS_CURSOR text=- texthl=Question
-    endif
-endif
-
-sign define QFS_DUMMY text=. texthl=NonText
+unlet! s:char
 
 let s:relmax = -1
 function! s:GenRel(num) "{{{3
     " TLogVAR a:num
-    " echom "DBG ". s:relmax
     if a:num > s:relmax && a:num < 100
         for n in range(s:relmax + 1, a:num)
-            exec 'sign define QFS_REL_'. n .' text='. n .' texthl=LineNr'
+            call s:DefineSign('QFS_REL_'. n, n, 'LineNr', '')
         endfor
         let s:relmax = a:num
     endif
