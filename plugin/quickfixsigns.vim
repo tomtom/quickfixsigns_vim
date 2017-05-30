@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2017-04-26.
-" @Revision:    1504
+" @Last Change: 2017-05-30.
+" @Revision:    1507
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -143,6 +143,13 @@ endif
 
 if !exists('g:quickfixsigns_list_types')
     let g:quickfixsigns_list_types = 'EW'   "{{{2
+endif
+
+
+if !exists('g:quickfixsigns_sign_may_use_double')
+    " FIX Confliction between quickfixsigns_vim and ambiwidth=double
+    " https://github.com/tomtom/quickfixsigns_vim/issues/72
+    let g:quickfixsigns_sign_may_use_double = !exists('ambiwidth') || &ambiwidth ==# 'single'   "{{{2
 endif
 
 
@@ -292,8 +299,8 @@ call s:DefineSign('QFS_QFL', &enc ==? 'utf-8' ? '╠' : '*', 'WarningMsg', 'qfl'
 call s:DefineSign('QFS_LOC', &enc ==? 'utf-8' ? '├' : '>', 'Special', 'loc')
 
 for s:char in split(g:quickfixsigns_list_types, '\zs')
-    call s:DefineSign('QFS_QFL_'. s:char, (&enc ==? 'utf-8' ? '║' : '*') . s:char, 'WarningMsg', 'qfl_'. s:char)
-    call s:DefineSign('QFS_LOC_'. s:char, (&enc ==? 'utf-8' ? '│' : '>') . s:char, 'Special', 'loc_'. s:char)
+    call s:DefineSign('QFS_QFL_'. s:char, (g:quickfixsigns_sign_may_use_double && &enc ==? 'utf-8' ? '║' : '*') . s:char, 'WarningMsg', 'qfl_'. s:char)
+    call s:DefineSign('QFS_LOC_'. s:char, (g:quickfixsigns_sign_may_use_double && &enc ==? 'utf-8' ? '│' : '>') . s:char, 'Special', 'loc_'. s:char)
 endfor
 unlet! s:char
 
