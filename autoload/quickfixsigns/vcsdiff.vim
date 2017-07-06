@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2017-04-10.
-" @Revision:    556
+" @Last Change: 2017-07-06.
+" @Revision:    560
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -39,7 +39,7 @@ if !exists('g:quickfixsigns#vcsdiff#vcs')
     " configuration.
     " :read: let g:quickfixsigns#vcsdiff#vcs = {...}  "{{{2
     let g:quickfixsigns#vcsdiff#vcs = {
-                \ 'git': {'cmd': 'git diff --no-ext-diff -U1 %s %s -- %s', 'dir': '.git', 'rev_arg': ''}
+                \ 'git': {'cmd': 'git diff --no-ext-diff -U0 %s %s -- %s', 'dir': '.git', 'rev_arg': ''}
                 \ , 'hg': {'cmd': 'hg diff -U0 %s %s %s', 'dir': '.hg', 'rev_arg': '-r'}
                 \ , 'svn': {'cmd': 'svn diff --diff-cmd diff --extensions -U0 %s %s %s', 'dir': '.svn', 'rev_arg': '--revision'}
                 \ , 'bzr': {'cmd': 'bzr diff --diff-options=-U0 %s %s %s', 'dir': '.bzr', 'rev_arg': '-r'}
