@@ -294,7 +294,6 @@ function! s:DefineSign(name, text, texthl, icon_name) abort "{{{3
 endf
 
 call s:DefineSign('QFS_CURSOR', '-', 'Question', 'cursor')
-call s:DefineSign('QFS_DUMMY', '.', 'NonText', '')
 call s:DefineSign('QFS_QFL', (g:quickfixsigns_sign_may_use_double && &enc ==? 'utf-8' ? '╠' : '*'),'WarningMsg', 'qfl')
 call s:DefineSign('QFS_LOC', (g:quickfixsigns_sign_may_use_double && &enc ==? 'utf-8' ? '├' : '>'), 'Special', 'loc')
 
@@ -1004,6 +1003,7 @@ augroup QuickFixSigns
     autocmd BufLeave * if !v:dying | call s:PurgeRegister() | endif
     autocmd BufDelete * call s:RemoveBuffer(expand("<abuf>"), 1)
     if g:quickfixsigns_use_dummy
+        call s:DefineSign('QFS_DUMMY', '.', 'NonText', '')
         exec "autocmd BufRead,BufNewFile * exec 'sign place' (". s:quickfixsigns_base ." - expand('<abuf>')) 'name=QFS_DUMMY line=1 buffer='. expand('<abuf>')"
     endif
     autocmd User WokmarksChange if index(g:quickfixsigns_classes, 'marks') != -1 | call QuickfixsignsUpdate("marks") | endif
