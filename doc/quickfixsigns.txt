@@ -88,15 +88,15 @@ Contents~
         :QuickfixsignsEnable ........................... |:QuickfixsignsEnable|
         :QuickfixsignsToggle ........................... |:QuickfixsignsToggle|
         :QuickfixsignsSelect ........................... |:QuickfixsignsSelect|
+        :Quickfixsignsecho ............................. |:Quickfixsignsecho|
+        g:quickfixsigns_echo_map ....................... |g:quickfixsigns_echo_map|
         g:quickfixsigns_classes ........................ |g:quickfixsigns_classes|
         g:quickfixsigns_timeout ........................ |g:quickfixsigns_timeout|
-        g:quickfixsigns_events_default ................. |g:quickfixsigns_events_default|
-        g:quickfixsigns_events_base .................... |g:quickfixsigns_events_base|
         g:quickfixsigns_events ......................... |g:quickfixsigns_events|
         g:quickfixsigns_class_rel ...................... |g:quickfixsigns_class_rel|
         g:quickfixsigns_class_qfl ...................... |g:quickfixsigns_class_qfl|
         g:quickfixsigns_class_loc ...................... |g:quickfixsigns_class_loc|
-        g:quickfixsigns_list_types ..................... |g:quickfixsigns_list_types|
+        g:quickfixsigns_sign_may_use_double ............ |g:quickfixsigns_sign_may_use_double|
         g:quickfixsigns_class_cursor ................... |g:quickfixsigns_class_cursor|
         g:quickfixsigns_balloon ........................ |g:quickfixsigns_balloon|
         g:quickfixsigns_echo_balloon ................... |g:quickfixsigns_echo_balloon|
@@ -106,61 +106,36 @@ Contents~
         g:quickfixsigns_protect_sign_rx ................ |g:quickfixsigns_protect_sign_rx|
         g:quickfixsigns_icons .......................... |g:quickfixsigns_icons|
         g:quickfixsigns_use_dummy ...................... |g:quickfixsigns_use_dummy|
-        QuickfixsignsSelect ............................ |QuickfixsignsSelect()|
-        QuickfixsignsUpdate ............................ |QuickfixsignsUpdate()|
         QuickfixsignsSet ............................... |QuickfixsignsSet()|
-        QuickfixsignsUnique ............................ |QuickfixsignsUnique()|
-        QuickfixsignsBalloon ........................... |QuickfixsignsBalloon()|
-        QuickfixsignsToggle ............................ |QuickfixsignsToggle()|
         QuickfixsignsClear ............................. |QuickfixsignsClear()|
-        QuickfixsignsListBufferSigns ................... |QuickfixsignsListBufferSigns()|
         g:quickfixsigns#use_relativenumber ............. |g:quickfixsigns#use_relativenumber|
-        quickfixsigns#CompleteSelect ................... |quickfixsigns#CompleteSelect()|
         quickfixsigns#RelNumbersOnce ................... |quickfixsigns#RelNumbersOnce()|
-        quickfixsigns#AssertUniqueSigns ................ |quickfixsigns#AssertUniqueSigns()|
-        quickfixsigns#AssertNoObsoleteBuffers .......... |quickfixsigns#AssertNoObsoleteBuffers()|
-        quickfixsigns#MoveSigns ........................ |quickfixsigns#MoveSigns()|
+        g:quickfixsigns_class_longlines ................ |g:quickfixsigns_class_longlines|
         g:quickfixsigns_class_marks .................... |g:quickfixsigns_class_marks|
         g:quickfixsigns#marks#buffer ................... |g:quickfixsigns#marks#buffer|
         g:quickfixsigns#marks#global ................... |g:quickfixsigns#marks#global|
         g:quickfixsigns#marks#texthl ................... |g:quickfixsigns#marks#texthl|
-        quickfixsigns#marks#GetList .................... |quickfixsigns#marks#GetList()|
-        quickfixsigns#marks#GetSign .................... |quickfixsigns#marks#GetSign()|
-        g:quickfixsigns#vcsmerge#regex ................. |g:quickfixsigns#vcsmerge#regex|
-        g:quickfixsigns#vcsmerge#sign .................. |g:quickfixsigns#vcsmerge#sign|
-        g:quickfixsigns_class_longlines ................ |g:quickfixsigns_class_longlines|
-        g:quickfixsigns#longlines#width_expr ........... |g:quickfixsigns#longlines#width_expr|
-        quickfixsigns#longlines#GetList ................ |quickfixsigns#longlines#GetList()|
         g:quickfixsigns#vcsdiff#vcs .................... |g:quickfixsigns#vcsdiff#vcs|
-        g:quickfixsigns_class_vcsdiff .................. |g:quickfixsigns_class_vcsdiff|
-        g:quickfixsigns#vcsdiff#cd ..................... |g:quickfixsigns#vcsdiff#cd|
         g:quickfixsigns#vcsdiff#cmd_separator .......... |g:quickfixsigns#vcsdiff#cmd_separator|
         g:quickfixsigns#vcsdiff#guess_type ............. |g:quickfixsigns#vcsdiff#guess_type|
         g:quickfixsigns#vcsdiff#list_type .............. |g:quickfixsigns#vcsdiff#list_type|
         g:quickfixsigns#vcsdiff#highlight .............. |g:quickfixsigns#vcsdiff#highlight|
         g:quickfixsigns#vcsdiff#del_numbered ........... |g:quickfixsigns#vcsdiff#del_numbered|
-        g:quickfixsigns#vcsdiff#use_hidef .............. |g:quickfixsigns#vcsdiff#use_hidef|
         g:quickfixsigns#vcsdiff#revision ............... |g:quickfixsigns#vcsdiff#revision|
         g:quickfixsigns#vcsdiff#extra_args ............. |g:quickfixsigns#vcsdiff#extra_args|
         quickfixsigns#vcsdiff#GuessType ................ |quickfixsigns#vcsdiff#GuessType()|
         quickfixsigns#vcsdiff#GetList .................. |quickfixsigns#vcsdiff#GetList()|
         quickfixsigns#vcsdiff#GetListCached ............ |quickfixsigns#vcsdiff#GetListCached()|
-        quickfixsigns#vcsdiff#ClearCache ............... |quickfixsigns#vcsdiff#ClearCache()|
         quickfixsigns#vcsdiff#GetHunkSummary ........... |quickfixsigns#vcsdiff#GetHunkSummary()|
         quickfixsigns#vcsdiff#GetHunkSummaryAsString ... |quickfixsigns#vcsdiff#GetHunkSummaryAsString()|
         quickfixsigns#vcsdiff#GetList0 ................. |quickfixsigns#vcsdiff#GetList0()|
         quickfixsigns#vcsdiff#GetList1 ................. |quickfixsigns#vcsdiff#GetList1()|
-        g:quickfixsigns#breakpoints#filetypes .......... |g:quickfixsigns#breakpoints#filetypes|
-        g:quickfixsigns_class_breakpoints .............. |g:quickfixsigns_class_breakpoints|
-        quickfixsigns#breakpoints#GetList .............. |quickfixsigns#breakpoints#GetList()|
-        quickfixsigns#breakpoints#Vim .................. |quickfixsigns#breakpoints#Vim()|
-        g:tinykeymap#map#quickfixsigns#map ............. |g:tinykeymap#map#quickfixsigns#map|
-        g:tinykeymap#map#quickfixsigns#options ......... |g:tinykeymap#map#quickfixsigns#options|
+        g:quickfixsigns#vcsmerge#regex ................. |g:quickfixsigns#vcsmerge#regex|
+        g:quickfixsigns#vcsmerge#sign .................. |g:quickfixsigns#vcsmerge#sign|
 
 
-========================================================================
-plugin/quickfixsigns.vim~
-
+------------------------------------------------------------------------
+                                                    *plugin/quickfixsigns.vim*
                                                     *:QuickfixsignsSet*
 :QuickfixsignsSet [SIGN ...]
     Reset the signs in the current buffer.
@@ -181,6 +156,15 @@ plugin/quickfixsigns.vim~
 :QuickfixsignsSelect
     Select the sign classes that should be displayed and reset the signs 
     in the current buffer.
+
+                                                    *:Quickfixsignsecho*
+:Quickfixsignsecho
+    Print the text for the signs at the current line.
+
+                                                    *g:quickfixsigns_echo_map*
+g:quickfixsigns_echo_map       (default: '<Leader>qq')
+    Call |:Quickfixsignsecho|. Print the text for the signs at the 
+    current line.
 
                                                     *g:quickfixsigns_classes*
 g:quickfixsigns_classes        (default: ['qfl', 'loc', 'marks', 'vcsdiff', 'breakpoints'])
@@ -220,12 +204,6 @@ g:quickfixsigns_timeout        (default: 0)
     The default number of seconds for the timeout option for sign 
     class definitions (see |g:quickfixsigns_classes|).
 
-                                                    *g:quickfixsigns_events_default*
-g:quickfixsigns_events_default (default: exists('g:loaded_ArgsAndMore') || exists('g:loaded_EnhancedJumps') ? [] : ['BufEnter'])
-
-                                                    *g:quickfixsigns_events_base*
-g:quickfixsigns_events_base    (default: g:quickfixsigns_events_default + ['CursorHold', 'CursorHoldI'])
-
                                                     *g:quickfixsigns_events*
 g:quickfixsigns_events         (default: g:quickfixsigns_events_base + ['BufReadPost', 'InsertEnter', 'InsertLeave'])
     List of events for signs that should be frequently updated.
@@ -245,8 +223,10 @@ g:quickfixsigns_class_qfl      (default: {'sign': '*s:QflSign', 'get': 's:GetQFL
 g:quickfixsigns_class_loc      (default: {'sign': '*s:LocSign', 'get': 's:GetLocList(%s)', 'event': g:quickfixsigns_events_base + ['QuickFixCmdPost'], 'level': 8})
     Signs for |location| lists.
 
-                                                    *g:quickfixsigns_list_types*
-g:quickfixsigns_list_types     (default: 'EW')
+                                                    *g:quickfixsigns_sign_may_use_double*
+g:quickfixsigns_sign_may_use_double (default: !exists('&ambiwidth') || &ambiwidth ==# 'single')
+    FIX Confliction between quickfixsigns_vim and ambiwidth=double
+    https://github.com/tomtom/quickfixsigns_vim/issues/72
 
                                                     *g:quickfixsigns_class_cursor*
 g:quickfixsigns_class_cursor   (default: {'sign': 'QFS_CURSOR', 'get': 's:GetCursor(%s)', 'event': g:quickfixsigns_events_base + ['CursorMoved', 'CursorMovedI'], 'timeout': 1, 'level': 3})
@@ -297,12 +277,6 @@ g:quickfixsigns_use_dummy      (default: index(g:quickfixsigns_classes, 'marks')
     If true, set a dummy sign. It's recommended to use dummy signs 
     when |g:quickfixsigns_classes| does not contain "marks".
 
-                                                    *QuickfixsignsSelect()*
-QuickfixsignsSelect(list)
-
-                                                    *QuickfixsignsUpdate()*
-QuickfixsignsUpdate(?class="")
-
                                                     *QuickfixsignsSet()*
 QuickfixsignsSet(event, ?classes=[], ?filename=expand('%:p'))
     (Re-)Set the signs that should be updated at a certain event. If event 
@@ -314,26 +288,13 @@ QuickfixsignsSet(event, ?classes=[], ?filename=expand('%:p'))
     strings) exists, sign classes in that list won't be displayed for the 
     current buffer.
 
-                                                    *QuickfixsignsUnique()*
-QuickfixsignsUnique(list)
-
-                                                    *QuickfixsignsBalloon()*
-QuickfixsignsBalloon()
-
-                                                    *QuickfixsignsToggle()*
-QuickfixsignsToggle()
-
                                                     *QuickfixsignsClear()*
 QuickfixsignsClear(class)
     Clear all signs with name SIGN.
 
-                                                    *QuickfixsignsListBufferSigns()*
-QuickfixsignsListBufferSigns(bufnr)
 
-
-========================================================================
-autoload/quickfixsigns.vim~
-
+------------------------------------------------------------------------
+                                                    *autoload/quickfixsigns.vim*
                                                     *g:quickfixsigns#use_relativenumber*
 g:quickfixsigns#use_relativenumber (default: v:version >= 703)
     VIM 7.3 and later: If non-zero, |quickfixsigns#RelNumbersOnce()| 
@@ -341,27 +302,25 @@ g:quickfixsigns#use_relativenumber (default: v:version >= 703)
     other signs and is faster, but it could cause the visible text area 
     to be temporarily moved to the right.
 
-                                                    *quickfixsigns#CompleteSelect()*
-quickfixsigns#CompleteSelect(ArgLead, CmdLine, CursorPos)
-
                                                     *quickfixsigns#RelNumbersOnce()*
 quickfixsigns#RelNumbersOnce()
     Display relative line numbers. Remove the signs when the cursor moves.
     From vim 7.3 on, this uses the 'relativenumber' option.
 
-                                                    *quickfixsigns#AssertUniqueSigns()*
-quickfixsigns#AssertUniqueSigns(bufnr, bufsigns)
 
-                                                    *quickfixsigns#AssertNoObsoleteBuffers()*
-quickfixsigns#AssertNoObsoleteBuffers(register)
+------------------------------------------------------------------------
+                                                    *autoload/quickfixsigns/longlines.vim*
+                                                    *g:quickfixsigns_class_longlines*
+g:quickfixsigns_class_longlines (default: {'sign': 'QFS_LONGLINES', 'get': 'quickfixsigns#longlines#GetList(%s)', 'event': ['BufRead', 'BufWritePost']})
+    Mark long lines (see |g:quickfixsigns#longlines#width_expr|) with 
+    a sign.
 
-                                                    *quickfixsigns#MoveSigns()*
-quickfixsigns#MoveSigns(n, ?pattern="", ?blockwise=0) "{{{3
+    Users have to enable this sign class by adding 'longlines' to 
+    |g:quickfixsigns_classes|.
 
 
-========================================================================
-autoload/quickfixsigns/marks.vim~
-
+------------------------------------------------------------------------
+                                                    *autoload/quickfixsigns/marks.vim*
                                                     *g:quickfixsigns_class_marks*
 g:quickfixsigns_class_marks    (default: {...})
     The definition of signs for marks.
@@ -380,50 +339,9 @@ g:quickfixsigns#marks#global   (default: split('ABCDEFGHIJKLMNOPQRSTUVWXYZ<>^', 
 g:quickfixsigns#marks#texthl   (default: 'Identifier')
     Highlight group for mark signs.
 
-                                                    *quickfixsigns#marks#GetList()*
-quickfixsigns#marks#GetList(filename)
 
-                                                    *quickfixsigns#marks#GetSign()*
-quickfixsigns#marks#GetSign(item)
-
-
-========================================================================
-autoload/quickfixsigns/vcsmerge.vim~
-
-
-                                                    *quickfixsigns-vcsmerge*
-Add signs for merge conflicts produced by VCS like Git.
-
-                                                    *g:quickfixsigns#vcsmerge#regex*
-g:quickfixsigns#vcsmerge#regex (default: {'TOP': '^<<<<<<< \@=', 'MID': '^=======$', 'BOT': '^>>>>>>> \@='})
-    Expressions to match conflict hunks.
-
-                                                    *g:quickfixsigns#vcsmerge#sign*
-g:quickfixsigns#vcsmerge#sign  (default: {'TOP': '<<', 'MID': '==', 'BOT': '>>'})
-    Signs to mark conflict hunks.
-
-
-========================================================================
-autoload/quickfixsigns/longlines.vim~
-
-                                                    *g:quickfixsigns_class_longlines*
-g:quickfixsigns_class_longlines (default: {'sign': 'QFS_LONGLINES', 'get': 'quickfixsigns#longlines#GetList(%s)', 'event': ['BufRead', 'BufWritePost']})
-    Mark long lines (see |g:quickfixsigns#longlines#width_expr|) with 
-    a sign.
-
-    Users have to enable this sign class by adding 'longlines' to 
-    |g:quickfixsigns_classes|.
-
-                                                    *g:quickfixsigns#longlines#width_expr*
-g:quickfixsigns#longlines#width_expr (default: '&tw')
-
-                                                    *quickfixsigns#longlines#GetList()*
-quickfixsigns#longlines#GetList(filename)
-
-
-========================================================================
-autoload/quickfixsigns/vcsdiff.vim~
-
+------------------------------------------------------------------------
+                                                    *autoload/quickfixsigns/vcsdiff.vim*
                                                     *g:quickfixsigns#vcsdiff#vcs*
 g:quickfixsigns#vcsdiff#vcs    (default: {...})
     Show signs for new (+), changed (=), or deleted (-) lines.
@@ -442,12 +360,6 @@ g:quickfixsigns#vcsdiff#vcs    (default: {...})
 
     Users can also use g:quickfixsigns#vcsdiff#vcs_{vcs_type} for 
     configuration.
-
-                                                    *g:quickfixsigns_class_vcsdiff*
-g:quickfixsigns_class_vcsdiff  (default: {'sign': '*quickfixsigns#vcsdiff#Signs', 'get': 'quickfixsigns#vcsdiff#GetList(%s)', 'event': ['BufRead', 'BufWritePost'], 'level': 6})
-
-                                                    *g:quickfixsigns#vcsdiff#cd*
-g:quickfixsigns#vcsdiff#cd     (default: 'cd')
 
                                                     *g:quickfixsigns#vcsdiff#cmd_separator*
 g:quickfixsigns#vcsdiff#cmd_separator (default: '&&')
@@ -480,9 +392,6 @@ g:quickfixsigns#vcsdiff#highlight (default: {'DEL': 'QuickFixSignsDiffDelete', '
 g:quickfixsigns#vcsdiff#del_numbered (default: 1)
     If true, add an indicator for how many lines were deleted next to 
     the sign for deleted lines.
-
-                                                    *g:quickfixsigns#vcsdiff#use_hidef*
-g:quickfixsigns#vcsdiff#use_hidef (default: 1)
 
                                                     *g:quickfixsigns#vcsdiff#revision*
 g:quickfixsigns#vcsdiff#revision (default: s:UNSET_STRING)
@@ -518,9 +427,6 @@ quickfixsigns#vcsdiff#GetListCached(filename)
     Get the list of vcsdiff signs (cached).
     The cache is invalidated wthen quickfixsigns#vcsdiff#GetList is called.
 
-                                                    *quickfixsigns#vcsdiff#ClearCache()*
-quickfixsigns#vcsdiff#ClearCache(...)
-
                                                     *quickfixsigns#vcsdiff#GetHunkSummary()*
 quickfixsigns#vcsdiff#GetHunkSummary(...)
     Get status of VCS changes as [added, modified, removed].
@@ -543,30 +449,19 @@ quickfixsigns#vcsdiff#GetList1(filename)
     for details).
 
 
-========================================================================
-autoload/quickfixsigns/breakpoints.vim~
+------------------------------------------------------------------------
+                                                    *autoload/quickfixsigns/vcsmerge.vim*
 
-                                                    *g:quickfixsigns#breakpoints#filetypes*
-g:quickfixsigns#breakpoints#filetypes (default: {...})
+                                                    *quickfixsigns-vcsmerge*
+Add signs for merge conflicts produced by VCS like Git.
 
-                                                    *g:quickfixsigns_class_breakpoints*
-g:quickfixsigns_class_breakpoints (default: {...})
+                                                    *g:quickfixsigns#vcsmerge#regex*
+g:quickfixsigns#vcsmerge#regex (default: {'TOP': '^<<<<<<< \@=', 'MID': '^=======$', 'BOT': '^>>>>>>> \@='})
+    Expressions to match conflict hunks.
 
-                                                    *quickfixsigns#breakpoints#GetList()*
-quickfixsigns#breakpoints#GetList(filename)
-
-                                                    *quickfixsigns#breakpoints#Vim()*
-quickfixsigns#breakpoints#Vim()
-
-
-========================================================================
-autoload/tinykeymap/map/quickfixsigns.vim~
-
-                                                    *g:tinykeymap#map#quickfixsigns#map*
-g:tinykeymap#map#quickfixsigns#map (default: g:tinykeymap#mapleader .'s')
-
-                                                    *g:tinykeymap#map#quickfixsigns#options*
-g:tinykeymap#map#quickfixsigns#options (default: {...})
+                                                    *g:quickfixsigns#vcsmerge#sign*
+g:quickfixsigns#vcsmerge#sign  (default: {'TOP': '<<', 'MID': '==', 'BOT': '>>'})
+    Signs to mark conflict hunks.
 
 
 
