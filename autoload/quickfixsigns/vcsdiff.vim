@@ -3,8 +3,8 @@
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2010-05-08.
-" @Last Change: 2017-07-06.
-" @Revision:    560
+" @Last Change: 2017-09-25.
+" @Revision:    562
 
 if exists('g:quickfixsigns#vcsdiff#loaded')
     finish
@@ -122,9 +122,17 @@ endif
 
 
 if g:quickfixsigns#vcsdiff#use_hidef && len(filter(values(g:quickfixsigns#vcsdiff#highlight), 'v:val =~# ''^QuickFixSignsDiff''')) > 0
-    hi QuickFixSignsDiffAdd    ctermfg=0 ctermbg=2 guifg=black  guibg=green
-    hi QuickFixSignsDiffDelete ctermfg=0 ctermbg=1 guifg=yellow guibg=red
-    hi QuickFixSignsDiffChange ctermfg=0 ctermbg=3 guifg=black  guibg=yellow
+    function! s:SetHighlight() abort
+      hi QuickFixSignsDiffAdd    ctermfg=0 ctermbg=2 guifg=black  guibg=green
+      hi QuickFixSignsDiffDelete ctermfg=0 ctermbg=1 guifg=yellow guibg=red
+      hi QuickFixSignsDiffChange ctermfg=0 ctermbg=3 guifg=black  guibg=yellow
+    endf
+
+    augroup QuickFixSigns
+      autocmd ColorScheme * call s:SetHighlight()
+    augroup END
+
+    call s:SetHighlight()
 endif
 
 
