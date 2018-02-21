@@ -64,7 +64,8 @@ if !exists('g:quickfixsigns_classes')
     "   loc     ... |location| list
     "   vcsdiff ... mark changed lines (see |quickfixsigns#vcsdiff#GetList()|)
     "   vcsmerge .. merge conflicts produced by VCS like Git
-    "   marks   ... marks |'a|-zA-Z (see also " |g:quickfixsigns_marks|)
+    "   marks   ... marks |'a|-zA-Z (see also |g:quickfixsigns#marks#global| 
+    "               and |g:quickfixsigns#marks#buffer|)
     "
     " The sign classes are defined in g:quickfixsigns_class_{NAME}.
     "
