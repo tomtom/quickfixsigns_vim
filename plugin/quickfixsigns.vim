@@ -4,8 +4,8 @@
 " @GIT:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
 " @Created:     2009-03-14.
-" @Last Change: 2017-07-06.
-" @Revision:    1515
+" @Last Change: 2017-10-12.
+" @Revision:    1517
 " GetLatestVimScripts: 2584 1 :AutoInstall: quickfixsigns.vim
 
 if &cp || exists("g:loaded_quickfixsigns") || !has('signs')
@@ -294,8 +294,10 @@ function! s:DefineSign(name, text, texthl, icon_name) abort "{{{3
 endf
 
 call s:DefineSign('QFS_CURSOR', '-', 'Question', 'cursor')
-call s:DefineSign('QFS_QFL', (g:quickfixsigns_sign_may_use_double && &enc ==? 'utf-8' ? '╠' : '*'),'WarningMsg', 'qfl')
-call s:DefineSign('QFS_LOC', (g:quickfixsigns_sign_may_use_double && &enc ==? 'utf-8' ? '├' : '>'), 'Special', 'loc')
+" ╠►☼☺‡
+" ├⇒→◊☻†
+call s:DefineSign('QFS_QFL', (g:quickfixsigns_sign_may_use_double && &enc ==? 'utf-8' ? '►' : '*'),'WarningMsg', 'qfl')
+call s:DefineSign('QFS_LOC', (g:quickfixsigns_sign_may_use_double && &enc ==? 'utf-8' ? '◊' : '>'), 'Special', 'loc')
 
 for s:char in split(g:quickfixsigns_list_types, '\zs')
     call s:DefineSign('QFS_QFL_'. s:char, (g:quickfixsigns_sign_may_use_double && &enc ==? 'utf-8' ? '║' : '*') . s:char, 'WarningMsg', 'qfl_'. s:char)
