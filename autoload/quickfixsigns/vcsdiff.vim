@@ -128,7 +128,8 @@ if g:quickfixsigns#vcsdiff#use_hidef && len(filter(values(g:quickfixsigns#vcsdif
       hi QuickFixSignsDiffChange ctermfg=0 ctermbg=3 guifg=black  guibg=yellow
     endf
 
-    augroup QuickFixSigns
+    augroup QuickFixSignsVcsdiffHighlights
+      autocmd!
       autocmd ColorScheme * call s:SetHighlight()
     augroup END
 
@@ -598,7 +599,10 @@ endf
 
 
 if has('vim_starting')
-    autocmd VimEnter * call s:QuickfixsignsMaybeRegisterTStatus()
+    augroup QuickFixSignsVcsdiffVimEnter
+        autocmd!
+        autocmd VimEnter * call s:QuickfixsignsMaybeRegisterTStatus()
+    augroup END
 else
     call s:QuickfixsignsMaybeRegisterTStatus()
 endif
