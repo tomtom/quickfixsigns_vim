@@ -849,6 +849,19 @@ function! QuickfixsignsListBufferSigns(bufnr) "{{{3
     if a:bufnr == -1
         return []
     endif
+
+    if exists('*sign_getplaced')
+        let r = []
+        for sign in sign_getplaced(a:bufnr)[0].signs
+            call add(r, {
+                        \ 'lnum': sign.lnum,
+                        \ 'id': sign.id,
+                        \ 'name': sign.name,
+                        \ })
+        endfor
+        return r
+    endif
+
     let signss = s:Redir('sign place buffer='. a:bufnr)
     if exists('signss')
         let signs = split(signss, '\n')
