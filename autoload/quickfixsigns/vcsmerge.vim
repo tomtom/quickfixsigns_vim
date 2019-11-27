@@ -1,8 +1,8 @@
 " @Author:      Sergey Vlasov (sergey@vlasov.me)
 " @git:         http://github.com/tomtom/quickfixsigns_vim/
 " @License:     GPL (see http://www.gnu.org/licenses/gpl.txt)
-" @Last Change: 2016-02-12
-" @Revision:    9
+" @Last Change: 2019-11-27
+" @Revision:    10
 
 
 " :doc:
@@ -75,13 +75,13 @@ function! quickfixsigns#vcsmerge#GetList(filename)
         endif
     else
         let pos = getpos('.')
-        try
-            exec 'silent g/'. g:quickfixsigns#vcsmerge#regex.TOP. '/ call add(signs, {"bufnr": bufnr, "lnum": line("."), "change": "TOP", "text": "Conflict top hunk"})'
-            exec 'silent g/'. g:quickfixsigns#vcsmerge#regex.MID. '/ call add(signs, {"bufnr": bufnr, "lnum": line("."), "change": "MID", "text": "Conflict middle hunk"})'
-            exec 'silent g/'. g:quickfixsigns#vcsmerge#regex.BOT. '/ call add(signs, {"bufnr": bufnr, "lnum": line("."), "change": "BOT", "text": "Conflict bottom hunk"})'
-        finally
-            call setpos('.', pos)
-        endtry
+        for [key, value] in items(g:quickfixsigns#vcsmerge#regex)
+            call cursor(1, 1)
+            while searchpos(value, 'W') != [0, 0]
+                call add(signs, {"bufnr": bufnr, "lnum": line("."), "change": key, "text": "Conflict ". key ." hunk"})
+            endwhile
+        endfor
+        call setpos('.', pos)
     endif
     " TLogVAR signs
     return signs
