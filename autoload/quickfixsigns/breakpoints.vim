@@ -58,9 +58,13 @@ endf
 
 
 function! quickfixsigns#breakpoints#Vim() "{{{3
-    redir => bps
-    silent breaklist
-    redir END
+    if exists('*execute')
+        let bps = execute('breaklist', 'silent')
+    else
+        redir => bps
+        silent breaklist
+        redir END
+    endif
     let acc = []
     for line in split(bps, '\n')
         let ml = matchlist(line, '^\s*\(\d\+\)\s\+\w\+\s\+\(.\{-}\)\s\+\w\+\s\+\(\d\+\)$')
