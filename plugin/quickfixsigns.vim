@@ -267,10 +267,14 @@ function! s:Redir(cmd) "{{{3
     let verbose = &verbose
     let &verbose = 0
     try
-        let rv = ''
-        redir => rv
-        exec 'silent' a:cmd
-        redir END
+        if exists('*execute')
+            let rv = execute(a:cmd, 'silent')
+        else
+            let rv = ''
+            redir => rv
+            exec 'silent' a:cmd
+            redir END
+        endif
         return exists('rv')? rv : ''
     finally
         let &verbose = verbose
