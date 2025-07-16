@@ -69,6 +69,7 @@ function! quickfixsigns#AssertUniqueSigns(bufnr, bufsigns) "{{{3
         for bsign in a:bufsigns
             let key = printf("%s|%s", bsign.lnum, bsign.name)
             if has_key(dict, key)
+                " XXX: only usage of "sign.sign"
                 echom ("QuickFixSigns AssertUniqueSigns: duplicate bufnr=". a:bufnr .":") bsign.sign
             else
                 let dict[key] = 1
